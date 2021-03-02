@@ -17,5 +17,5 @@
 /* Enforce font settings on all standard elements */
 html, body {
     font-family: 'Jost', sans-serif;
-    font-size: 64px;
+    font-size: 16px;
 }

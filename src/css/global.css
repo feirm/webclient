@@ -1,0 +1,21 @@
+/* Global CSS Reset */
+
+/* Fonts/Typography */
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-VariableFont_wght.ttf');
+    font-weight: 1 999;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-Italic-VariableFont_wght.ttf');
+    font-style: italic;
+    font-weight: 1 999;
+}
+
+/* Enforce font settings on all standard elements */
+html, body {
+    font-family: 'Jost', sans-serif;
+    font-size: 64px;
+}

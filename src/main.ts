@@ -3,8 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-// CSS Styles
-import "@/css/global.css";
+// CSS Styles (Tailwind)
+import "@/css/index.css";
 
 createApp(App)
   .use(store)

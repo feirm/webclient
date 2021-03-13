@@ -36,10 +36,10 @@
             class="py-2 mr-3 px-5 bg-gray-50 hover:bg-gray-200 rounded transition duration-300"
             >Login</a
           >
-          <a
-            href="#"
+          <router-link
+            to="/app/signup"
             class="py-2 px-3 bg-orange-500 hover:bg-orange-400 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
-            >Create an account</a
+            >Create an account</router-link
           >
         </div>
 

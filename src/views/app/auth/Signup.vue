@@ -4,7 +4,7 @@
   >
     <!-- Signup form -->
     <div
-      class="bg-gray-100 rounded p-8 shadow-2xl sm:w-1/2 md:w-1/2 lg:w-1/4"
+      class="bg-gray-100 h-screen p-8 shadow-2xl sm:w-1/2 md:w-1/2 lg:w-1/4 sm:rounded md:rounded lg:rounded sm:h-full md:h-full lg:h-full"
     >
       <router-link to="/">
         <img

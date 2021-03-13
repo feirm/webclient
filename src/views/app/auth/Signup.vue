@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-orange-500 to-yellow-600"
+    class="min-h-screen relative flex items-center justify-center bg-grey-500"
   >
     <!-- Signup form -->
     <div

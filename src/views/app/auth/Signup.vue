@@ -72,22 +72,24 @@ meter {
   /* Applicable only to Firefox */
   background: none;
   background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
 }
 
 meter::-webkit-meter-bar {
   background: none;
   background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
 }
 
 /* Webkit based browsers */
-meter[value="1"]::-webkit-meter-optimum-value { background: #EF4444; }
-meter[value="2"]::-webkit-meter-optimum-value { background: #FCD34D; }
-meter[value="3"]::-webkit-meter-optimum-value { background: #F59E0B; }
-meter[value="4"]::-webkit-meter-optimum-value { background: #34D399; }
+meter[value="1"]::-webkit-meter-optimum-value { background: #EF4444; border-radius: 3px; }
+meter[value="2"]::-webkit-meter-optimum-value { background: #FCD34D; border-radius: 3px; }
+meter[value="3"]::-webkit-meter-optimum-value { background: #F59E0B; border-radius: 3px; }
+meter[value="4"]::-webkit-meter-optimum-value { background: #34D399; border-radius: 3px; }
 
 /* Gecko based browsers */
-meter[value="1"]::-moz-meter-bar { background: #EF4444; }
-meter[value="2"]::-moz-meter-bar { background: #FCD34D; }
-meter[value="3"]::-moz-meter-bar { background: #F59E0B; }
-meter[value="4"]::-moz-meter-bar { background: #34D399; }
+meter[value="1"]::-moz-meter-bar { background: #EF4444; border-radius: 3px; }
+meter[value="2"]::-moz-meter-bar { background: #FCD34D; border-radius: 3px; }
+meter[value="3"]::-moz-meter-bar { background: #F59E0B; border-radius: 3px; }
+meter[value="4"]::-moz-meter-bar { background: #34D399; border-radius: 3px; }
 </style>

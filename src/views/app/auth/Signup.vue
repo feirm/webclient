@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen relative flex items-center justify-center bg-gray-100">
+    <div class="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-orange-500 to-yellow-600">
         <!-- Signup form -->
         <div class="bg-white p-8 rounded shadow-2xl sm:w-1/2 md:w-1/2 lg:w-1/4">
             <router-link to="/">

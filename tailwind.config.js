@@ -32,6 +32,9 @@ module.exports = {
           "800": "#171717",
           "900": "#1a1a1a"
         }
+      },
+      textColor: {
+        "orange": "#f69738"
       }
     }
   },

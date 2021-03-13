@@ -24,7 +24,12 @@
                 <div>
                     <label class="block mb-2 font-light text-gray-500">Username or Email Address</label>
                     <input class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" type="text" autofocus />
-                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+
+                    <!-- Action buttons -->
+                    <div>
+                        <button class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300" @click="previousStep()">Back</button>
+                        <button class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+                    </div>
                 </div>
             </div>
 
@@ -37,7 +42,12 @@
                     <label class="block mb-2 font-light text-gray-500">Password</label>
                     <input class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="password" v-on:input="checkPassword" type="password" />
                     <meter class="mb-3" max="4" :value="passwordScore"></meter>
-                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+                    
+                    <!-- Action buttons -->
+                    <div>
+                        <button class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300" @click="previousStep()">Back</button>
+                        <button class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+                    </div>
                 </div>
             </div>
 
@@ -51,7 +61,12 @@
                     <label class="block mb-2 font-light text-gray-500">Encryption Key</label>
                     <input class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="encryptionKey" v-on:input="checkEncryptionKey" type="password" />
                     <meter class="mb-3" max="4" :value="encryptionKeyScore"></meter>
-                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+                    
+                    <!-- Action buttons -->
+                    <div>
+                        <button class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300" @click="previousStep()">Back</button>
+                        <button class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+                    </div>
                 </div>
             </div>
 
@@ -64,10 +79,15 @@
                     <label class="block mb-2 font-light text-gray-500">Encryption Key</label>
                     <input class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="confirmEncryptionKey" type="password" />
                     
-                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" :disabled="submitted">
-                        <p v-if="!submitted">Submit</p>
-                        <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="">
-                    </button>
+                    <!-- Action buttons -->
+                    <div>
+                        <button class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300" @click="previousStep()">Back</button>
+
+                        <button class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" :disabled="submitted">
+                            <p v-if="!submitted">Submit</p>
+                            <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="">
+                        </button>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -101,9 +121,13 @@ export default defineComponent({
     }
   },
   methods: {
-      // Increment the form step
+      // Increment the form step counter
       nextStep() {
           this.formStep++;
+      },
+      // Decrease the form step counter
+      previousStep() {
+          this.formStep--;
       },
       checkPassword() {
           // Calculate zxvbn score

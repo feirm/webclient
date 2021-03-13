@@ -6,28 +6,65 @@
                 <img class="mx-auto w-16 mb-5" src="@/assets/img/logo.png" alt="Feirm Logo">
             </router-link>
 
-            <h2 class="text-3xl font-light mb-4 text-center">Create your Feirm account</h2>
 
-            <!-- Form -->
-            <div>
-                <!-- Username/email address -->
+            <!-- Step 0 (Get Started) -->
+            <div v-if="formStep === 0">
+                <h2 class="text-3xl font-light mb-4 text-center">Create your Feirm account</h2>
+                <p class="font-light mb-2">Welcome! 👋</p>
+                <p class="font-light mb-3">We are pleased to see that you want to sign up to the Feirm Platform. In order to get started though, we need a few pieces of information from you to create your account. We promise it'll be quick! 🚀</p>
+
+                <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Get Started</button>
+            </div>
+
+            <!-- Step 1 (Username or Email Address) -->
+            <div v-if="formStep === 1">
+                <h2 class="text-3xl font-light mb-4 text-center">Pick a username</h2>
+                <p class="font-light mb-3">You can choose to sign up using a username or an email address. Using an email address will allow us to reset your account password if you forget it.</p>
                 <div>
                     <label class="block mb-2 font-light text-gray-500">Username or Email Address</label>
                     <input class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" type="text" autofocus />
+                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
                 </div>
+            </div>
 
-                <!-- Password -->
+            <!-- Step 2 (Account password) -->
+            <div v-if="formStep === 2">
+                <h2 class="text-3xl font-light mb-4 text-center">Create a password</h2>
+                <p class="font-light mb-3">To secure your account, we need a password from you! Please be sure to make it strong! 💪</p>
                 <div>
                     <label class="block mb-2 font-light text-gray-500">Password</label>
                     <input class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="password" v-on:input="checkPassword" type="password" />
                     <meter class="mb-3" max="4" :value="passwordScore"></meter>
+                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
                 </div>
+            </div>
 
-                <!-- Signup button -->
-                <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" :disabled="submitted">
-                    <p v-if="!submitted">Sign up</p>
-                    <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="">
-                </button>
+            <!-- Step 3 (Encryption key) -->
+            <div v-if="formStep === 3">
+                <h2 class="text-3xl font-light mb-4 text-center">Create an encryption key</h2>
+                <p class="font-light mb-2">An encryption key is what the Feirm web application uses to protect your data. It is very important this key is different from your password and also that you remember it! 🧠</p>
+                <p class="font-light mb-3">Feirm does not have access to this encryption key, nor do we have the ability to reset it!</p>
+                <div>
+                    <label class="block mb-2 font-light text-gray-500">Encryption Key</label>
+                    <input class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="encryptionKey" v-on:input="checkPassword" type="password" />
+                    <meter class="mb-3" max="4" :value="encryptionKeyScore"></meter>
+                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 4 (Confirm encryption key) -->
+            <div v-if="formStep === 4">
+                <h2 class="text-3xl font-light mb-4 text-center">Confirm your encryption key</h2>
+                <p class="font-light mb-3">Please confirm your ecryption key again. We're just checking that you've still got it! 😉</p>
+                <div>
+                    <label class="block mb-2 font-light text-gray-500">Encryption Key</label>
+                    <input class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="confirmEncryptionKey" type="password" />
+                    
+                    <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" :disabled="submitted">
+                        <p v-if="!submitted">Submit</p>
+                        <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="">
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -42,12 +79,17 @@ export default defineComponent({
   name: "Signup",
   data() {
     return {
+        formStep: 0,
         password: "",
         passwordScore: 0,
         submitted: false // Track whether or not a submission of account details have been made
     }
   },
   methods: {
+      // Increment the form step
+      nextStep() {
+          this.formStep++;
+      },
       checkPassword() {
           // Calculate zxvbn score
           const score = zxcvbn(this.password).score;

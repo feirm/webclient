@@ -33,13 +33,13 @@
         <div class="hidden md:flex items-center space-x-1">
           <a
             href="#"
-            class="py-2 mr-3 px-3 bg-orange-500 hover:bg-orange-400 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
-            >Create an account</a
+            class="py-2 mr-3 px-5 bg-gray-50 hover:bg-gray-200 rounded transition duration-300"
+            >Login</a
           >
           <a
             href="#"
-            class="py-2 px-5 bg-gray-50 hover:bg-gray-200 rounded transition duration-300"
-            >Login</a
+            class="py-2 px-3 bg-orange-500 hover:bg-orange-400 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
+            >Create an account</a
           >
         </div>
 

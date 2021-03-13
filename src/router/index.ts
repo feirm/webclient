@@ -14,7 +14,10 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "signup",
-        component: () => import("@/views/app/auth/Signup.vue")
+        component: () => import("@/views/app/auth/Signup.vue"),
+        meta: {
+          hideNavigation: true
+        }
       }
     ]
   }

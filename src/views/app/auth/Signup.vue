@@ -18,6 +18,7 @@
 
             <!-- Step 1 (Username or Email Address) -->
             <div v-if="formStep === 1">
+                <p class="font-bold text-gray-600 text-center">Step {{ formStep }} of {{ maxSteps }}</p>
                 <h2 class="text-3xl font-light mb-4 text-center">Pick a username</h2>
                 <p class="font-light mb-3">You can choose to sign up using a username or an email address. Using an email address will allow us to reset your account password if you forget it.</p>
                 <div>
@@ -29,6 +30,7 @@
 
             <!-- Step 2 (Account password) -->
             <div v-if="formStep === 2">
+                <p class="font-bold text-gray-600 text-center">Step {{ formStep }} of {{ maxSteps }}</p>
                 <h2 class="text-3xl font-light mb-4 text-center">Create a password</h2>
                 <p class="font-light mb-3">To secure your account, we need a password from you! Please be sure to make it strong! 💪</p>
                 <div>
@@ -41,12 +43,13 @@
 
             <!-- Step 3 (Encryption key) -->
             <div v-if="formStep === 3">
+                <p class="font-bold text-gray-600 text-center">Step {{ formStep }} of {{ maxSteps }}</p>
                 <h2 class="text-3xl font-light mb-4 text-center">Create an encryption key</h2>
                 <p class="font-light mb-2">An encryption key is what the Feirm web application uses to protect your data. It is very important this key is different from your password and also that you remember it! 🧠</p>
                 <p class="font-light mb-3">Feirm does not have access to this encryption key, nor do we have the ability to reset it!</p>
                 <div>
                     <label class="block mb-2 font-light text-gray-500">Encryption Key</label>
-                    <input class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="encryptionKey" v-on:input="checkPassword" type="password" />
+                    <input class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="encryptionKey" v-on:input="checkEncryptionKey" type="password" />
                     <meter class="mb-3" max="4" :value="encryptionKeyScore"></meter>
                     <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="nextStep()">Next</button>
                 </div>
@@ -54,8 +57,9 @@
 
             <!-- Step 4 (Confirm encryption key) -->
             <div v-if="formStep === 4">
+                <p class="font-bold text-gray-600 text-center">Step {{ formStep }} of {{ maxSteps }}</p>
                 <h2 class="text-3xl font-light mb-4 text-center">Confirm your encryption key</h2>
-                <p class="font-light mb-3">Please confirm your ecryption key again. We're just checking that you've still got it! 😉</p>
+                <p class="font-light mb-3">Please confirm your encryption key again. We're just checking that you've still got it! 😉</p>
                 <div>
                     <label class="block mb-2 font-light text-gray-500">Encryption Key</label>
                     <input class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="confirmEncryptionKey" type="password" />
@@ -79,9 +83,20 @@ export default defineComponent({
   name: "Signup",
   data() {
     return {
+        // Multistep form
         formStep: 0,
+        maxSteps: 4,
+
+        // User account
+        username: "",
         password: "",
         passwordScore: 0,
+
+        // Encryption key
+        encryptionKey: "",
+        confirmEncryptionKey: "",
+        encryptionKeyScore: 0,
+
         submitted: false // Track whether or not a submission of account details have been made
     }
   },
@@ -94,6 +109,11 @@ export default defineComponent({
           // Calculate zxvbn score
           const score = zxcvbn(this.password).score;
           this.passwordScore = score;
+      },
+      checkEncryptionKey() {
+          // Calculate zxvbn score
+          const score = zxcvbn(this.encryptionKey).score;
+          this.encryptionKeyScore = score;
       }
   }
 });

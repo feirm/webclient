@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import "@/css/website.css";
 
 export default defineComponent({
   name: "Index"

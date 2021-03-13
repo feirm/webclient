@@ -1,16 +1,13 @@
 module.exports = {
-  purge: [
-    './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}'
-  ],
+  purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Jost', 'sans-serif']
+        sans: ["Jost", "sans-serif"]
       },
       colors: {
-        "orange": {
+        orange: {
           "50": "#ff104109",
           "100": "#fef7f0",
           "200": "#fce0c4",
@@ -23,7 +20,7 @@ module.exports = {
           "900": "#311a02"
         },
 
-        "grey": {
+        grey: {
           "50": "#113113113",
           "100": "#f7f7f7",
           "200": "#bfbfbf",
@@ -36,10 +33,10 @@ module.exports = {
           "900": "#1a1a1a"
         }
       }
-    },
+    }
   },
   variants: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
-}
+  plugins: []
+};

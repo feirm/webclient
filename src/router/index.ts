@@ -1,4 +1,9 @@
-import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  RouteRecordRaw,
+  RouterView
+} from "vue-router";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -6,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Index",
     component: () => import("@/views/Index.vue")
   },
-  
+
   // App nested routes
   {
     path: "/app",

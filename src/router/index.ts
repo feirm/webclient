@@ -5,11 +5,15 @@ import {
   RouterView
 } from "vue-router";
 
+// Routes
+import Index from "@/views/Index.vue";
+import Signup from "@/views/app/auth/Signup.vue";
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Index",
-    component: () => import("@/views/Index.vue")
+    component: Index
   },
 
   // App nested routes
@@ -19,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "signup",
-        component: () => import("@/views/app/auth/Signup.vue"),
+        component: Signup,
         meta: {
           hideNavigation: true
         }

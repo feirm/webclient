@@ -5,9 +5,14 @@ import {
   RouterView
 } from "vue-router";
 
-// Routes
+// Website
 import Index from "@/views/Index.vue";
+
+// App
 import Signup from "@/views/app/auth/Signup.vue";
+
+// Bridge
+import BridgeIndex from "@/views/app/bridge/Index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -27,6 +32,18 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           hideNavigation: true
         }
+      }
+    ]
+  },
+
+  // Bridge nested routes
+  {
+    path: "/bridge",
+    component: RouterView,
+    children: [
+      {
+        path: "",
+        component: BridgeIndex
       }
     ]
   }

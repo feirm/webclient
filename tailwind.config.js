@@ -34,7 +34,7 @@ module.exports = {
         }
       },
       textColor: {
-        "orange": "#f69738"
+        orange: "#f69738"
       }
     }
   },

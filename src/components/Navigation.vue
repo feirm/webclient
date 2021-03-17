@@ -26,7 +26,11 @@
             <a href="#" class="py-5 px-3 text-white hover:text-gray-300"
               >Blockchain</a
             >
-            <router-link to="/bridge" class="py-5 px-3 text-white hover:text-gray-300">Bridge</router-link>
+            <router-link
+              to="/bridge"
+              class="py-5 px-3 text-white hover:text-gray-300"
+              >Bridge</router-link
+            >
           </div>
         </div>
 

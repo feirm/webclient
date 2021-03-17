@@ -10,6 +10,7 @@ import Index from "@/views/Index.vue";
 
 // App
 import Signup from "@/views/app/auth/Signup.vue";
+import Login from "@/views/app/auth/Login.vue";
 
 // Bridge
 import BridgeIndex from "@/views/app/bridge/Index.vue";
@@ -29,6 +30,13 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "signup",
         component: Signup,
+        meta: {
+          hideNavigation: true
+        }
+      },
+      {
+        path: "login",
+        component: Login,
         meta: {
           hideNavigation: true
         }

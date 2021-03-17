@@ -36,10 +36,10 @@
 
         <!-- Right navigation -->
         <div class="hidden md:flex items-center space-x-1">
-          <a
-            href="#"
+          <router-link
+            to="/app/login"
             class="py-2 mr-3 px-5 bg-gray-50 hover:bg-gray-200 rounded transition duration-300"
-            >Login</a
+            >Login</router-link
           >
           <router-link
             to="/app/signup"

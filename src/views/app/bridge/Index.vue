@@ -1,6 +1,6 @@
 <template>
     <div>
-        Bridge
+        <h1 class="text-4xl">Dive into the world of DeFi with Feirm and the Binance Smart Chain.</h1>
     </div>
 </template>
 

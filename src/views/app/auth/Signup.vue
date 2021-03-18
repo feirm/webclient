@@ -191,7 +191,7 @@
 
             <button
               class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-              :disabled="submitted"
+              :disabled="submitted" @click="signup"
             >
               <p v-if="!submitted">Submit</p>
               <img
@@ -209,6 +209,7 @@
 </template>
 
 <script lang="ts">
+import account from "@/class/account";
 import { defineComponent } from "vue";
 
 import zxcvbn from "zxcvbn";
@@ -252,6 +253,12 @@ export default defineComponent({
       // Calculate zxvbn score
       const score = zxcvbn(this.encryptionKey).score;
       this.encryptionKeyScore = score;
+    },
+
+    // Create the account encrypted payload
+    async signup() {
+      const p = await account.generateEncryptedRootKey("password");
+      console.log(p);
     }
   }
 });

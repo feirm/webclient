@@ -215,6 +215,7 @@
 <script lang="ts">
 import account from "@/class/account";
 import { defineComponent } from "vue";
+import { mapActions } from "vuex";
 
 import firebase from "firebase";
 import zxcvbn from "zxcvbn";
@@ -243,6 +244,11 @@ export default defineComponent({
     };
   },
   methods: {
+    // Vuex
+    ...mapActions([
+      'login'
+    ]),
+
     // Increment the form step counter
     nextStep() {
       this.formStep++;
@@ -293,9 +299,12 @@ export default defineComponent({
           credentials.user?.sendEmailVerification();
         }
 
-        // Get the JWT ID token needed for our API
+        // Get and set the refresh token
+        const refreshToken = await credentials.user?.refreshToken;
+
+        // Get and set the JWT ID token needed for our API
         const idToken = await credentials.user?.getIdToken(true);
-        console.log(idToken);
+        this.login({ idToken, refreshToken });
 
         // Generate encrypted account key
         const key = await account.generateEncryptedRootKey(this.encryptionKey);
@@ -305,6 +314,8 @@ export default defineComponent({
         console.log(response.data);
 
       } catch (e) {
+        this.submitted = false;
+
         // Handle this later
         console.log(e);
       }

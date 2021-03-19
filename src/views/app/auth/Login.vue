@@ -57,6 +57,7 @@ import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
 import firebase from "firebase";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Login",
@@ -94,6 +95,15 @@ export default defineComponent({
         // Handle later...
         console.log(e);
       }
+
+      this.router.push("/app")
+    }
+  },
+  setup() {
+    const router = useRouter();
+
+    return {
+      router
     }
   }
 });

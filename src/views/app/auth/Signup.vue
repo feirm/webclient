@@ -222,6 +222,7 @@ import zxcvbn from "zxcvbn";
 
 import authService from "@/service/api/authService";
 import { useRouter } from "vue-router";
+import { EncryptedAccount } from "@/models/account";
 
 export default defineComponent({
   name: "Signup",
@@ -312,7 +313,13 @@ export default defineComponent({
 
         // Submit encrypted keypair to Feirm auth API
         const response = await authService.SendKey(key);
-        console.log(response.data);
+
+        // Attempt root key decryption
+        const encryptedAccount = response.data as EncryptedAccount;
+        const rootKey = await account.decryptRootKey(this.encryptionKey, encryptedAccount);
+
+        // Set the root key
+        account.setRootKey(rootKey);
 
       } catch (e) {
         this.submitted = false;

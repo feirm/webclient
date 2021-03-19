@@ -46,6 +46,8 @@
             class="py-2 px-3 bg-orange-500 hover:bg-orange-400 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
             >Create an account</router-link
           >
+
+          <router-link to="/" class="text-gray-100 pl-3">{{ getUsername }}</router-link>
         </div>
 
         <!-- Mobile burger button -->
@@ -79,3 +81,17 @@
     </div>
   </nav>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "@vue/runtime-core";
+import { mapGetters } from "vuex";
+
+export default defineComponent({
+  name: "Navigation",
+  computed: {
+    ...mapGetters([
+      'getUsername'
+    ])
+  }
+})
+</script>

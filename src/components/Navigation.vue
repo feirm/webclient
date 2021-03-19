@@ -36,18 +36,18 @@
 
         <!-- Right navigation -->
         <div class="hidden md:flex items-center space-x-1">
-          <router-link
+          <router-link v-if="!getIdToken"
             to="/app/login"
             class="py-2 mr-3 px-5 bg-gray-50 hover:bg-gray-200 rounded transition duration-300"
             >Login</router-link
           >
-          <router-link
+          <router-link v-if="!getIdToken"
             to="/app/signup"
             class="py-2 px-3 bg-orange-500 hover:bg-orange-400 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
             >Create an account</router-link
           >
 
-          <router-link to="/" class="text-gray-100 pl-3">{{
+          <router-link v-if="getIdToken" to="/" class="text-gray-100 pl-3">{{
             getUsername
           }}</router-link>
         </div>
@@ -91,7 +91,7 @@ import { mapGetters } from "vuex";
 export default defineComponent({
   name: "Navigation",
   computed: {
-    ...mapGetters(["getUsername"])
+    ...mapGetters(["getUsername", "getIdToken"])
   }
 });
 </script>

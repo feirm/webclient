@@ -219,6 +219,8 @@ import { defineComponent } from "vue";
 import firebase from "firebase";
 import zxcvbn from "zxcvbn";
 
+import authService from "@/service/api/authService";
+
 export default defineComponent({
   name: "Signup",
   data() {
@@ -297,9 +299,11 @@ export default defineComponent({
 
         // Generate encrypted account key
         const key = await account.generateEncryptedRootKey(this.encryptionKey);
-        console.log(key);
 
-        // TODO: Submit encrypted keypair to Feirm auth API and save response to IDB
+        // Submit encrypted keypair to Feirm auth API
+        const response = await authService.SendKey(key);
+        console.log(response.data);
+
       } catch (e) {
         // Handle this later
         console.log(e);

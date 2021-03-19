@@ -51,20 +51,21 @@ export const auth = {
     getRefreshToken: (state: any) => state.auth.refreshToken,
     getUsername: (state: any) => state.auth.username,
 
-    isLoggedIn: (getters: any) => {
+    isLoggedIn: (state: any) => {
       // If there is no access token, user is not logged in
-      if (!getters.getIdToken) {
+      const token = state.auth.idToken;
+      if (!token) {
         return false;
       }
 
       // Decode the access token
-      const token: any = jwt_decode(getters.getIdToken);
-      if (!token.exp) {
+      const decoded: any = jwt_decode(token);
+      if (!decoded.exp) {
         return false;
       }
 
       const date = new Date(0);
-      date.setUTCSeconds(token.exp);
+      date.setUTCSeconds(decoded.exp);
 
       if (date > new Date()) {
         return true;

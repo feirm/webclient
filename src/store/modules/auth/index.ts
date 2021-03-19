@@ -1,3 +1,5 @@
+import jwt_decode from "jwt-decode";
+
 export const auth = {
     // Authentication module state
     state: {
@@ -30,6 +32,28 @@ export const auth = {
     // Getters
     getters: {
         getIdToken: (state: any) => state.auth.idToken,
-        getRefreshToken: (state: any) => state.auth.refreshToken
+        getRefreshToken: (state: any) => state.auth.refreshToken,
+
+        isLoggedIn: (state: any, getters: any) => {
+            // If there is no access token, user is not logged in
+            if (!getters.getIdToken) {
+                return false;
+            }
+
+            // Decode the access token
+            const token: any = jwt_decode(getters.getIdToken);
+            if (!token.exp) {
+                return false;
+            }
+
+            const date = new Date(0);
+            date.setUTCSeconds(token.exp);
+
+            if (date > new Date()) {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

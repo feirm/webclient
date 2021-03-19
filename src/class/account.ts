@@ -1,5 +1,7 @@
 import bufferToHex from "@/helpers/bufferToHex";
-import { EncryptedKey } from "@/models/account";
+import hexToBytes from "@/helpers/hexToBytes";
+
+import { EncryptedAccount, EncryptedKey } from "@/models/account";
 import { ArgonType, hash } from "argon2-browser";
 
 class Account {
@@ -40,6 +42,32 @@ class Account {
         } as EncryptedKey;
 
         return key;
+    }
+
+    // Decrypt an encrypted root key payload
+    async decryptRootKey(password: string, payload: EncryptedAccount): Promise<Uint8Array> {
+        // Extract the salt used for password hashing
+        // and the IV used for AES encryption
+        const salt = hexToBytes(payload.encrypted_key.salt).slice(0, 16);
+        const iv = hexToBytes(payload.encrypted_key.iv).slice(0, 16);
+
+        // Convert the encrypted key into byte form
+        const keyBytes = hexToBytes(payload.encrypted_key.key);
+
+        // Derive stretched key from password
+        const stretchedKey = await hash({
+            pass: password,
+            salt: salt,
+            type: ArgonType.Argon2id,
+            hashLen: 32
+        });
+
+        // Derive the key we encrypted the root key with
+        const encryptionKey = await window.crypto.subtle.importKey('raw', stretchedKey.hash, { name: 'AES-CBC' }, false, ['encrypt', 'decrypt']);
+
+        // Decrypt the ciphertext to get our root key
+        const rootKey = await window.crypto.subtle.decrypt({ name: 'AES-CBC', iv: iv }, encryptionKey, keyBytes);
+        return new Uint8Array(rootKey);
     }
 
 }

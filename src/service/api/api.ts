@@ -1,3 +1,4 @@
+import { store } from "@/store";
 import axios from "axios";
 
 // This file contains all the Axios instances for interacting with various APIs
@@ -8,6 +9,21 @@ const authApi = axios.create({
         "Content-Type": "application/json",
     },
 })
+
+authApi.interceptors.request.use(
+    (config) => {
+        const idToken = store.getters.getIdToken;
+
+        if (idToken) {
+            config.headers.Authorization = "Bearer " + idToken
+        }
+
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+)
 
 // Export all instances of the APIs
 export {

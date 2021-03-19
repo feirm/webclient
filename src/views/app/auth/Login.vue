@@ -24,7 +24,7 @@
         <label class="block mb-2 font-light text-gray-500">Password</label>
         <input class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="password" v-on:input="checkPassword" type="password" />
 
-        <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="login()">Log in</button>
+        <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="submitLogin()">Log in</button>
       </div>
     </div>
   </div>
@@ -32,6 +32,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { mapActions } from "vuex";
+
+import firebase from "firebase";
 
 export default defineComponent({
   name: "Login",
@@ -39,6 +42,37 @@ export default defineComponent({
     return {
       username: "",
       password: ""
+    }
+  },
+  methods: {
+    ...mapActions([
+      'login'
+    ]),
+
+    async submitLogin() {
+      // Check if username is a valid email address. If not, append the custom email
+      let customUsername = "";
+
+      // Create a dummy email address pointed at '@users.feirm.com'
+      if (this.username && !this.username.includes("@")) {
+        customUsername = this.username + "@users.feirm.com";
+      } else {
+        customUsername = this.username;
+      }
+
+      try {
+        // Sign-in using username/email and password
+        const credentials = await firebase.auth().signInWithEmailAndPassword(customUsername, this.password);
+
+        // Fetch access token and refresh token
+        const idToken = await credentials.user?.getIdToken(true);
+        const refreshToken = await credentials.user?.refreshToken;
+        this.login({ idToken, refreshToken });
+        
+      } catch (e) {
+        // Handle later...
+        console.log(e);
+      }
     }
   }
 });

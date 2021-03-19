@@ -13,6 +13,8 @@ import Signup from "@/views/app/auth/Signup.vue";
 import Login from "@/views/app/auth/Login.vue";
 import VerifyEmail from "@/views/app/auth/VerifyEmail.vue";
 
+import Protected from "@/views/app/Protected.vue";
+
 // Bridge
 import BridgeIndex from "@/views/app/bridge/Index.vue";
 import { store } from "@/store";
@@ -29,6 +31,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/app",
     component: RouterView,
     children: [
+      {
+        path: "",
+        component: Protected,
+        meta: {
+          authRequired: true
+        }
+      },
       {
         path: "signup",
         component: Signup,
@@ -75,21 +84,15 @@ const router = createRouter({
 // For every route, check if the user is authenticate
 router.beforeEach((to, from, next) => {
   const loggedIn = store.getters.isLoggedIn;
-  console.log("[Router] Logged in:", loggedIn);
-
-  // If the user is not logged in, but has a refresh token, let them continue
-  if (!loggedIn && store.getters.getRefreshToken) {
-    return next();
-  }
+  const authRequired = to.matched.some((route) => route.meta.authRequired)
 
   // If the user is not logged in and has no refresh token, redirect them to
   // the login page
-  if (!loggedIn && !store.getters.getRefreshToken) {
-    return next("/app/login");
+  if (!loggedIn && authRequired && !store.getters.getRefreshToken) {
+    next("/app/login");
+  } else {
+    next();
   }
-
-  // Otherwise all them to go as usual
-  return next();
 });
 
 // Export the router

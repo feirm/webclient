@@ -221,6 +221,7 @@ import firebase from "firebase";
 import zxcvbn from "zxcvbn";
 
 import authService from "@/service/api/authService";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Signup",
@@ -322,7 +323,15 @@ export default defineComponent({
 
       this.submitted = false;
 
-      // TODO: Push to homepage
+      // Push to homepage
+      this.router.push("/app")
+    }
+  },
+  setup() {
+    const router = useRouter();
+
+    return {
+      router
     }
   }
 });

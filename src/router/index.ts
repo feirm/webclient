@@ -84,7 +84,7 @@ const router = createRouter({
 // For every route, check if the user is authenticate
 router.beforeEach((to, from, next) => {
   const loggedIn = store.getters.isLoggedIn;
-  const authRequired = to.matched.some((route) => route.meta.authRequired)
+  const authRequired = to.matched.some(route => route.meta.authRequired);
 
   // If the user is not logged in and has no refresh token, redirect them to
   // the login page

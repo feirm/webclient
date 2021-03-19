@@ -15,10 +15,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyBKPqBFtNyw_P1kdz48JTW2Zqm5Vvrn8E0",
   authDomain: "auth.feirm.com",
   projectId: "feirm-b4e50"
-}
+};
 
 // Initialise Firebase
-firebase.initializeApp(firebaseConfig)
+firebase.initializeApp(firebaseConfig);
 
 createApp(App)
   .use(store)

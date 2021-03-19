@@ -195,7 +195,8 @@
 
             <button
               class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-              :disabled="submitted" @click="signup"
+              :disabled="submitted"
+              @click="signup"
             >
               <p v-if="!submitted">Submit</p>
               <img
@@ -247,9 +248,7 @@ export default defineComponent({
   },
   methods: {
     // Vuex
-    ...mapActions([
-      'login'
-    ]),
+    ...mapActions(["login"]),
 
     // Increment the form step counter
     nextStep() {
@@ -316,11 +315,13 @@ export default defineComponent({
 
         // Attempt root key decryption
         const encryptedAccount = response.data as EncryptedAccount;
-        const rootKey = await account.decryptRootKey(this.encryptionKey, encryptedAccount);
+        const rootKey = await account.decryptRootKey(
+          this.encryptionKey,
+          encryptedAccount
+        );
 
         // Set the root key
         account.setRootKey(rootKey);
-
       } catch (e) {
         this.submitted = false;
 
@@ -331,7 +332,7 @@ export default defineComponent({
       this.submitted = false;
 
       // Push to homepage
-      this.router.push("/app")
+      this.router.push("/app");
     }
   },
   setup() {
@@ -339,7 +340,7 @@ export default defineComponent({
 
     return {
       router
-    }
+    };
   }
 });
 </script>

@@ -47,7 +47,9 @@
             >Create an account</router-link
           >
 
-          <router-link to="/" class="text-gray-100 pl-3">{{ getUsername }}</router-link>
+          <router-link to="/" class="text-gray-100 pl-3">{{
+            getUsername
+          }}</router-link>
         </div>
 
         <!-- Mobile burger button -->
@@ -89,9 +91,7 @@ import { mapGetters } from "vuex";
 export default defineComponent({
   name: "Navigation",
   computed: {
-    ...mapGetters([
-      'getUsername'
-    ])
+    ...mapGetters(["getUsername"])
   }
-})
+});
 </script>

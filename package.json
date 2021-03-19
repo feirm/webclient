@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "argon2-browser": "^1.15.3",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^8.3.1",
     "vue": "^3.0.0",

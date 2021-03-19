@@ -52,6 +52,7 @@
           <input
             class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
             type="text"
+            v-model="username"
             autofocus
           />
 
@@ -65,6 +66,7 @@
             </button>
             <button
               class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+              :disabled="username.length == 0"
               @click="nextStep()"
             >
               Next
@@ -103,6 +105,7 @@
             </button>
             <button
               class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+              :disabled="password.length == 0"
               @click="nextStep()"
             >
               Next
@@ -150,6 +153,7 @@
             </button>
             <button
               class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+              :disabled="encryptionKey.length == 0"
               @click="nextStep()"
             >
               Next
@@ -212,6 +216,7 @@
 import account from "@/class/account";
 import { defineComponent } from "vue";
 
+import firebase from "firebase";
 import zxcvbn from "zxcvbn";
 
 export default defineComponent({
@@ -257,8 +262,52 @@ export default defineComponent({
 
     // Create the account encrypted payload
     async signup() {
-      const p = await account.generateEncryptedRootKey("password");
-      console.log(p);
+      this.submitted = true;
+
+      /*
+        A user doesn't need an email address to sign up on the Feirm web app,
+        so check if the username includes an '@' and construct a custom username.
+      */
+      let validEmail = false;
+      let customUsername = "";
+
+      // Create a dummy email address pointed at '@users.feirm.com'
+      if (this.username && !this.username.includes("@")) {
+        customUsername = this.username + "@users.feirm.com";
+      } else {
+        customUsername = this.username;
+        validEmail = true;
+      }
+
+      // Attempt to send credentials to Firebase Auth API and receive our authentication token
+      let credentials;
+      try {
+        credentials = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(customUsername, this.password);
+
+        // If they have an email, send the verification
+        if (validEmail) {
+          credentials.user?.sendEmailVerification();
+        }
+
+        // Get the JWT ID token needed for our API
+        const idToken = await credentials.user?.getIdToken(true);
+        console.log(idToken);
+
+        // Generate encrypted account key
+        const key = await account.generateEncryptedRootKey(this.encryptionKey);
+        console.log(key);
+
+        // TODO: Submit encrypted keypair to Feirm auth API and save response to IDB
+      } catch (e) {
+        // Handle this later
+        console.log(e);
+      }
+
+      this.submitted = false;
+
+      // TODO: Push to homepage
     }
   }
 });

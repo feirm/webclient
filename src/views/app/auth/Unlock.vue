@@ -34,6 +34,7 @@
 import account from "@/class/account";
 import fbService from "@/service/api/fbService";
 import { defineComponent } from "@vue/runtime-core";
+import { useRouter } from "vue-router";
 import { mapGetters, useStore } from "vuex";
 
 export default defineComponent({
@@ -82,15 +83,16 @@ export default defineComponent({
             }
 
             this.decrypting = false;
-
-            // TODO: Redirect back to original page
+            this.router.push("/app")
         }
     },
     setup() {
         const store = useStore();
+        const router = useRouter();
 
         return {
-            store
+            store,
+            router
         }
     }
 })

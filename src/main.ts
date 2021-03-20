@@ -3,6 +3,9 @@ import App from "./App.vue";
 import router from "./router";
 import { store } from "@/store";
 
+// Toast Notification
+import Toaster from "@meforma/vue-toaster";
+
 // Firebase
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -23,4 +26,5 @@ firebase.initializeApp(firebaseConfig);
 createApp(App)
   .use(store)
   .use(router)
+  .use(Toaster, { position: "bottom" })
   .mount("#app");

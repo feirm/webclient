@@ -19,6 +19,7 @@ import Protected from "@/views/app/Protected.vue";
 // Bridge
 import BridgeIndex from "@/views/app/bridge/Index.vue";
 import { store } from "@/store";
+import account from "@/class/account";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -90,9 +91,17 @@ const router = createRouter({
 });
 
 // For every route, check if the user is authenticate
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   const loggedIn = store.getters.isLoggedIn;
   const authRequired = to.matched.some(route => route.meta.authRequired);
+  const encryptedAccount = await account.fetchAccount();
+
+  // Redirect the user to the unlock page
+  if (to.path !== "/app/unlock") {
+    if (loggedIn && store.getters.getRefreshToken && encryptedAccount && !account.rootKey) {
+      next("/app/unlock");
+    }
+  }
 
   // If the user is not logged in and has no refresh token, redirect them to
   // the login page

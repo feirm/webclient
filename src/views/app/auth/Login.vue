@@ -154,17 +154,6 @@ export default defineComponent({
         return;
       }
 
-      // Fetch encrypted account payload
-      try {
-        const res = await authService.GetAccount();
-        this.account = res.data as EncryptedAccount;
-
-      } catch (e) {
-        this.submitted = false;
-        this.$toast.error(e);
-        return;
-      }
-
       // If we made it this far, we are ready to attempt decryption
       this.submitted = false;
       this.readyToDecrypt = true;

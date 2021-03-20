@@ -182,10 +182,20 @@ export default defineComponent({
         // We have the root key, so we can set it
         account.setRootKey(rootKey);
       } catch (e) {
+        console.log(e);
+
         this.decrypting = false;
         this.$toast.error("Failed to unlock account! Please try again.");
 
         return;
+      }
+
+      // Save the encrypted account to IDB
+      try {
+        await account.saveAccount(this.account);
+      } catch (e) {
+        this.decrypting = false;
+        return this.$toast.error(e);
       }
 
       // Push to main app route

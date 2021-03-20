@@ -3,16 +3,16 @@ import axios from "axios";
 import fbService from "./fbService";
 
 // This file contains all the Axios instances for interacting with various APIs
-// Create an instance for the Feirm Auth Microservice.
-const authApi = axios.create({
-  baseURL: "http://127.0.0.1:3000/api/",
+// Create an instance for the Feirm Gateway
+const gatewayApi = axios.create({
+  baseURL: "http://127.0.0.1:8000/",
   headers: {
     "Content-Type": "application/json"
   }
 });
 
 // Attach Authorization header to requests
-authApi.interceptors.request.use(
+gatewayApi.interceptors.request.use(
   config => {
     const idToken = store.getters.getIdToken;
 
@@ -28,7 +28,7 @@ authApi.interceptors.request.use(
 );
 
 // Handle unauthorized responses by using the refresh token
-authApi.interceptors.response.use(
+gatewayApi.interceptors.response.use(
   response => {
     return response;
   },
@@ -69,4 +69,4 @@ const firebaseApi = axios.create({
 });
 
 // Export all instances of the APIs
-export { authApi, firebaseApi };
+export { gatewayApi, firebaseApi };

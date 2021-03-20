@@ -14,7 +14,7 @@
         />
       </router-link>
 
-      <div>
+      <div v-if="!readyToDecrypt">
         <h2 class="text-3xl font-light mb-4 text-center">Welcome back! 👋</h2>
         <p class="font-light mb-3">
           It is good to see you again, we have missed you! Please enter your
@@ -46,6 +46,31 @@
           <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="Loading spinner"/>
         </button>
       </div>
+
+      <!-- Account unlock/decryption -->
+      <div v-if="readyToDecrypt">
+        <h2 class="text-3xl font-light mb-4 text-center">Unlock your account 🔒</h2>
+        <p class="font-light mb-3">
+          We're almost there! Please enter the encryption key for your account.
+        </p>
+
+        <!-- Encryption key input -->
+        <label class="block mb-2 font-light text-gray-500"
+          >Encryption Key</label
+        >
+        <input
+          class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
+          v-model="encryptionKey"
+          type="password"
+          autofocus
+        />
+
+        <!-- Decrypt button -->
+        <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="decryptAccount()">
+          <p v-if="!decrypting">Unlock</p>
+          <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="Loading spinner"/>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +82,8 @@ import { mapActions } from "vuex";
 import firebase from "firebase";
 import { useRouter } from "vue-router";
 import authService from "@/service/api/authService";
+import { EncryptedAccount } from "@/models/account";
+import account from "@/class/account";
 
 export default defineComponent({
   name: "Login",
@@ -64,7 +91,13 @@ export default defineComponent({
     return {
       username: "",
       password: "",
-      submitted: false
+      encryptionKey: "",
+
+      account: {} as EncryptedAccount,
+      submitted: false,
+
+      readyToDecrypt: false,
+      decrypting: false
     };
   },
   methods: {
@@ -124,11 +157,39 @@ export default defineComponent({
       }
 
       // Fetch encrypted account payload
-      const account = await authService.GetAccount();
-      console.log(account.data);
+      try {
+        const res = await authService.GetAccount();
+        this.account = res.data as EncryptedAccount;
 
+      } catch (e) {
+        this.submitted = false;
+        this.$toast.error(e);
+        return;
+      }
+
+      // If we made it this far, we are ready to attempt decryption
       this.submitted = false;
+      this.readyToDecrypt = true;
+    },
 
+    async decryptAccount() {
+      // Decrypt the root key
+      this.decrypting = true;
+
+      try {
+        const rootKey = await account.decryptRootKey(this.encryptionKey, this.account);
+
+        // We have the root key, so we can set it
+        account.setRootKey(rootKey);
+      } catch (e) {
+        this.decrypting = false;
+        this.$toast.error("Failed to unlock account! Please try again.");
+
+        return;
+      }
+
+      // Push to main app route
+      this.decrypting = false;
       this.router.push("/app");
     }
   },

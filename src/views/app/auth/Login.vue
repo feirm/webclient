@@ -41,11 +41,9 @@
           type="password"
         />
 
-        <button
-          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-          @click="submitLogin()"
-        >
-          Log in
+        <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="submitLogin()">
+          <p v-if="!submitted">Log in</p>
+          <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="Loading spinner"/>
         </button>
       </div>
     </div>
@@ -65,13 +63,16 @@ export default defineComponent({
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      submitted: false
     };
   },
   methods: {
     ...mapActions(["login"]),
 
     async submitLogin() {
+      this.submitted = true;
+
       // Check if username is a valid email address. If not, append the custom email
       let customUsername = "";
       if (this.username && !this.username.includes("@")) {
@@ -93,6 +94,8 @@ export default defineComponent({
         // Save tokens in Vuex state
         this.login({ idToken, refreshToken });
       } catch (e) {
+        this.submitted = false;
+
         // These errors are going to be coming from Firebase authentication,
         // so make the responses more meaniningful.
         const error = e.code;
@@ -123,6 +126,8 @@ export default defineComponent({
       // Fetch encrypted account payload
       const account = await authService.GetAccount();
       console.log(account.data);
+
+      this.submitted = false;
 
       this.router.push("/app");
     }

@@ -359,6 +359,9 @@ export default defineComponent({
   
         // Save root key in memory
         account.setRootKey(rootKey);
+
+        // Save encrypted account to disk
+        await account.saveAccount(encryptedAccount);
       } catch (e) {
         this.submitted = false;
 

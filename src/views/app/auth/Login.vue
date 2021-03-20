@@ -58,6 +58,7 @@ import { mapActions } from "vuex";
 
 import firebase from "firebase";
 import { useRouter } from "vue-router";
+import authService from "@/service/api/authService";
 
 export default defineComponent({
   name: "Login",
@@ -73,8 +74,6 @@ export default defineComponent({
     async submitLogin() {
       // Check if username is a valid email address. If not, append the custom email
       let customUsername = "";
-
-      // Create a dummy email address pointed at '@users.feirm.com'
       if (this.username && !this.username.includes("@")) {
         customUsername = this.username + "@users.feirm.com";
       } else {
@@ -89,14 +88,43 @@ export default defineComponent({
 
         // Fetch access token and refresh token
         const idToken = await credentials.user?.getIdToken(true);
-        const refreshToken = await credentials.user?.refreshToken;
+        const refreshToken = credentials.user?.refreshToken;
+
+        // Save tokens in Vuex state
         this.login({ idToken, refreshToken });
       } catch (e) {
-        // Handle later...
-        console.log(e);
+        // These errors are going to be coming from Firebase authentication,
+        // so make the responses more meaniningful.
+        const error = e.code;
+
+        switch (error) {
+          case "auth/wrong-password": {
+            this.$toast.error("Invalid username/email address or password!");
+            break;
+          }
+          case "auth/invalid-email": {
+            this.$toast.error("Invalid username/email address or password!");
+            break;
+          }
+          case "auth/user-not-found": {
+            this.$toast.error("This user does not exist!");
+            break;
+          }
+          default: {
+            // Something else has gone wrong, or we want to provide a custom error message
+            this.$toast.error(e);
+            break;
+          }
+        }
+
+        return;
       }
 
-      this.router.push("/app")
+      // Fetch encrypted account payload
+      const account = await authService.GetAccount();
+      console.log(account.data);
+
+      this.router.push("/app");
     }
   },
   setup() {
@@ -104,7 +132,7 @@ export default defineComponent({
 
     return {
       router
-    }
+    };
   }
 });
 </script>

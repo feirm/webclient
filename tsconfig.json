@@ -13,7 +13,6 @@
     "baseUrl": ".",
     "strictPropertyInitialization": false,
     "noImplicitAny": false,
-    "noImplicitThis": false,
     "types": [
       "webpack-env"
     ],

@@ -3,8 +3,9 @@ import hexToBytes from "@/helpers/hexToBytes";
 
 import { EncryptedAccount, EncryptedKey } from "@/models/account";
 import { ArgonType, hash } from "argon2-browser";
+import { DB } from "@/class/db";
 
-class Account {
+class Account extends DB {
   public rootKey: Uint8Array;
 
   // Set account root key

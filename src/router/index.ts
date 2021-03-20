@@ -102,7 +102,7 @@ router.beforeEach(async(to, from, next) => {
     if (to.path.includes("/app")) {
       // If the user is logged in, has a refresh token available, their encrypted account on disk,
       // but no root key in memory, then request for an unlock.
-      if (loggedIn && store.getters.getRefreshToken && encryptedAccount && !account.rootKey) {
+      if (loggedIn && authRequired && store.getters.getRefreshToken && encryptedAccount && !account.rootKey) {
         next("/app/unlock");
       }
     }

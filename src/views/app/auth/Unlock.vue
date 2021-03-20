@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-grey-500">
+    <div class="flex min-h-screen items-center justify-center bg-grey-500">
         <div class="bg-gray-100 p-8 shadow-2xl sm:w-1/2 md:w-1/2 lg:w-1/4 sm:rounded md:rounded lg:rounded sm:h-full md:h-full lg:h-full">
             <router-link to="/">
                 <img

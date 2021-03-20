@@ -12,9 +12,6 @@ class DB extends Dexie {
         this.version(1).stores({
             account: "uid"
         });
-
-        // Assign tables
-        this.account = this.table("account");
     }
 }
 

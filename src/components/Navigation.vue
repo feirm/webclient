@@ -6,8 +6,8 @@
         <div class="flex space-x-4">
           <!-- Logo showcase -->
           <div>
-            <a
-              href="#"
+            <router-link
+              :to="isLoggedIn ? '/app' : '/'"
               class="flex items-center py-5 px-2 text-gray-700 hover:text-gray-900"
             >
               <img
@@ -15,7 +15,7 @@
                 src="@/assets/img/navbar_logo.png"
                 alt="Navbar Logo"
               />
-            </a>
+            </router-link>
           </div>
 
           <!-- Left navigation -->

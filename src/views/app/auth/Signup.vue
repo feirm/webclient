@@ -288,7 +288,7 @@ export default defineComponent({
         validEmail = true;
       }
 
-      // Attempt to send credentials to Firebase Auth API and receive our authentication token
+      // Attempt to send credentials to Firebase Auth API
       let credentials;
       try {
         credentials = await firebase
@@ -300,38 +300,72 @@ export default defineComponent({
           credentials.user?.sendEmailVerification();
         }
 
+      } catch (e) {
+        this.submitted = false;
+
+        // Extract the error code
+        const error = e.code;
+        // Show an error toast depending on the message
+        switch (error) {
+          case "auth/email-already-in-use": {
+            this.$toast.error("The username or email address you have picked is already in use! Please try again.");
+            this.formStep = 1;
+            break;
+          }
+          case "auth/invalid-email": {
+            this.$toast.error("There is an invalid character in your username/email address! Please try again.");
+            this.formStep = 1;
+            break;
+          }
+          case "auth/weak-password": {
+            this.$toast.error("It looks like your password is too weak! Please pick another and try again.");
+            this.formStep = 2;
+            break;
+          }
+          default: {
+            // Something else has gone wrong, or we want to provide a custom error message
+            this.$toast.error(e);
+            break;
+          }
+        }
+
+        return;
+      }
+
+      // Extract the necessary tokens from credentials and "log" the user in
+      try {
         // Get and set the refresh token
         const refreshToken = await credentials.user?.refreshToken;
-
-        // Get and set the JWT ID token needed for our API
         const idToken = await credentials.user?.getIdToken(true);
+
         this.login({ idToken, refreshToken });
+      } catch (e) {
+        this.submitted = false;
 
-        // Generate encrypted account key
+        return this.$toast.error(e);
+      }
+
+      // Generate an encrypted root key using the encryption password,
+      // and send the key to the Feirm Auth API.
+      // Also attempt to decrypt the response payload and store key in memory
+      try {
+        // Generate and send key to API
         const key = await account.generateEncryptedRootKey(this.encryptionKey);
+        const res = await authService.SendKey(key);
 
-        // Submit encrypted keypair to Feirm auth API
-        const response = await authService.SendKey(key);
-
-        // Attempt root key decryption
-        const encryptedAccount = response.data as EncryptedAccount;
-        const rootKey = await account.decryptRootKey(
-          this.encryptionKey,
-          encryptedAccount
-        );
-
-        // Set the root key
+        // Decrypt the returned payload containing additional account data
+        const encryptedAccount = res.data as EncryptedAccount;
+        const rootKey = await account.decryptRootKey(this.encryptionKey, encryptedAccount);
+  
+        // Save root key in memory
         account.setRootKey(rootKey);
       } catch (e) {
         this.submitted = false;
 
-        // Handle this later
-        console.log(e);
+        return this.$toast.error(e);
       }
 
       this.submitted = false;
-
-      // Push to homepage
       this.router.push("/app");
     }
   },

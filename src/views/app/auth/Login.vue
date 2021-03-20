@@ -93,9 +93,7 @@ export default defineComponent({
       password: "",
       encryptionKey: "",
 
-      account: {} as EncryptedAccount,
       submitted: false,
-
       readyToDecrypt: false,
       decrypting: false
     };
@@ -177,10 +175,17 @@ export default defineComponent({
       this.decrypting = true;
 
       try {
-        const rootKey = await account.decryptRootKey(this.encryptionKey, this.account);
+        // Fetch the encrypted account
+        const res = await authService.GetAccount();
+        const encryptedAccount = res.data;
+
+        const rootKey = await account.decryptRootKey(this.encryptionKey, encryptedAccount);
 
         // We have the root key, so we can set it
         account.setRootKey(rootKey);
+
+        // Save the encrypted account to IDB
+        await account.saveAccount(encryptedAccount);
       } catch (e) {
         console.log(e);
 
@@ -188,14 +193,6 @@ export default defineComponent({
         this.$toast.error("Failed to unlock account! Please try again.");
 
         return;
-      }
-
-      // Save the encrypted account to IDB
-      try {
-        await account.saveAccount(this.account);
-      } catch (e) {
-        this.decrypting = false;
-        return this.$toast.error(e);
       }
 
       // Push to main app route

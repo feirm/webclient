@@ -1,8 +1,5 @@
 <template>
   <navigation v-if="!$route.meta.hideNavigation" />
-  <div class="bg-gray-100">
-    <button v-if="isRefresh" @click="update">Update me!</button>
-  </div>
   <router-view />
 </template>
 
@@ -37,6 +34,13 @@ export default defineComponent({
   },
   created() {
     document.addEventListener('serviceWorkerUpdateEvent', this.updateUI, { once: true });
+
+    // Update notification toast
+    if (this.isRefresh) {
+      this.$toast.info("A new update is available! Click me to reload.", {
+        onclick: this.update()
+      });
+    }
 
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (this.refreshing) {

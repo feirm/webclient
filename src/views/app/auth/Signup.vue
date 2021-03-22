@@ -27,11 +27,15 @@
         </p>
 
         <button
-          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+          class="block w-full bg-orange-500 mb-5 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
           @click="nextStep()"
         >
           Get Started
         </button>
+
+        <div class="text-center">
+          <router-link to="/app/login">Already have an account? Sign in here!</router-link>
+        </div>
       </div>
 
       <!-- Step 1 (Username or Email Address) -->

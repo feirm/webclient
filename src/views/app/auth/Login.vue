@@ -42,7 +42,7 @@
         />
 
         <button
-          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+          class="block w-full mb-5 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
           @click="submitLogin()"
         >
           <p v-if="!submitted">Log in</p>
@@ -53,6 +53,10 @@
             alt="Loading spinner"
           />
         </button>
+
+        <div class="text-center">
+          <router-link to="/app/signup">Don't have an account? Sign up here!</router-link>
+        </div>
       </div>
 
       <!-- Account unlock/decryption -->
@@ -100,7 +104,6 @@ import { mapActions } from "vuex";
 import firebase from "firebase";
 import { useRouter } from "vue-router";
 import authService from "@/service/api/authService";
-import { EncryptedAccount } from "@/models/account";
 import account from "@/class/account";
 
 export default defineComponent({

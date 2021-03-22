@@ -54,15 +54,13 @@ export default defineComponent({
   async mounted() {
     // Email verification is a one off, so I think it's
     // acceptable to put all the axios stuff here.
-    const API_KEY = "AIzaSyBKPqBFtNyw_P1kdz48JTW2Zqm5Vvrn8E0";
-
     // Extract OobCode from route query
     const oobCode = this.$route.query.oobCode;
 
     try {
       // Submit OobCode to Firebase API
       const response = await axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${API_KEY}`,
+        `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${process.env.VUE_APP_FIREBASE_API_KEY}`,
         {
           oobCode: oobCode
         }

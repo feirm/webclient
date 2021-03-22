@@ -5,7 +5,7 @@ import fbService from "./fbService";
 // This file contains all the Axios instances for interacting with various APIs
 // Create an instance for the Feirm Gateway
 const gatewayApi = axios.create({
-  baseURL: "http://127.0.0.1:8000/",
+  baseURL: process.env.VUE_APP_API_URL,
   headers: {
     "Content-Type": "application/json"
   }
@@ -60,9 +60,8 @@ gatewayApi.interceptors.response.use(
 );
 
 // Firebase accounts API
-const API_KEY = "AIzaSyBKPqBFtNyw_P1kdz48JTW2Zqm5Vvrn8E0"; // Make this value accessible somewhere (maybe env vars)
 const firebaseApi = axios.create({
-  baseURL: "https://securetoken.googleapis.com/v1/token?key=" + API_KEY,
+  baseURL: "https://securetoken.googleapis.com/v1/token?key=" + process.env.VUE_APP_FIREBASE_API_KEY,
   headers: {
     "Content-Type": "application/json"
   }

@@ -18,7 +18,7 @@ import "@/css/index.css";
 
 // Firebase Authentication
 const firebaseConfig = {
-  apiKey: "AIzaSyBKPqBFtNyw_P1kdz48JTW2Zqm5Vvrn8E0",
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: "auth.feirm.com",
   projectId: "feirm-b4e50"
 };

@@ -299,7 +299,6 @@ export default defineComponent({
         if (validEmail) {
           credentials.user?.sendEmailVerification();
         }
-
       } catch (e) {
         this.submitted = false;
 
@@ -308,17 +307,23 @@ export default defineComponent({
         // Show an error toast depending on the message
         switch (error) {
           case "auth/email-already-in-use": {
-            this.$toast.error("The username or email address you have picked is already in use! Please try again.");
+            this.$toast.error(
+              "The username or email address you have picked is already in use! Please try again."
+            );
             this.formStep = 1;
             break;
           }
           case "auth/invalid-email": {
-            this.$toast.error("There is an invalid character in your username/email address! Please try again.");
+            this.$toast.error(
+              "There is an invalid character in your username/email address! Please try again."
+            );
             this.formStep = 1;
             break;
           }
           case "auth/weak-password": {
-            this.$toast.error("It looks like your password is too weak! Please pick another and try again.");
+            this.$toast.error(
+              "It looks like your password is too weak! Please pick another and try again."
+            );
             this.formStep = 2;
             break;
           }
@@ -355,8 +360,11 @@ export default defineComponent({
 
         // Decrypt the returned payload containing additional account data
         const encryptedAccount = res.data as EncryptedAccount;
-        const rootKey = await account.decryptRootKey(this.encryptionKey, encryptedAccount);
-  
+        const rootKey = await account.decryptRootKey(
+          this.encryptionKey,
+          encryptedAccount
+        );
+
         // Save root key in memory
         account.setRootKey(rootKey);
 

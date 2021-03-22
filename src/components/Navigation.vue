@@ -36,12 +36,14 @@
 
         <!-- Right navigation -->
         <div class="hidden md:flex items-center space-x-1">
-          <router-link v-if="!isLoggedIn"
+          <router-link
+            v-if="!isLoggedIn"
             to="/app/login"
             class="py-2 mr-3 px-5 bg-gray-50 hover:bg-gray-200 rounded transition duration-300"
             >Login</router-link
           >
-          <router-link v-if="!isLoggedIn"
+          <router-link
+            v-if="!isLoggedIn"
             to="/app/signup"
             class="py-2 px-3 bg-orange-500 hover:bg-orange-400 text-yellow-900 hover:text-yellow-800 rounded transition duration-300"
             >Create an account</router-link

@@ -41,15 +41,25 @@
           type="password"
         />
 
-        <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="submitLogin()">
+        <button
+          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+          @click="submitLogin()"
+        >
           <p v-if="!submitted">Log in</p>
-          <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="Loading spinner"/>
+          <img
+            v-else
+            class="mx-auto w-6"
+            src="@/assets/loading_spinner.svg"
+            alt="Loading spinner"
+          />
         </button>
       </div>
 
       <!-- Account unlock/decryption -->
       <div v-if="readyToDecrypt">
-        <h2 class="text-3xl font-light mb-4 text-center">Unlock your account 🔒</h2>
+        <h2 class="text-3xl font-light mb-4 text-center">
+          Unlock your account 🔒
+        </h2>
         <p class="font-light mb-3">
           We're almost there! Please enter the encryption key for your account.
         </p>
@@ -66,9 +76,17 @@
         />
 
         <!-- Decrypt button -->
-        <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" @click="decryptAccount()">
+        <button
+          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+          @click="decryptAccount()"
+        >
           <p v-if="!decrypting">Unlock</p>
-          <img v-else class="mx-auto w-6" src="@/assets/loading_spinner.svg" alt="Loading spinner"/>
+          <img
+            v-else
+            class="mx-auto w-6"
+            src="@/assets/loading_spinner.svg"
+            alt="Loading spinner"
+          />
         </button>
       </div>
     </div>
@@ -168,7 +186,10 @@ export default defineComponent({
         const res = await authService.GetAccount();
         const encryptedAccount = res.data;
 
-        const rootKey = await account.decryptRootKey(this.encryptionKey, encryptedAccount);
+        const rootKey = await account.decryptRootKey(
+          this.encryptionKey,
+          encryptedAccount
+        );
 
         // We have the root key, so we can set it
         account.setRootKey(rootKey);

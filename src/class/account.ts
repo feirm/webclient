@@ -120,7 +120,7 @@ class Account extends DB {
     }
 
     // If we get this far, it should be expected to have an account
-    const account = await this.account.orderBy('uid').last();
+    const account = await this.account.orderBy("uid").last();
     return account!;
   }
 }

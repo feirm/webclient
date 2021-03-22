@@ -14,7 +14,7 @@ export default defineComponent({
   data() {
     return {
       account: null
-    }
+    };
   },
   async mounted() {
     this.account = await account.fetchAccount();

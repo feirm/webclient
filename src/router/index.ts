@@ -91,7 +91,7 @@ const router = createRouter({
 });
 
 // For every route, check if the user is authenticate
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const loggedIn = store.getters.isLoggedIn;
   const authRequired = to.matched.some(route => route.meta.authRequired);
   const encryptedAccount = await account.fetchAccount();
@@ -102,7 +102,13 @@ router.beforeEach(async(to, from, next) => {
     if (to.path.includes("/app")) {
       // If the user is logged in, has a refresh token available, their encrypted account on disk,
       // but no root key in memory, then request for an unlock.
-      if (loggedIn && authRequired && store.getters.getRefreshToken && encryptedAccount && !account.getRootKey()) {
+      if (
+        loggedIn &&
+        authRequired &&
+        store.getters.getRefreshToken &&
+        encryptedAccount &&
+        !account.getRootKey()
+      ) {
         next("/app/unlock");
       }
     }

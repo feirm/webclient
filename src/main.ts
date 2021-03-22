@@ -3,6 +3,9 @@ import App from "./App.vue";
 import router from "./router";
 import { store } from "@/store";
 
+// Service worker
+import "@/registerServiceWorker";
+
 // Toast Notification
 import Toaster from "@meforma/vue-toaster";
 

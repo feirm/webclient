@@ -1,4 +1,9 @@
 module.exports = {
+  pwa: {
+    workboxOptions: {
+      exclude: [/_redirects/]
+    }
+  },
   configureWebpack: {
     module: {
       noParse: /\.wasm$/,

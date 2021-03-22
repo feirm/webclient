@@ -6,11 +6,16 @@ import { ArgonType, hash } from "argon2-browser";
 import { DB } from "@/class/db";
 
 class Account extends DB {
-  public rootKey: Uint8Array;
+  private rootKey: Uint8Array;
 
   // Set account root key
   setRootKey(rootKey: Uint8Array) {
     this.rootKey = rootKey;
+  }
+
+  // Get account root key
+  getRootKey(): Uint8Array {
+    return this.rootKey;
   }
 
   // Generate an encrypted root key

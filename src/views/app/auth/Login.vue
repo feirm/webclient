@@ -9,7 +9,7 @@
       <router-link to="/">
         <img
           class="mx-auto w-16 mb-5"
-          src="@/assets/img/logo.png"
+          src="@/assets/img/logo.webp"
           alt="Feirm Logo"
         />
       </router-link>

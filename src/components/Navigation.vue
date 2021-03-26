@@ -1,6 +1,6 @@
 <template>
   <!-- navbar goes here -->
-  <nav class="bg-grey-500">
+  <nav class="bg-grey-500 sticky">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex justify-between">
         <div class="flex space-x-4">
@@ -12,7 +12,7 @@
             >
               <img
                 class="object-scale-down w-36"
-                src="@/assets/img/navbar_logo.png"
+                src="@/assets/img/navbar_logo.webp"
                 alt="Navbar Logo"
               />
             </router-link>

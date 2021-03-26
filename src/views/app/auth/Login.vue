@@ -10,7 +10,7 @@
       <form v-on:submit.prevent="submitLogin" class="space-y-3">
         <!-- Username/email input -->
         <label class="block text-orange">Username or Email Address</label>
-        <input class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="username" type="text" placeholder="Please enter your username or email address" autofocus />
+        <input class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="username" type="text" placeholder="Please enter your username/email address" autofocus />
 
         <!-- Password input -->
         <label class="block text-orange">Password</label>
@@ -33,7 +33,7 @@
     </div>
 
     <!-- Image from Unsplash -->
-    <div class="flex-auto bg-grey-500">
+    <div class="flex-auto bg-grey-500 hidden lg:contents">
       <img class="object-right h-full w-full" src="https://images.unsplash.com/photo-1592838890225-2c052fa0cf34?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="">
     </div>
   </div>

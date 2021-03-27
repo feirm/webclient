@@ -4,7 +4,7 @@
     <div class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-12 space-y-4 max-w-xl">
       <img class="mx-auto w-24" src="@/assets/img/logo.webp" alt="Feirm Logo" />
 
-      <h1 class="text-4xl text-center text-orange">Welcome back! 👋</h1>
+      <h1 class="text-4xl text-center text-orange">Welcome back to Feirm! 👋</h1>
       <p class="text-lg text-gray-50">It is good to see you again! To get back to where you left off, please enter the credentials for your Feirm account below.</p>
 
       <form v-on:submit.prevent="submitLogin" class="space-y-3">

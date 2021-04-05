@@ -1,456 +1,111 @@
 <template>
-  <div
-    class="min-h-screen relative flex items-center justify-center bg-grey-500"
-  >
-    <!-- Signup form -->
-    <div
-      class="bg-gray-100 h-screen p-8 shadow-2xl sm:w-1/2 md:w-1/2 lg:w-1/4 sm:rounded md:rounded lg:rounded sm:h-full md:h-full lg:h-full"
-    >
-      <router-link to="/">
-        <img
-          class="mx-auto w-16 mb-5"
-          src="@/assets/img/logo.webp"
-          alt="Feirm Logo"
-        />
-      </router-link>
+  <div class="flex flex-row h-screen">
+    <!-- Login form -->
+    <div class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-12 space-y-4 max-w-xl">
+      <img class="mx-auto w-24" src="@/assets/img/logo.webp" alt="Feirm Logo" />
 
-      <!-- Step 0 (Get Started) -->
-      <div v-if="formStep === 0">
-        <h2 class="text-3xl font-light mb-4 text-center">
-          Create your Feirm account
-        </h2>
-        <p class="font-light mb-2">Welcome! 👋</p>
-        <p class="font-light mb-3">
-          We are pleased to see that you want to sign up to the Feirm Platform.
-          In order to get started though, we need a few pieces of information
-          from you to create your account. We promise it'll be quick! 🚀
-        </p>
+      <h1 class="text-4xl text-center text-orange">Create your Feirm account!</h1>
+      <p class="text-lg text-gray-50">Welcome! Feirm is the all-in-one platform for your cryptocurrency needs. To get started, all we need from you is a username/email address, strong password and a One-Time-Password application, such as Authy, to hand.</p>
 
+      <form v-on:submit.prevent="checkUsername" class="space-y-3">
+        <!-- Username/email input -->
+        <label class="block text-gray-100">Username or Email Address</label>
+        <input class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="username" type="text" placeholder="Please enter your username/email address" autofocus />
+
+        <!-- Password input -->
+        <label class="block text-gray-100">Password</label>
+        <input class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200" v-model="password" type="password" placeholder="Please enter your password" />
+      
+        <!-- Submit button -->
         <button
-          class="block w-full bg-orange-500 mb-5 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-          @click="nextStep()"
+          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
+          type="submit"
         >
-          Get Started
+          <p v-if="!submitted">Submit</p>
+          <img
+            v-else
+            class="mx-auto w-6"
+            src="@/assets/loading_spinner.svg"
+            alt="Loading spinner"
+          />
         </button>
+      </form>
+    </div>
 
-        <div class="text-center">
-          <router-link to="/app/login">Already have an account? Sign in here!</router-link>
-        </div>
-      </div>
+    <!-- Image from Unsplash -->
+    <div class="flex-auto bg-grey-500 hidden lg:contents">
+      <img class="object-right h-full w-full" src="https://images.unsplash.com/photo-1553949345-eb786bb3f7ba?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="">
+    </div>
 
-      <!-- Step 1 (Username or Email Address) -->
-      <div v-if="formStep === 1">
-        <p class="font-bold text-gray-600 text-center">
-          Step {{ formStep }} of {{ maxSteps }}
-        </p>
-        <h2 class="text-3xl font-light mb-4 text-center">Pick a username</h2>
-        <p class="font-light mb-3">
-          You can choose to sign up using a username or an email address. Using
-          an email address will allow us to reset your account password if you
-          forget it.
-        </p>
-        <div>
-          <label class="block mb-2 font-light text-gray-500"
-            >Username or Email Address</label
-          >
-          <input
-            class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-            type="text"
-            v-model="username"
-            autofocus
-          />
+    <!-- Two factor authentication modal setup -->
+    <div v-if="showTwoFactorSetup" class="fixed overflow-x-hidden overflow-y-auto inset-0 z-50 p-8">
+      <div class="relative mx-auto w-2/6 max-w-2xl">
+        <div class="flex flex-col bg-white rounded shadow-2xl w-full p-8 space-y-4">
+          <h1 class="text-light text-3xl text-center">Two Factor Authentication (2FA)</h1>
+          <p>As an additional layer of security, the Feirm Platform enforces the use of two-factor authentication. This is used to protect your account from fraudulent access and to ensure that your encrypted data remains safe.</p>
+          <p>To enable two-factor authentication, please scan the QR code below (or copy the secret code) into your authenticator app. We recommend <a class="text-blue-600" href="https://getaegis.app/" target="_blank">Aegis Authenticator</a> for Android, or <a class="text-blue-600" href="https://www.tofuauth.com/" target="_blank">Tofu</a> for iOS, but Google Authenticator or Authy will work fine too.</p>
+          
+          <hr>
 
-          <!-- Action buttons -->
-          <div>
-            <button
-              class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300"
-              @click="previousStep()"
-            >
-              Back
-            </button>
-            <button
-              class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-              :disabled="username.length == 0"
-              @click="nextStep()"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
+          <img class="mx-auto" :src="totpSecretQr" alt="Secret QR Code">
+          <pre class="text-center">{{ totpSecret }}</pre>
 
-      <!-- Step 2 (Account password) -->
-      <div v-if="formStep === 2">
-        <p class="font-bold text-gray-600 text-center">
-          Step {{ formStep }} of {{ maxSteps }}
-        </p>
-        <h2 class="text-3xl font-light mb-4 text-center">Create a password</h2>
-        <p class="font-light mb-3">
-          To secure your account, we need a password from you! Please be sure to
-          make it strong! 💪
-        </p>
-        <div>
-          <label class="block mb-2 font-light text-gray-500">Password</label>
-          <input
-            class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-            v-model="password"
-            v-on:input="checkPassword"
-            type="password"
-          />
-          <meter class="mb-3" max="4" :value="passwordScore"></meter>
+          <hr>
 
-          <!-- Action buttons -->
-          <div>
-            <button
-              class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300"
-              @click="previousStep()"
-            >
-              Back
-            </button>
-            <button
-              class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-              :disabled="password.length == 0"
-              @click="nextStep()"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3 (Encryption key) -->
-      <div v-if="formStep === 3">
-        <p class="font-bold text-gray-600 text-center">
-          Step {{ formStep }} of {{ maxSteps }}
-        </p>
-        <h2 class="text-3xl font-light mb-4 text-center">
-          Create an encryption key
-        </h2>
-        <p class="font-light mb-2">
-          An encryption key is what the Feirm web application uses to protect
-          your data. It is very important this key is different from your
-          password and also that you remember it! 🧠
-        </p>
-        <p class="font-light mb-3">
-          Feirm does not have access to this encryption key, nor do we have the
-          ability to reset it!
-        </p>
-        <div>
-          <label class="block mb-2 font-light text-gray-500"
-            >Encryption Key</label
-          >
-          <input
-            class="w-full mb-1 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-            v-model="encryptionKey"
-            v-on:input="checkEncryptionKey"
-            type="password"
-          />
-          <meter class="mb-3" max="4" :value="encryptionKeyScore"></meter>
-
-          <!-- Action buttons -->
-          <div>
-            <button
-              class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300"
-              @click="previousStep()"
-            >
-              Back
-            </button>
-            <button
-              class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-              :disabled="encryptionKey.length == 0"
-              @click="nextStep()"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 4 (Confirm encryption key) -->
-      <div v-if="formStep === 4">
-        <p class="font-bold text-gray-600 text-center">
-          Step {{ formStep }} of {{ maxSteps }}
-        </p>
-        <h2 class="text-3xl font-light mb-4 text-center">
-          Confirm your encryption key
-        </h2>
-        <p class="font-light mb-3">
-          Please confirm your encryption key again. We're just checking that
-          you've still got it! 😉
-        </p>
-        <div>
-          <label class="block mb-2 font-light text-gray-500"
-            >Encryption Key</label
-          >
-          <input
-            class="w-full mb-3 border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-            v-model="confirmEncryptionKey"
-            type="password"
-          />
-
-          <!-- Action buttons -->
-          <div>
-            <button
-              class="inline float-left w-1/3 mr-2 bg-yellow-200 hover:bg-yellow-300 p-4 rounded text-yellow-900 transition duration-300"
-              @click="previousStep()"
-            >
-              Back
-            </button>
-
-            <button
-              class="inline float-right w-1/3 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-              :disabled="submitted"
-              @click="signup"
-            >
-              <p v-if="!submitted">Submit</p>
-              <img
-                v-else
-                class="mx-auto w-6"
-                src="@/assets/loading_spinner.svg"
-                alt=""
-              />
-            </button>
-          </div>
+          <form @submit.prevent="register">
+            <p class="text-center mb-4">Please enter the six-digit code from your authenticator app.</p>
+            <input class="w-32 border-2 border-gray-200 p-3 mb-4 rounded outline-none focus:border-orange-500 transition duration-200" type="number" autofocus>
+            <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" type="submit">Submit</button>
+          </form>
         </div>
       </div>
     </div>
+    <div v-if="showTwoFactorSetup" class="absolute inset-0 z-40 opacity-50 bg-black"></div>
   </div>
 </template>
 
 <script lang="ts">
-import account from "@/class/account";
-import { defineComponent } from "vue";
-import { mapActions } from "vuex";
+import authService from '@/service/api/authService'
+import qrcode from "qrcode";
+import { authenticator } from "otplib"
 
-import firebase from "firebase";
-import zxcvbn from "zxcvbn";
-
-import authService from "@/service/api/authService";
-import { useRouter } from "vue-router";
-import { EncryptedAccount } from "@/models/account";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: "Signup",
-  data() {
+  data () {
     return {
-      // Multistep form
-      formStep: 0,
-      maxSteps: 4,
-
-      // User account
       username: "",
       password: "",
-      passwordScore: 0,
 
-      // Encryption key
-      encryptionKey: "",
-      confirmEncryptionKey: "",
-      encryptionKeyScore: 0,
-
-      submitted: false // Track whether or not a submission of account details have been made
-    };
-  },
-  methods: {
-    // Vuex
-    ...mapActions(["login"]),
-
-    // Increment the form step counter
-    nextStep() {
-      this.formStep++;
-    },
-    // Decrease the form step counter
-    previousStep() {
-      this.formStep--;
-    },
-    checkPassword() {
-      // Calculate zxvbn score
-      const score = zxcvbn(this.password).score;
-      this.passwordScore = score;
-    },
-    checkEncryptionKey() {
-      // Calculate zxvbn score
-      const score = zxcvbn(this.encryptionKey).score;
-      this.encryptionKeyScore = score;
-    },
-
-    // Create the account encrypted payload
-    async signup() {
-      this.submitted = true;
-
-      /*
-        A user doesn't need an email address to sign up on the Feirm web app,
-        so check if the username includes an '@' and construct a custom username.
-      */
-      let validEmail = false;
-      let customUsername = "";
-
-      // Create a dummy email address pointed at '@users.feirm.com'
-      if (this.username && !this.username.includes("@")) {
-        customUsername = this.username + "@users.feirm.com";
-      } else {
-        customUsername = this.username;
-        validEmail = true;
-      }
-
-      // Attempt to send credentials to Firebase Auth API
-      let credentials;
-      try {
-        credentials = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(customUsername, this.password);
-
-        // If they have an email, send the verification
-        if (validEmail) {
-          credentials.user?.sendEmailVerification();
-        }
-      } catch (e) {
-        this.submitted = false;
-
-        // Extract the error code
-        const error = e.code;
-        // Show an error toast depending on the message
-        switch (error) {
-          case "auth/email-already-in-use": {
-            this.$toast.error(
-              "The username or email address you have picked is already in use! Please try again."
-            );
-            this.formStep = 1;
-            break;
-          }
-          case "auth/invalid-email": {
-            this.$toast.error(
-              "There is an invalid character in your username/email address! Please try again."
-            );
-            this.formStep = 1;
-            break;
-          }
-          case "auth/weak-password": {
-            this.$toast.error(
-              "It looks like your password is too weak! Please pick another and try again."
-            );
-            this.formStep = 2;
-            break;
-          }
-          default: {
-            // Something else has gone wrong, or we want to provide a custom error message
-            this.$toast.error(e);
-            break;
-          }
-        }
-
-        return;
-      }
-
-      // Extract the necessary tokens from credentials and "log" the user in
-      try {
-        // Get and set the refresh token
-        const refreshToken = await credentials.user?.refreshToken;
-        const idToken = await credentials.user?.getIdToken(true);
-
-        this.login({ idToken, refreshToken });
-      } catch (e) {
-        this.submitted = false;
-
-        return this.$toast.error(e);
-      }
-
-      // Generate an encrypted root key using the encryption password,
-      // and send the key to the Feirm Auth API.
-      // Also attempt to decrypt the response payload and store key in memory
-      try {
-        // Generate and send key to API
-        const key = await account.generateEncryptedRootKey(this.encryptionKey);
-        const res = await authService.SendKey(key);
-
-        // Decrypt the returned payload containing additional account data
-        const encryptedAccount = res.data as EncryptedAccount;
-        const rootKey = await account.decryptRootKey(
-          this.encryptionKey,
-          encryptedAccount
-        );
-
-        // Save root key in memory
-        account.setRootKey(rootKey);
-
-        // Save encrypted account to disk
-        await account.saveAccount(encryptedAccount);
-      } catch (e) {
-        this.submitted = false;
-
-        return this.$toast.error(e);
-      }
-
-      this.submitted = false;
-      this.router.push("/app");
+      showTwoFactorSetup: false,
+      totpSecret: "",
+      totpSecretQr: "",
+      totpCode: ""
     }
   },
-  setup() {
-    const router = useRouter();
+  methods: {
+    async checkUsername() {
+      // Check username to see if it exists
+      try {
+        await authService.CheckUsername(this.username);
+      } catch (e) {
+        return this.$toast.error(e.response.data.error)
+      }
 
-    return {
-      router
-    };
+      // Generate secret and QR code
+      const secret = authenticator.generateSecret(16);
+      this.totpSecret = secret;
+
+      const otpauth = authenticator.keyuri(this.username, "feirm.com", secret);
+      this.totpSecretQr = await qrcode.toDataURL(otpauth);
+
+      // Open up TOTP prompt
+      this.showTwoFactorSetup = true;
+    },
+    async register() {
+      // Check password
+    }
   }
-});
+})
 </script>
-
-<style>
-/* Meter */
-meter {
-  /* Reset the default appearance */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-
-  margin: 0 auto 1em;
-  width: 100%;
-  height: 0.5em;
-
-  /* Applicable only to Firefox */
-  background: none;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
-}
-
-meter::-webkit-meter-bar {
-  background: none;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
-}
-
-/* Webkit based browsers */
-meter[value="1"]::-webkit-meter-optimum-value {
-  background: #ef4444;
-  border-radius: 3px;
-}
-meter[value="2"]::-webkit-meter-optimum-value {
-  background: #fcd34d;
-  border-radius: 3px;
-}
-meter[value="3"]::-webkit-meter-optimum-value {
-  background: #f59e0b;
-  border-radius: 3px;
-}
-meter[value="4"]::-webkit-meter-optimum-value {
-  background: #34d399;
-  border-radius: 3px;
-}
-
-/* Gecko based browsers */
-meter[value="1"]::-moz-meter-bar {
-  background: #ef4444;
-  border-radius: 3px;
-}
-meter[value="2"]::-moz-meter-bar {
-  background: #fcd34d;
-  border-radius: 3px;
-}
-meter[value="3"]::-moz-meter-bar {
-  background: #f59e0b;
-  border-radius: 3px;
-}
-meter[value="4"]::-moz-meter-bar {
-  background: #34d399;
-  border-radius: 3px;
-}
-</style>

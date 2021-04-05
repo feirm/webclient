@@ -4530,11 +4530,6 @@ fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
-fast-srp-hap@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/fast-srp-hap/-/fast-srp-hap-2.0.3.tgz#dd1539b766fcb7c71b94ad99ffeec6191dec276b"
-  integrity sha512-4P8TBD0all202L9FbeSsWc9qDlpaYp065VbUwbuNYZDYdOJ02UlWaDkai6d/+6/I8/sdtVYAVd17PEZDKbqopQ==
-
 fast-text-encoding@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/fast-text-encoding/-/fast-text-encoding-1.0.3.tgz#ec02ac8e01ab8a319af182dae2681213cfe9ce53"
@@ -4664,7 +4659,7 @@ find-up@^4.0.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-firebase@*, firebase@^8.3.1:
+firebase@*:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-8.3.1.tgz#7d08ca04feade96270345c6e9475d4055c93e97d"
   integrity sha512-2BhzHQ8ZDh4BLZ9bicW8FEKFOYmu/w1sKhR5vi4X9SP+dsYNoKyFOP7Sfmk0GoENzt2+Y04GgfS5YERXLQky+w==

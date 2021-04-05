@@ -55,7 +55,7 @@
 
           <form @submit.prevent="register" class="flex flex-col items-center">
             <p class="text-center mb-4">Please enter the six-digit code from your authenticator app.</p>
-            <input class="w-32 border-2 border-gray-200 p-3 mb-4 rounded outline-none focus:border-orange-500 transition duration-200" type="number" autofocus>
+            <input class="w-32 border-2 border-gray-200 p-3 mb-4 rounded outline-none focus:border-orange-500 transition duration-200" type="number" v-model="totpCode" autofocus />
             <button class="w-full mb-2 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" type="submit">Submit</button>
             
             <!-- Cancel button -->
@@ -74,6 +74,8 @@ import qrcode from "qrcode";
 import { authenticator } from "otplib"
 
 import { defineComponent } from 'vue'
+import account from '@/class/account';
+import { EncryptedAccount } from '@/models/account';
 
 export default defineComponent({
   name: "Signup",
@@ -97,6 +99,8 @@ export default defineComponent({
         return this.$toast.error(e.response.data.error)
       }
 
+      // TODO: Check password and it's strength
+
       // Generate secret and QR code
       const secret = authenticator.generateSecret(16);
       this.totpSecret = secret;
@@ -108,7 +112,23 @@ export default defineComponent({
       this.showTwoFactorSetup = true;
     },
     async register() {
-      // Check password
+      // Generate an encrypted key using the password
+      const key = await account.generateEncryptedRootKey(this.password);
+      
+      // Bundle it into an account object
+      const encryptedAccount: EncryptedAccount = {
+        username: this.username,
+        encrypted_key: key,
+        totp_secret: this.totpSecret,
+        totp_code: this.totpCode
+      };
+
+      // Submit account object to API
+      try {
+        await authService.CreateAccount(encryptedAccount)
+      } catch (e) {
+        this.$toast.error(e.response.data.error)
+      }
     }
   }
 })

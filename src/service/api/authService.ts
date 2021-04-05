@@ -10,7 +10,7 @@ export default {
   },
 
   // Send encrypted account payload
-  SendKey(account: EncryptedAccount) {
+  CreateAccount(account: EncryptedAccount) {
     return gatewayApi.post("auth/v1/register", account);
   },
 

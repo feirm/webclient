@@ -47,15 +47,19 @@
           
           <hr>
 
+          <!-- QR code and secret -->
           <img class="mx-auto" :src="totpSecretQr" alt="Secret QR Code">
           <pre class="text-center">{{ totpSecret }}</pre>
 
           <hr>
 
-          <form @submit.prevent="register">
+          <form @submit.prevent="register" class="flex flex-col items-center">
             <p class="text-center mb-4">Please enter the six-digit code from your authenticator app.</p>
             <input class="w-32 border-2 border-gray-200 p-3 mb-4 rounded outline-none focus:border-orange-500 transition duration-200" type="number" autofocus>
-            <button class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" type="submit">Submit</button>
+            <button class="w-full mb-2 bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300" type="submit">Submit</button>
+            
+            <!-- Cancel button -->
+            <button class="w-full bg-gray-100 hover:bg-gray-200 p-4 rounded text-gray-900 transition duration-300" @click="showTwoFactorSetup = false">Cancel</button>
           </form>
         </div>
       </div>

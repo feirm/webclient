@@ -1,9 +1,12 @@
 // Representation of an encrypted account
 interface EncryptedAccount {
-  uid: string;
+  username: string;
   encrypted_key: EncryptedKey;
   created_at: number;
   version: number;
+
+  totp_secret?: string;
+  totp_code?: number;
 }
 
 // Representation of an encrypted key

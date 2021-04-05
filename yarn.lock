@@ -4530,6 +4530,11 @@ fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
+fast-srp-hap@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/fast-srp-hap/-/fast-srp-hap-2.0.3.tgz#dd1539b766fcb7c71b94ad99ffeec6191dec276b"
+  integrity sha512-4P8TBD0all202L9FbeSsWc9qDlpaYp065VbUwbuNYZDYdOJ02UlWaDkai6d/+6/I8/sdtVYAVd17PEZDKbqopQ==
+
 fast-text-encoding@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/fast-text-encoding/-/fast-text-encoding-1.0.3.tgz#ec02ac8e01ab8a319af182dae2681213cfe9ce53"

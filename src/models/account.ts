@@ -2,8 +2,8 @@
 interface EncryptedAccount {
   username: string;
   encrypted_key: EncryptedKey;
-  created_at: number;
-  version: number;
+  created_at?: number;
+  version?: number;
 
   totp_secret?: string;
   totp_code?: number;

@@ -122,8 +122,7 @@ class Account extends DB {
   async saveAccount(account: EncryptedAccount) {
     // Clear any existing accounts
     await this.account.clear();
-
-    await this.account.add(account, account.uid);
+    await this.account.add(account, account.username); // TODO: Properly fix this
   }
 
   // Fetch the encrypted blob

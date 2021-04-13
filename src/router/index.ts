@@ -35,6 +35,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "",
         component: Protected,
         meta: {
+          title: "Platform",
           authRequired: true
         }
       },
@@ -42,6 +43,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "signup",
         component: Signup,
         meta: {
+          title: "Signup",
           hideNavigation: true
         }
       },
@@ -49,6 +51,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "login",
         component: Login,
         meta: {
+          title: "Login",
           hideNavigation: true
         }
       }
@@ -62,7 +65,10 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "",
-        component: BridgeIndex
+        component: BridgeIndex,
+        meta: {
+          title: "Bridge"
+        }
       }
     ]
   }
@@ -76,6 +82,10 @@ const router = createRouter({
 
 // For every route, check if the user is authenticate
 router.beforeEach(async (to, from, next) => {
+  // Dynamic page titles
+  const DEFAULT_TITLE = "Feirm";
+  document.title = DEFAULT_TITLE + " | " + to.meta.title || DEFAULT_TITLE;
+
   const loggedIn = store.getters.isLoggedIn;
   const authRequired = to.matched.some(route => route.meta.authRequired);
 

@@ -84,7 +84,13 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // Dynamic page titles
   const DEFAULT_TITLE = "Feirm";
-  document.title = DEFAULT_TITLE + " | " + to.meta.title || DEFAULT_TITLE;
+  const PAGE_TITLE = to.meta.title;
+
+  if (PAGE_TITLE) {
+    document.title = DEFAULT_TITLE + " | " + to.meta.title;
+  } else {
+    document.title = DEFAULT_TITLE;
+  }
 
   const loggedIn = store.getters.isLoggedIn;
   const authRequired = to.matched.some(route => route.meta.authRequired);

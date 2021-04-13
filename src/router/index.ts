@@ -92,17 +92,24 @@ router.beforeEach(async (to, from, next) => {
     document.title = DEFAULT_TITLE;
   }
 
+  const rootKey = account.getRootKey();
   const loggedIn = store.getters.isLoggedIn;
-  const authRequired = to.matched.some(route => route.meta.authRequired);
+  
+  if (to.matched.some(route => route.meta.authRequired)) {
+    // If not logged in, redirect to login page
+    if (!loggedIn) {
+      next({ path: "/app/login" });
+    }
 
-  // If the account root isn't present, prompt for login
-  if (!account.getRootKey()) {
-    next("/app/login");
-  }
-
-  // If the user is not logged in, redirect them to the login page
-  if (!loggedIn && authRequired) {
-    next("/app/login");
+    // If there is no root key present, redirect to login page
+    else if (rootKey.length === 0) {
+      next({ path: "/app/login" })
+    }
+    
+    // Continue as normal
+    else {
+      next();
+    }
   } else {
     next();
   }

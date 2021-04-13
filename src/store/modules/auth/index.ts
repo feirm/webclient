@@ -20,20 +20,6 @@ export const auth = {
       state.auth.refreshToken = refreshToken;
       localStorage.setItem("refreshToken", refreshToken);
     },
-    setUsername(state: any, accessToken: string) {
-      // Extract username/email
-      const token: any = jwt_decode(accessToken);
-      let username: string = token.email;
-
-      // If username contains '@users.feirm.com', remove it
-      const hasEmail = username.includes("@users.feirm.com");
-      if (hasEmail) {
-        username = username.replace("@users.feirm.com", "");
-      }
-
-      state.auth.username = username;
-      localStorage.setItem("username", username);
-    }
   },
 
   // Actions
@@ -41,7 +27,6 @@ export const auth = {
     login({ commit }, { accessToken, refreshToken }) {
       commit("setAccessToken", accessToken);
       commit("setRefreshToken", refreshToken);
-      commit("setUsername", accessToken);
     }
   },
 
@@ -49,7 +34,6 @@ export const auth = {
   getters: {
     getAccessToken: (state: any) => state.auth.accessToken,
     getRefreshToken: (state: any) => state.auth.refreshToken,
-    getUsername: (state: any) => state.auth.username,
 
     isLoggedIn: (state: any) => {
       // If there is no access token, user is not logged in

@@ -148,6 +148,7 @@ import { authenticator } from "otplib";
 import { defineComponent } from "vue";
 import account from "@/class/account";
 import { EncryptedAccount } from "@/models/account";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "Signup",
@@ -197,10 +198,24 @@ export default defineComponent({
 
       // Submit account object to API
       try {
-        await authService.CreateAccount(encryptedAccount);
+        const res = await authService.CreateAccount(encryptedAccount);
+
+        // Extract tokens
+        const accessToken = res.data.access_token;
+        const refreshToken = res.data.refresh_token;
+
+        // Set refresh and access tokens
+        this.store.dispatch("login", { accessToken, refreshToken })
       } catch (e) {
         this.$toast.error(e.response.data.error);
       }
+    }
+  },
+  setup() {
+    const store = useStore();
+
+    return {
+      store
     }
   }
 });

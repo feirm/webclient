@@ -9,6 +9,14 @@ export default {
     });
   },
 
+  // Login to an account
+  Login(username: string, totp: string) {
+    return gatewayApi.post("auth/v1/login", {
+      username,
+      totp
+    })
+  },
+
   // Send encrypted account payload
   CreateAccount(account: EncryptedAccount) {
     return gatewayApi.post("auth/v1/register", account);

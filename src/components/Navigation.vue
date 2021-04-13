@@ -78,8 +78,16 @@
 
     <!-- Mobile navigatioon -->
     <div class="mobile-menu hidden md:hidden">
-      <router-link to="/platform" class="block py-2 px-4 text-sm hover:bg-gray-200">Platform</router-link>
-      <router-link to="/blockchain" class="block py-2 px-4 text-sm hover:bg-gray-200">Blockchain</router-link>
+      <router-link
+        to="/platform"
+        class="block py-2 px-4 text-sm hover:bg-gray-200"
+        >Platform</router-link
+      >
+      <router-link
+        to="/blockchain"
+        class="block py-2 px-4 text-sm hover:bg-gray-200"
+        >Blockchain</router-link
+      >
     </div>
   </nav>
 </template>

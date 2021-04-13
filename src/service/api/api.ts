@@ -61,7 +61,9 @@ gatewayApi.interceptors.response.use(
 
 // Firebase accounts API
 const firebaseApi = axios.create({
-  baseURL: "https://securetoken.googleapis.com/v1/token?key=" + process.env.VUE_APP_FIREBASE_API_KEY,
+  baseURL:
+    "https://securetoken.googleapis.com/v1/token?key=" +
+    process.env.VUE_APP_FIREBASE_API_KEY,
   headers: {
     "Content-Type": "application/json"
   }

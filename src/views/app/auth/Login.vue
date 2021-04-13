@@ -15,13 +15,13 @@
       </p>
 
       <form v-on:submit.prevent="submitLogin" class="space-y-3">
-        <!-- Username/email input -->
-        <label class="block text-orange">Username or Email Address</label>
+        <!-- Username -->
+        <label class="block text-orange">Username</label>
         <input
           class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
           v-model="username"
           type="text"
-          placeholder="Please enter your username/email address"
+          placeholder="Please enter your username"
           autofocus
         />
 
@@ -30,7 +30,6 @@
         <input
           class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
           v-model="password"
-          v-on:input="checkPassword"
           type="password"
           placeholder="Please enter your password"
         />
@@ -78,6 +77,7 @@ import { mapActions } from "vuex";
 import { useRouter } from "vue-router";
 import authService from "@/service/api/authService";
 import account from "@/class/account";
+import { EncryptedAccount } from "@/models/account";
 
 export default defineComponent({
   name: "Login",
@@ -85,7 +85,7 @@ export default defineComponent({
     return {
       username: "",
       password: "",
-      encryptionKey: "",
+      totp: "",
 
       submitted: false,
       readyToDecrypt: false,
@@ -97,6 +97,39 @@ export default defineComponent({
 
     async submitLogin() {
       this.submitted = true;
+
+      // Send details to auth API
+      try {
+        const tokens = await authService.Login(this.username, this.totp);
+        
+        const accessToken = tokens.data.access_token;
+        const newRefreshToken = tokens.data.refresh_token;
+
+        // Update the refresh and access tokens in Vuex
+        this.login({ accessToken, newRefreshToken })
+
+      } catch (e) {
+        this.submitted = false;
+        return this.$toast.error(e.response.data.error);
+      }
+
+      // Attempt to decrypt the account
+      try {
+        // Fetch encrypted account payload
+        const res = await authService.GetAccount();
+        const encAccount = res.data as EncryptedAccount;
+
+        // Decrypt root key with password
+        const rootKey = await account.decryptRootKey(this.password, encAccount);
+        account.setRootKey(rootKey);
+      } catch (e) {
+        this.submitted = false;
+        return this.$toast.error("Failed to login, please try again.")
+      }
+
+      // Stop spinning and navigate to app page
+      this.submitted = false;
+      this.router.push("/app")
     },
 
     async decryptAccount() {
@@ -115,16 +148,9 @@ export default defineComponent({
 
         // We have the root key, so we can set it
         account.setRootKey(rootKey);
-
-        // Save the encrypted account to IDB
-        await account.saveAccount(encryptedAccount);
       } catch (e) {
-        console.log(e);
-
         this.decrypting = false;
-        this.$toast.error("Failed to unlock account! Please try again.");
-
-        return;
+        return this.$toast.error("Failed to decrypt account! Please try again.");
       }
 
       // Push to main app route

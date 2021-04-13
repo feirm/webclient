@@ -5,17 +5,36 @@ import { EncryptedAccount, EncryptedKey } from "@/models/account";
 import { ArgonType, hash } from "argon2-browser";
 import { DB } from "@/class/db";
 
+import SessionKeystore from 'session-keystore'
+
 class Account extends DB {
   private rootKey: Uint8Array;
+  public store: SessionKeystore;
+
+  constructor () {
+    super();
+    
+    this.store = new SessionKeystore<"feirm">();
+  }
 
   // Set account root key
   setRootKey(rootKey: Uint8Array) {
     this.rootKey = rootKey;
+
+    // Store root key
+    this.store.set("rootKey", bufferToHex(rootKey))
   }
 
   // Get account root key
   getRootKey(): Uint8Array {
-    return this.rootKey;
+    // Cache hit
+    if (this.rootKey) {
+      return this.rootKey;
+    }
+    
+    // Fetch from session store
+    const rootKey = this.store.get("rootKey");
+    return hexToBytes(rootKey);
   }
 
   // Generate a stretched key from password

@@ -11,18 +11,17 @@
       </h1>
       <p class="text-lg text-gray-50">
         Welcome! Feirm is the all-in-one platform for your cryptocurrency needs.
-        To get started, all we need from you is a username/email address, strong
-        password and a One-Time-Password application, such as Authy, to hand.
+        To get started, all you need is a username, strong password and TOTP application such as Google Authenticator.
       </p>
 
       <form v-on:submit.prevent="checkUsername" class="space-y-3">
-        <!-- Username/email input -->
-        <label class="block text-gray-100">Username or Email Address</label>
+        <!-- Username input -->
+        <label class="block text-gray-100">Username</label>
         <input
           class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
           v-model="username"
           type="text"
-          placeholder="Please enter your username/email address"
+          placeholder="Please pick a username"
           autofocus
         />
 
@@ -110,7 +109,7 @@
               Please enter the six-digit code from your authenticator app.
             </p>
             <input
-              class="w-32 border-2 border-gray-200 p-3 mb-4 rounded outline-none focus:border-orange-500 transition duration-200"
+              class="w-32 border-2 border-gray-200 p-3 mb-4 rounded outline-none text-center focus:border-orange-500 transition duration-200"
               type="number"
               v-model="totpCode"
               autofocus
@@ -149,6 +148,7 @@ import { defineComponent } from "vue";
 import account from "@/class/account";
 import { EncryptedAccount } from "@/models/account";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Signup",
@@ -207,15 +207,28 @@ export default defineComponent({
         // Set refresh and access tokens
         this.store.dispatch("login", { accessToken, refreshToken })
       } catch (e) {
-        this.$toast.error(e.response.data.error);
+        return this.$toast.error(e.response.data.error);
       }
+
+      // Decrypt account payload and set the root key
+      try {
+        const rootKey = await account.decryptRootKey(this.password, encryptedAccount)
+        account.setRootKey(rootKey)
+      } catch (e) {
+        return this.$toast.error(e);
+      }
+
+      // Direct to app home
+      this.router.push("/app/")
     }
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     return {
-      store
+      store,
+      router
     }
   }
 });

@@ -1,5 +1,6 @@
 import { store } from "@/store";
 import axios from "axios";
+import authService from "./authService";
 import fbService from "./fbService";
 
 // This file contains all the Axios instances for interacting with various APIs
@@ -14,10 +15,10 @@ const gatewayApi = axios.create({
 // Attach Authorization header to requests
 gatewayApi.interceptors.request.use(
   config => {
-    const idToken = store.getters.getIdToken;
+    const accessToken = store.getters.getAccessToken;
 
-    if (idToken) {
-      config.headers.Authorization = "Bearer " + idToken;
+    if (accessToken) {
+      config.headers.Authorization = "Bearer " + accessToken;
     }
 
     return config;
@@ -42,16 +43,16 @@ gatewayApi.interceptors.response.use(
       // Fetch the existing refresh token
       const refreshToken = store.getters.getRefreshToken;
 
-      // Request for new ID tokens and refresh token
-      const tokenResponse = await fbService.getNewIdToken(refreshToken);
-      const idToken = tokenResponse.data.id_token;
-      const newRefreshToken = tokenResponse.data.refresh_token;
+      // Request for new token pair from auth API
+      const tokens = await authService.RefreshTokens(refreshToken);
+      const accessToken = tokens.data.access_token;
+      const newRefreshToken = tokens.data.refresh_token;
 
       // Update the refresh and access tokens in Vuex
-      store.dispatch("login", { idToken, newRefreshToken });
+      store.dispatch("login", { accessToken, newRefreshToken });
 
       // Update the Authorization header on the original request
-      originalRequest.headers.Authorization = "Bearer " + idToken;
+      originalRequest.headers.Authorization = "Bearer " + accessToken;
       return axios(originalRequest);
     }
 

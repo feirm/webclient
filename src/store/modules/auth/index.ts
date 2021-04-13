@@ -5,8 +5,7 @@ export const auth = {
   state: {
     auth: {
       accessToken: localStorage.getItem("accessToken") || "",
-      refreshToken: localStorage.getItem("refreshToken") || "",
-      username: localStorage.getItem("username") || ""
+      refreshToken: localStorage.getItem("refreshToken") || ""
     }
   },
 
@@ -36,13 +35,13 @@ export const auth = {
     getRefreshToken: (state: any) => state.auth.refreshToken,
 
     isLoggedIn: (state: any) => {
-      // If there is no access token, user is not logged in
-      const token = state.auth.accessToken;
+      // If there is no refresh token, user is not logged in
+      const token = state.auth.refreshToken;
       if (!token) {
         return false;
       }
 
-      // Decode the access token
+      // Decode the refresh token
       const decoded: any = jwt_decode(token);
       if (!decoded.exp) {
         return false;

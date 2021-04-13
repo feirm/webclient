@@ -46,7 +46,6 @@
 
 <script lang="ts">
 import account from "@/class/account";
-import fbService from "@/service/api/fbService";
 import { defineComponent } from "@vue/runtime-core";
 import { useRouter } from "vue-router";
 import { mapGetters, useStore } from "vuex";
@@ -82,14 +81,7 @@ export default defineComponent({
       }
 
       try {
-        // Fetch refresh token and request for new access tokens
-        const res = await fbService.getNewIdToken(this.getRefreshToken);
-
-        const idToken = res.data.id_token;
-        const refreshToken = res.data.refresh_token;
-
-        // Update tokens in Vuex
-        this.store.dispatch("login", { idToken, refreshToken });
+        console.log("Hello")
       } catch (e) {
         console.log(e);
 

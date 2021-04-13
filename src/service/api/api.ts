@@ -1,7 +1,6 @@
 import { store } from "@/store";
 import axios from "axios";
 import authService from "./authService";
-import fbService from "./fbService";
 
 // This file contains all the Axios instances for interacting with various APIs
 // Create an instance for the Feirm Gateway
@@ -60,15 +59,5 @@ gatewayApi.interceptors.response.use(
   }
 );
 
-// Firebase accounts API
-const firebaseApi = axios.create({
-  baseURL:
-    "https://securetoken.googleapis.com/v1/token?key=" +
-    process.env.VUE_APP_FIREBASE_API_KEY,
-  headers: {
-    "Content-Type": "application/json"
-  }
-});
-
 // Export all instances of the APIs
-export { gatewayApi, firebaseApi };
+export { gatewayApi };

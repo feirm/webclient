@@ -4,7 +4,7 @@ export const auth = {
   // Authentication module state
   state: {
     auth: {
-      idToken: localStorage.getItem("idToken") || "",
+      accessToken: localStorage.getItem("accessToken") || "",
       refreshToken: localStorage.getItem("refreshToken") || "",
       username: localStorage.getItem("username") || ""
     }
@@ -12,17 +12,17 @@ export const auth = {
 
   // Mutations
   mutations: {
-    setIdToken(state: any, idToken: string) {
-      state.auth.idToken = idToken;
-      localStorage.setItem("idToken", idToken);
+    setAccessToken(state: any, accessToken: string) {
+      state.auth.accessToken = accessToken;
+      localStorage.setItem("accessToken", accessToken);
     },
     setRefreshToken(state: any, refreshToken: string) {
       state.auth.refreshToken = refreshToken;
       localStorage.setItem("refreshToken", refreshToken);
     },
-    setUsername(state: any, idToken: string) {
+    setUsername(state: any, accessToken: string) {
       // Extract username/email
-      const token: any = jwt_decode(idToken);
+      const token: any = jwt_decode(accessToken);
       let username: string = token.email;
 
       // If username contains '@users.feirm.com', remove it
@@ -38,22 +38,22 @@ export const auth = {
 
   // Actions
   actions: {
-    login({ commit }, { idToken, refreshToken }) {
-      commit("setIdToken", idToken);
+    login({ commit }, { accessToken, refreshToken }) {
+      commit("setAccessToken", accessToken);
       commit("setRefreshToken", refreshToken);
-      commit("setUsername", idToken);
+      commit("setUsername", accessToken);
     }
   },
 
   // Getters
   getters: {
-    getIdToken: (state: any) => state.auth.idToken,
+    getAccessToken: (state: any) => state.auth.accessToken,
     getRefreshToken: (state: any) => state.auth.refreshToken,
     getUsername: (state: any) => state.auth.username,
 
     isLoggedIn: (state: any) => {
       // If there is no access token, user is not logged in
-      const token = state.auth.idToken;
+      const token = state.auth.accessToken;
       if (!token) {
         return false;
       }

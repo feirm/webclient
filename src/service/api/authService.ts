@@ -16,6 +16,13 @@ export default {
 
   // Get encrypted account payload
   GetAccount() {
-    return gatewayApi.get("auth/v1/get_account");
-  }
+    return gatewayApi.get("auth/v1/getaccount");
+  },
+
+  // Get new authentication token pair
+  RefreshTokens(refreshToken: string) {
+    return gatewayApi.post("auth/v1/refreshtokens", {
+      refresh_token: refreshToken
+    })
+  } 
 };

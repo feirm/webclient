@@ -75,7 +75,6 @@
 import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
-import firebase from "firebase";
 import { useRouter } from "vue-router";
 import authService from "@/service/api/authService";
 import account from "@/class/account";
@@ -98,60 +97,6 @@ export default defineComponent({
 
     async submitLogin() {
       this.submitted = true;
-
-      // Check if username is a valid email address. If not, append the custom email
-      let customUsername = "";
-      if (this.username && !this.username.includes("@")) {
-        customUsername = this.username + "@users.feirm.com";
-      } else {
-        customUsername = this.username;
-      }
-
-      try {
-        // Sign-in using username/email and password
-        const credentials = await firebase
-          .auth()
-          .signInWithEmailAndPassword(customUsername, this.password);
-
-        // Fetch access token and refresh token
-        const idToken = await credentials.user?.getIdToken(true);
-        const refreshToken = credentials.user?.refreshToken;
-
-        // Save tokens in Vuex state
-        this.login({ idToken, refreshToken });
-      } catch (e) {
-        this.submitted = false;
-
-        // These errors are going to be coming from Firebase authentication,
-        // so make the responses more meaniningful.
-        const error = e.code;
-
-        switch (error) {
-          case "auth/wrong-password": {
-            this.$toast.error("Invalid username/email address or password!");
-            break;
-          }
-          case "auth/invalid-email": {
-            this.$toast.error("Invalid username/email address or password!");
-            break;
-          }
-          case "auth/user-not-found": {
-            this.$toast.error("This user does not exist!");
-            break;
-          }
-          default: {
-            // Something else has gone wrong, or we want to provide a custom error message
-            this.$toast.error(e);
-            break;
-          }
-        }
-
-        return;
-      }
-
-      // If we made it this far, we are ready to attempt decryption
-      this.submitted = false;
-      this.readyToDecrypt = true;
     },
 
     async decryptAccount() {

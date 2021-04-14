@@ -1,6 +1,7 @@
 <template>
   <navigation v-if="!$route.meta.hideNavigation" />
   <router-view />
+  <Footer />
 
   <!-- Updater prompt -->
   <div
@@ -24,10 +25,12 @@
 import { defineComponent } from "vue";
 
 import Navigation from "@/components/Navigation.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   components: {
-    Navigation
+    Navigation,
+    Footer
   },
   data() {
     return {

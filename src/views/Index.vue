@@ -16,10 +16,37 @@
     </div>
   </div>
 
+  <!-- Highlighted services -->
+  <div class="bg-gray-200">
+    <div class="container p-8 md:p-16 w-full md:w-3/4 mx-auto space-y-4 md:space-y-12">
+      <h1 class="text-4xl font-light text-center text-gray-900">Explore the ecosystem</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-12 text-left">
+        <!-- Multi asset wallet -->
+        <div class="p-4 bg-grey-100 space-y-2 shadow rounded">
+          <h1 class="text-2xl text-center text-orange">Multi-asset wallets</h1>
+          <p>The Feirm Platform provides you with highly secure web wallet to store your assets. All wallets are created using industry standards (BIP39 and BIP44).</p>
+          <p>You can choose to keep your wallet on your device for better security, or store an encrypted version in the cloud for greater convenience if you use multiple devices.</p>
+        </div>
+
+        <!-- Feirm token -->
+        <div class="p-4 bg-grey-100 space-y-2 shadow rounded">
+          <h1 class="text-2xl text-center text-orange">Feirm Token</h1>
+          <p>The Feirm token, also known as XFE, is a utility token on the Binance Smart Chain (BEP-20). It is fully throughout the Feirm platform and services we offer.</p>
+          <p>Benefit from reduced fees, additional rewards, and much more by holding it!</p>
+
+          <p class="text-center">
+            <router-link to="/" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">Learn more</router-link>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Features container -->
   <div class="bg-grey-100">
     <div class="container p-8 md:p-16 w-full md:w-3/4 mx-auto space-y-4 md:space-y-12">
-      <h1 class="text-4xl font-light text-center text-gray-900">What do we have to offer?</h1>
+      <h1 class="text-4xl font-light text-center text-gray-900">What else do we have to offer?</h1>
 
       <!-- Feature grids -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-12 text-left">
@@ -50,7 +77,7 @@
         <div class="p-4 space-y-2">
           <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
           <h1 class="text-2xl font-light text-center text-orange">No ads or trackers</h1>
-          <p>We aren't in the business of serving advertisements or violating user privacy by tracking their every move.</p>
+          <p>We aren't in the business of serving advertisements or violating user privacy by tracking your every move.</p>
         </div>
 
         <div class="p-4 space-y-2">

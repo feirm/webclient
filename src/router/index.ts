@@ -98,11 +98,13 @@ router.beforeEach(async (to, from, next) => {
   if (to.matched.some(route => route.meta.authRequired)) {
     // If not logged in, redirect to login page
     if (!loggedIn) {
+      console.log("[Authentication] User is not logged in.")
       next({ path: "/app/login" });
     }
 
     // If there is no root key present, redirect to login page
     else if (rootKey.length === 0) {
+      console.log("[Authentication] Root key not present in memory.")
       next({ path: "/app/login" })
     }
     

@@ -1,7 +1,7 @@
 <template>
   <!-- navbar goes here -->
   <nav class="bg-grey-500 sticky">
-    <div class="max-w-5xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4">
       <div class="flex justify-between">
         <div class="flex space-x-4">
           <!-- Logo showcase -->

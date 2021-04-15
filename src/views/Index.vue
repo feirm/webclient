@@ -31,13 +31,28 @@
 
         <!-- Feirm token -->
         <div class="p-4 bg-grey-100 space-y-2 shadow rounded">
-          <h1 class="text-2xl text-center text-orange">Feirm Token</h1>
+          <h1 class="text-2xl text-center text-orange">Feirm token</h1>
           <p>The Feirm token, also known as XFE, is a utility token on the Binance Smart Chain (BEP-20). It is fully throughout the Feirm platform and services we offer.</p>
           <p>Benefit from reduced fees, additional rewards, and much more by holding it!</p>
 
           <p class="text-center">
             <router-link to="/" class="text-blue-600 hover:text-blue-800 visited:text-purple-600">Learn more</router-link>
           </p>
+        </div>
+
+        <!-- Social media programme -->
+        <div class="p-4 bg-grey-100 space-y-2 shadow rounded">
+          <h1 class="text-2xl text-center text-orange">Engagement rewards</h1>
+          <p>Earn additional XFE on a frequent basis by participating in activities on social media.</p>
+          <p>You will be able to spread awareness of the Feirm project and earn points from each activity. These points are weighted and can be redeemed for the XFE token.</p>
+        </div>
+
+        <!-- Research -->
+        <div class="p-4 bg-grey-100 space-y-2 shadow rounded">
+          <h1 class="text-2xl text-center text-orange">Scientific research</h1>
+          <p>Have some spare computing power to hand?</p>
+          <p>Put it towards the World Community Grid and help power cutting-edge scientific research.</p>
+          <p>This is another great way to earn the XFE token, and is fully integrated into the platform.</p>
         </div>
       </div>
     </div>

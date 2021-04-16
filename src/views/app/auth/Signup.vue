@@ -2,61 +2,68 @@
   <div class="flex flex-row h-screen">
     <!-- Login form -->
     <div
-      class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-12 space-y-4 max-w-xl"
+      class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-6 md:p-12 w-full"
     >
-      <img class="mx-auto w-24" src="@/assets/img/logo.webp" alt="Feirm Logo" />
-
-      <h1 class="text-4xl text-center text-orange">
-        Create your Feirm account!
-      </h1>
-      <p class="text-lg text-gray-50">
-        Welcome! Feirm is the all-in-one platform for your cryptocurrency needs.
-        To get started, all you need is a username, strong password and TOTP application such as Google Authenticator.
-      </p>
-
-      <form v-on:submit.prevent="checkUsername" class="space-y-3">
-        <!-- Username input -->
-        <label class="block text-gray-100">Username</label>
-        <input
-          class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-          v-model="username"
-          type="text"
-          placeholder="Please pick a username"
-          autofocus
+      <div class="bg-white p-4 md:p-8 rounded shadow md:w-1/4 mx-auto space-y-4">
+        <img
+          class="mx-auto w-16"
+          src="@/assets/img/logo.webp"
+          alt="Feirm Logo"
         />
 
-        <!-- Password input -->
-        <label class="block text-gray-100">Password</label>
-        <input
-          class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-          v-model="password"
-          type="password"
-          placeholder="Please enter your password"
-        />
+        <h1 class="text-3xl md:text-4xl text-center text-orange font-light">
+          Create your Feirm account!
+        </h1>
+        <p class="md:text-lg text-center text-gray-900">
+          Welcome! Feirm is the all-in-one platform for your cryptocurrency
+          needs. Getting started won't take long!
+        </p>
 
-        <!-- Submit button -->
-        <button
-          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-          type="submit"
-        >
-          <p v-if="!submitted">Submit</p>
-          <img
-            v-else
-            class="mx-auto w-6"
-            src="@/assets/loading_spinner.svg"
-            alt="Loading spinner"
+        <form v-on:submit.prevent="checkUsername" class="space-y-3">
+          <!-- Username input -->
+          <label class="block text-gray-900">Username</label>
+          <input
+            class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
+            v-model="username"
+            type="text"
+            placeholder="Please pick a username"
+            autofocus
+            v-on:input="usernameValid($event.target.value)"
           />
-        </button>
-      </form>
-    </div>
 
-    <!-- Image from Unsplash -->
-    <div class="flex-auto bg-grey-500 hidden lg:contents">
-      <img
-        class="object-right h-full w-full"
-        src="https://images.unsplash.com/photo-1553949345-eb786bb3f7ba?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        alt=""
-      />
+          <!-- Password input -->
+          <label class="block text-gray-900">Password</label>
+          <input
+            class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
+            v-model="password"
+            type="password"
+            placeholder="Please enter your password"
+          />
+
+          <!-- Password confirmation input -->
+          <label class="block text-gray-900">Confirm password</label>
+          <input
+            class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
+            v-model="confirmPassword"
+            type="password"
+            placeholder="Please confirm your password"
+          />
+
+          <!-- Submit button -->
+          <button
+            class="block w-full bg-orange-500 hover:bg-orange-400 p-3 md:p-4 rounded text-yellow-900 transition duration-300"
+            type="submit"
+          >
+            <p v-if="!submitted">Submit</p>
+            <img
+              v-else
+              class="mx-auto w-6"
+              src="@/assets/loading_spinner.svg"
+              alt="Loading spinner"
+            />
+          </button>
+        </form>
+      </div>
     </div>
 
     <!-- Two factor authentication modal setup -->
@@ -160,10 +167,13 @@ export default defineComponent({
       showTwoFactorSetup: false,
       totpSecret: "",
       totpSecretQr: "",
-      totpCode: ""
+      totpCode: "",
     };
   },
   methods: {
+    async usernameValid(username: string) {
+      console.log(username);
+    },
     async checkUsername() {
       // Check username to see if it exists
       try {
@@ -193,7 +203,7 @@ export default defineComponent({
         username: this.username,
         encrypted_key: key,
         totp_secret: this.totpSecret,
-        totp_code: this.totpCode
+        totp_code: this.totpCode,
       };
 
       // Submit account object to API
@@ -205,22 +215,25 @@ export default defineComponent({
         const refreshToken = res.data.refresh_token;
 
         // Set refresh and access tokens
-        this.store.dispatch("login", { accessToken, refreshToken })
+        this.store.dispatch("login", { accessToken, refreshToken });
       } catch (e) {
         return this.$toast.error(e.response.data.error);
       }
 
       // Decrypt account payload and set the root key
       try {
-        const rootKey = await account.decryptRootKey(this.password, encryptedAccount)
-        account.setRootKey(rootKey)
+        const rootKey = await account.decryptRootKey(
+          this.password,
+          encryptedAccount
+        );
+        account.setRootKey(rootKey);
       } catch (e) {
         return this.$toast.error(e);
       }
 
       // Direct to app home
-      this.router.push("/app/")
-    }
+      this.router.push("/app/");
+    },
   },
   setup() {
     const store = useStore();
@@ -228,8 +241,8 @@ export default defineComponent({
 
     return {
       store,
-      router
-    }
-  }
+      router,
+    };
+  },
 });
 </script>

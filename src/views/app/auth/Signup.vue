@@ -62,6 +62,11 @@
               alt="Loading spinner"
             />
           </button>
+
+          <p class="text-center">
+            Already have an account?
+            <router-link to="/app/login" class="text-orange">Sign in</router-link>.
+          </p>
         </form>
       </div>
     </div>

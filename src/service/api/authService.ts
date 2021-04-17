@@ -21,6 +21,11 @@ export default {
   CreateAccount(account: EncryptedAccount) {
     return gatewayApi.post("auth/v1/register", account);
   },
+  
+  // Get ephemeral register token
+  GetRegisterToken() {
+    return gatewayApi.get("auth/v1/register/new");
+  },
 
   // Get encrypted account payload
   GetAccount() {

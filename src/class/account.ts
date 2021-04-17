@@ -7,6 +7,15 @@ import { DB } from "@/class/db";
 
 import SessionKeystore from 'session-keystore'
 
+const EdDSA = require("elliptic").eddsa;
+const ec = new EdDSA('ed25519');
+
+// Key types
+enum Keys {
+  ENCRYPTION = "enc",
+  IDENTITY = "identity"
+}
+
 class Account extends DB {
   private rootKey: Uint8Array;
   public store: SessionKeystore;
@@ -117,6 +126,27 @@ class Account extends DB {
     );
     return new Uint8Array(rootKey);
   }
+
+  /*
+    Root key methods
+  */
+  // Sign a message using Ed25519
+  async signMessage(rootKey: Uint8Array, message: string): Promise<string> {
+    // Construct the master signing key by SHA-256 hashing the root key + identity
+    const keyType = new TextEncoder().encode(Keys.IDENTITY);
+    const mergedKey = new Uint8Array([...rootKey, ...keyType]);
+    const signKey = await window.crypto.subtle.digest("SHA-256", mergedKey);
+
+    // Derive the keypair from our signKey
+    const keypair = ec.keyFromSecret(signKey);
+    
+    // Convert the message to bytes
+    const msg = new TextEncoder().encode(message);
+    const signed = keypair.sign(msg).toHex();
+
+    return signed;
+  }
+
 
   /*
     IndexedDB account methods

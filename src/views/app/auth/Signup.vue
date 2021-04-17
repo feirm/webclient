@@ -5,7 +5,7 @@
       class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-6 md:p-12 w-full"
     >
       <div
-        class="bg-white p-4 md:p-8 rounded shadow md:w-1/4 mx-auto"
+        class="bg-white p-4 md:p-8 rounded shadow md:w-1/3 mx-auto"
       >
         <img
           class="mx-auto w-16"
@@ -127,6 +127,7 @@ import account from "@/class/account";
 import { EncryptedAccount } from "@/models/account";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import bufferToHex from "@/helpers/bufferToHex";
 
 export default defineComponent({
   name: "Signup",
@@ -219,14 +220,19 @@ export default defineComponent({
       this.step++;
     },
     async register() {
-      // Generate an encrypted key using the password
-      const key = await account.generateEncryptedRootKey(this.password);
+      // Generate a root key and encrypt it
+      const rootKey = account.generateRootKey();
+      const encryptedKey = await account.generateEncryptedRootKey(rootKey, this.password);
+
+      // Derive identity keypair
+      const keypair = await account.deriveIdentityKeypair(rootKey);
 
       // Bundle it into an account object
       const encryptedAccount: EncryptedAccount = {
         email: this.email,
         username: this.username,
-        encrypted_key: key
+        identity_pubkey: bufferToHex(keypair.getPublic()),
+        encrypted_key: encryptedKey
       };
 
       // Submit account object to API

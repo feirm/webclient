@@ -157,7 +157,7 @@ class Account extends DB {
     const msg = new TextEncoder().encode(message);
 
     // Sign and return hex signature
-    const signed = identityKeypair.sign(Buffer.from(msg)).toHex();
+    const signed = identityKeypair.sign(Buffer.from(msg)).toHex().toLowerCase();
     return signed;
   }
 

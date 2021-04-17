@@ -227,12 +227,20 @@ export default defineComponent({
       // Derive identity keypair
       const keypair = await account.deriveIdentityKeypair(rootKey);
 
+      // Fetch ephemeral token to sign
+      const token = await authService.GetRegisterToken();
+      const signature = await account.signMessage(keypair, token.data.nonce);
+
       // Bundle it into an account object
       const encryptedAccount: EncryptedAccount = {
         email: this.email,
         username: this.username,
         identity_pubkey: bufferToHex(keypair.getPublic()),
-        encrypted_key: encryptedKey
+        encrypted_key: encryptedKey,
+        token: {
+          id: token.data.id,
+          signature: signature
+        }
       };
 
       // Submit account object to API

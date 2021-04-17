@@ -37,21 +37,6 @@ class Account extends DB {
     return hexToBytes(rootKey);
   }
 
-  // Generate a stretched key from password
-  async generateStretchedKey(password: string): Promise<string> {
-    const salt = window.crypto.getRandomValues(new Uint8Array(16));
-
-    // Derive stretched key from password
-    const stretchedKey = await hash({
-      pass: password,
-      salt: salt,
-      type: ArgonType.Argon2id,
-      hashLen: 32
-    });
-
-    return stretchedKey.hashHex;
-  }
-
   // Generate an encrypted root key
   async generateEncryptedRootKey(password: string): Promise<EncryptedKey> {
     // Generate some salt to be used when stretching the encryption key, and an IV for the encryption itself

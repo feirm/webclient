@@ -2,7 +2,7 @@
 interface EncryptedAccount {
   email: string;
   username: string;
-  identity_pubkey: string;
+  identity_publickey: string;
   encrypted_key: EncryptedKey;
   created_at?: number;
   version?: number;

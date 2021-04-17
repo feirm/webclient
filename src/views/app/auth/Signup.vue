@@ -235,7 +235,7 @@ export default defineComponent({
       const encryptedAccount: EncryptedAccount = {
         email: this.email,
         username: this.username,
-        identity_pubkey: bufferToHex(keypair.getPublic()),
+        identity_publickey: bufferToHex(keypair.getPublic()),
         encrypted_key: encryptedKey,
         token: {
           id: token.data.id,

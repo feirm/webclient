@@ -6,6 +6,8 @@ interface EncryptedAccount {
   encrypted_key: EncryptedKey;
   created_at?: number;
   version?: number;
+
+  token?: EphemeralToken;
 }
 
 // Representation of an encrypted key
@@ -14,6 +16,12 @@ interface EncryptedKey {
   signature: string;
   iv: string;
   salt: string;
+}
+
+// Representation of an ephemeral token signature payload
+interface EphemeralToken {
+  id: string;
+  signature: string;
 }
 
 export { EncryptedAccount, EncryptedKey };

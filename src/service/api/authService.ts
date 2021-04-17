@@ -4,7 +4,7 @@ import { EncryptedAccount } from "@/models/account";
 export default {
   // Check username availability
   CheckUsername(username: string) {
-    return gatewayApi.post("auth/v1/checkusername", {
+    return gatewayApi.post("auth/v1/check-username", {
       username
     });
   },
@@ -24,12 +24,12 @@ export default {
 
   // Get encrypted account payload
   GetAccount() {
-    return gatewayApi.get("auth/v1/getaccount");
+    return gatewayApi.get("auth/v1/get-account");
   },
 
   // Get new authentication token pair
   RefreshTokens(refreshToken: string) {
-    return gatewayApi.post("auth/v1/refreshtokens", {
+    return gatewayApi.post("auth/v1/refresh-tokens", {
       refresh_token: refreshToken
     })
   } 

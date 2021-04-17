@@ -7,6 +7,8 @@ import { DB } from "@/class/db";
 
 import SessionKeystore from 'session-keystore'
 
+import keccak256 from "keccak256";
+
 import { eddsa } from "elliptic";
 const ec = new eddsa('ed25519');
 
@@ -156,8 +158,11 @@ class Account extends DB {
     // Convert the message to bytes
     const msg = new TextEncoder().encode(message);
 
+    // Derive Keccak256 hash of message
+    const hash = keccak256(Buffer.from(msg));
+
     // Sign and return hex signature
-    const signed = identityKeypair.sign(Buffer.from(msg)).toHex().toLowerCase();
+    const signed = identityKeypair.sign(hash).toHex().toLowerCase();
     return signed;
   }
 

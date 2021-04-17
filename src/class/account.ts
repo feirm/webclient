@@ -7,8 +7,8 @@ import { DB } from "@/class/db";
 
 import SessionKeystore from 'session-keystore'
 
-const EdDSA = require("elliptic").eddsa;
-const ec = new EdDSA('ed25519');
+import { eddsa } from "elliptic";
+const ec = new eddsa('ed25519');
 
 // Key types
 enum Keys {
@@ -20,9 +20,9 @@ class Account extends DB {
   private rootKey: Uint8Array;
   public store: SessionKeystore;
 
-  constructor () {
+  constructor() {
     super();
-    
+
     this.store = new SessionKeystore<"feirm">();
   }
 
@@ -40,20 +40,22 @@ class Account extends DB {
     if (this.rootKey) {
       return this.rootKey;
     }
-    
+
     // Fetch from session store
     const rootKey = this.store.get("rootKey");
     return hexToBytes(rootKey);
   }
 
+  // Generate a plaintext root key
+  generateRootKey(): Uint8Array {
+    return window.crypto.getRandomValues(new Uint8Array(32));
+  }
+
   // Generate an encrypted root key
-  async generateEncryptedRootKey(password: string): Promise<EncryptedKey> {
+  async generateEncryptedRootKey(rootKey: Uint8Array, password: string): Promise<EncryptedKey> {
     // Generate some salt to be used when stretching the encryption key, and an IV for the encryption itself
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
     const iv = window.crypto.getRandomValues(new Uint8Array(16));
-
-    // Generate a root key for the account
-    const rootKey = window.crypto.getRandomValues(new Uint8Array(32));
 
     // Derive stretched key from encryption key
     const stretchedKey = await hash({
@@ -79,8 +81,15 @@ class Account extends DB {
       rootKey
     );
 
+    // Derive identity keypair
+    const keypair = await this.deriveIdentityKeypair(rootKey);
+
+    // Sign the encrypted payload with the identity key
+    const signature = await this.signMessage(keypair, bufferToHex(ciphertext));
+
     const key = {
       key: bufferToHex(ciphertext),
+      signature: signature,
       iv: bufferToHex(iv),
       salt: bufferToHex(salt)
     } as EncryptedKey;
@@ -130,23 +139,27 @@ class Account extends DB {
   /*
     Root key methods
   */
-  // Sign a message using Ed25519
-  async signMessage(rootKey: Uint8Array, message: string): Promise<string> {
+  // Derive identity (Ed25519) keypair
+  async deriveIdentityKeypair(rootKey: Uint8Array): Promise<eddsa.KeyPair> {
     // Construct the master signing key by SHA-256 hashing the root key + identity
     const keyType = new TextEncoder().encode(Keys.IDENTITY);
     const mergedKey = new Uint8Array([...rootKey, ...keyType]);
     const signKey = await window.crypto.subtle.digest("SHA-256", mergedKey);
 
     // Derive the keypair from our signKey
-    const keypair = ec.keyFromSecret(signKey);
-    
-    // Convert the message to bytes
-    const msg = new TextEncoder().encode(message);
-    const signed = keypair.sign(msg).toHex();
-
-    return signed;
+    const keypair = ec.keyFromSecret(Buffer.from(signKey));
+    return keypair;
   }
 
+  // Sign a message using Ed25519
+  async signMessage(identityKeypair: eddsa.KeyPair, message: string): Promise<string> {
+    // Convert the message to bytes
+    const msg = new TextEncoder().encode(message);
+
+    // Sign and return hex signature
+    const signed = identityKeypair.sign(Buffer.from(msg)).toHex();
+    return signed;
+  }
 
   /*
     IndexedDB account methods

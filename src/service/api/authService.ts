@@ -16,6 +16,20 @@ export default {
     });
   },
 
+  // Create a login request
+  CreateLoginRequest(username: string) {
+    return gatewayApi.post("auth/v1/login", {
+      username
+    });
+  },
+
+  // Get login request status
+  LoginRequestStatus(tokenId: string) {
+    return gatewayApi.post("auth/v1/login/approve/status", {
+      token_id: tokenId
+    });
+  },
+
   // Login to an account
   Login(username: string, totp: string) {
     return gatewayApi.post("auth/v1/login", {

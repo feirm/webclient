@@ -104,13 +104,25 @@ class Account extends DB {
     password: string,
     payload: EncryptedAccount
   ): Promise<Uint8Array> {
+    // Verify the signature of the encrypted root key to check it hasn't been tampered
+    const key = ec.keyFromPublic(payload.identity_publickey)
+
+    // Hash the root key ciphertext using Keccak256
+    const msg = keccak256(payload.encrypted_key.key);
+
+    // Error if signature is not valid
+    const valid = key.verify(msg, payload.encrypted_key.signature);
+    if (!valid) {
+      return Promise.reject("Signature is invalid, encrypted payload might be tampered.")
+    }
+
     // Extract the salt used for password hashing
     // and the IV used for AES encryption
     const salt = hexToBytes(payload.encrypted_key.salt).slice(0, 16);
     const iv = hexToBytes(payload.encrypted_key.iv).slice(0, 16);
 
     // Convert the encrypted key into byte form
-    const keyBytes = hexToBytes(payload.encrypted_key.key);
+    const keyBytes = Buffer.from(payload.encrypted_key.key, 'hex');
 
     // Derive stretched key from password
     const stretchedKey = await hash({

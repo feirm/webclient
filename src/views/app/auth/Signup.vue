@@ -261,20 +261,16 @@ export default defineComponent({
 
         // Extract tokens
         const accessToken = res.data.access_token;
-        const refreshToken = res.data.refresh_token;
 
-        // Set refresh and access tokens
-        this.store.dispatch("login", { accessToken, refreshToken });
+        // Set refresh and access token
+        this.store.dispatch("login", accessToken);
       } catch (e) {
         return this.$toast.error(e.response.data.error);
       }
 
       // Decrypt account payload and set the root key
       try {
-        const rootKey = await account.decryptRootKey(
-          this.password,
-          encryptedAccount
-        );
+        const rootKey = await account.decryptRootKey(this.password, encryptedAccount);
         account.setRootKey(rootKey);
       } catch (e) {
         return this.$toast.error(e);

@@ -103,10 +103,9 @@ export default defineComponent({
         const tokens = await authService.Login(this.username, this.totp);
         
         const accessToken = tokens.data.access_token;
-        const refreshToken = tokens.data.refresh_token;
 
-        // Update the refresh and access tokens in Vuex
-        this.login({ accessToken, refreshToken })
+        // Update the access token in Vuex
+        this.login(accessToken)
 
       } catch (e) {
         this.submitted = false;

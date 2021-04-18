@@ -11,6 +11,7 @@ import Index from "@/views/Index.vue";
 // App
 import Signup from "@/views/app/auth/Signup.vue";
 import Login from "@/views/app/auth/Login.vue";
+import VerifyEmail from "@/views/app/auth/VerifyEmail.vue";
 
 import Protected from "@/views/app/Protected.vue";
 
@@ -53,6 +54,13 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: "Login",
           hideNavigation: true
+        }
+      },
+      {
+        path: "user/verify-email",
+        component: VerifyEmail,
+        meta: {
+          title: "Email Verification"
         }
       }
     ]

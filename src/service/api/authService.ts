@@ -9,6 +9,13 @@ export default {
     });
   },
 
+  // Check email availability
+  CheckEmail(email: string) {
+    return gatewayApi.post("auth/v1/check-email", {
+      email,
+    });
+  },
+
   // Login to an account
   Login(username: string, totp: string) {
     return gatewayApi.post("auth/v1/login", {

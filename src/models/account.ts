@@ -20,8 +20,9 @@ interface EncryptedKey {
 
 // Representation of an ephemeral token signature payload
 interface EphemeralToken {
-  id: string;
-  signature: string;
+  id?: string;
+  nonce?: string;
+  signature?: string;
 }
 
 export { EncryptedAccount, EncryptedKey };

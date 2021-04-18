@@ -30,6 +30,13 @@ export default {
     });
   },
 
+  // Approve a login request
+  ApproveLogin(token: string) {
+    return gatewayApi.post("auth/v1/login/approve", {
+      token
+    });
+  },
+
   // Create a login session (access token)
   CreateLoginSession(username: string, tokenId: string, signature: string) {
     return gatewayApi.post("auth/v1/login/create-session", {

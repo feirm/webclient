@@ -194,14 +194,26 @@ export default defineComponent({
     },
 
     async checkForm() {
+      // Check if email is empty
+      if (!this.email) {
+        return this.$toast.error("Email address cannot be empty!");
+      }
+
       // Check if username is empty
       if (!this.username) {
         return this.$toast.error("Username cannot be empty!");
       }
 
-      // Checker if username valid
+      // Check if username valid
       try {
         await authService.CheckUsername(this.username);
+      } catch (e) {
+        return this.$toast.error(e.response.data.error);
+      }
+
+      // Check if email valid
+      try {
+        await authService.CheckEmail(this.email);
       } catch (e) {
         return this.$toast.error(e.response.data.error);
       }

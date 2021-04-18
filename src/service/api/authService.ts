@@ -30,12 +30,13 @@ export default {
     });
   },
 
-  // Login to an account
-  Login(username: string, totp: string) {
-    return gatewayApi.post("auth/v1/login", {
-      username,
-      totp
-    })
+  // Create a login session (access token)
+  CreateLoginSession(username: string, tokenId: string, signature: string) {
+    return gatewayApi.post("auth/v1/login/create-session", {
+      username: username,
+      token_id: tokenId,
+      signature: signature
+    });
   },
 
   // Send encrypted account payload

@@ -49,7 +49,7 @@
             >Create an account</router-link
           >
 
-          <router-link v-if="isLoggedIn" to="/" class="text-gray-100 pl-3">My Profile</router-link>
+          <router-link v-if="isLoggedIn" to="/app/account" class="text-gray-100 pl-3">My Account</router-link>
         </div>
 
         <!-- Mobile burger button -->

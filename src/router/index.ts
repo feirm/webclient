@@ -14,6 +14,7 @@ import Login from "@/views/app/auth/Login.vue";
 import VerifyEmail from "@/views/app/auth/VerifyEmail.vue";
 import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
 
+import Account from "@/views/app/account/Account.vue";
 import Protected from "@/views/app/Protected.vue";
 
 // Bridge
@@ -69,6 +70,14 @@ const routes: Array<RouteRecordRaw> = [
         component: ApproveLogin,
         meta: {
           title: "Approve Login Request"
+        }
+      },
+      {
+        path: "account",
+        component: Account,
+        meta: {
+          title: "My Account",
+          authRequired: true
         }
       }
     ]

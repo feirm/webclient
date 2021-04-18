@@ -12,6 +12,7 @@ import Index from "@/views/Index.vue";
 import Signup from "@/views/app/auth/Signup.vue";
 import Login from "@/views/app/auth/Login.vue";
 import VerifyEmail from "@/views/app/auth/VerifyEmail.vue";
+import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
 
 import Protected from "@/views/app/Protected.vue";
 
@@ -61,6 +62,13 @@ const routes: Array<RouteRecordRaw> = [
         component: VerifyEmail,
         meta: {
           title: "Email Verification"
+        }
+      },
+      {
+        path: "login/approve",
+        component: ApproveLogin,
+        meta: {
+          title: "Approve Login Request"
         }
       }
     ]

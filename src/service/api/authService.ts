@@ -44,5 +44,12 @@ export default {
     return gatewayApi.post("auth/v1/refresh-tokens", {
       refresh_token: refreshToken
     })
-  } 
+  },
+
+  // Verify email address
+  VerifyEmail(token: string) {
+    return gatewayApi.post("auth/v1/account/verify-email", {
+      token
+    });
+  }
 };

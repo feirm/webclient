@@ -1,5 +1,7 @@
 <template>
-    <p>{{ message }}</p>
+    <div class="p-8 text-center">
+        <p>{{ message }}</p>
+    </div>
 </template>
 
 <script lang="ts">
@@ -19,7 +21,7 @@ export default defineComponent({
         // Send token to API
         await authService.VerifyEmail(token).then(res => {
             if (res.status === 200) {
-                this.message = "Email verified. You can close this tab.";
+                this.message = res.data;
             }
         }).catch(e => {
             this.message = e.response.data.error;

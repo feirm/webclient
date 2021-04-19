@@ -1,5 +1,5 @@
 import { gatewayApi } from "@/service/api/api";
-import { EncryptedAccount } from "@/models/account";
+import { EncryptedAccount, SignedSessionToken } from "@/models/account";
 
 export default {
   // Check username availability
@@ -61,11 +61,14 @@ export default {
     return gatewayApi.get("auth/v1/get-account");
   },
 
-  // Get new authentication token pair
-  RefreshTokens(refreshToken: string) {
-    return gatewayApi.post("auth/v1/refresh-tokens", {
-      refresh_token: refreshToken
-    })
+  // Get a new token to sign for refresh session
+  GetRefreshSessionToken() {
+    return gatewayApi.get("auth/v1/refresh-session/new");
+  },
+
+  // Submit signed token to receive session token
+  SubmitSignedSessionToken(token: SignedSessionToken) {
+    return gatewayApi.post("auth/v1/refresh-session", token);
   },
 
   // Verify email address

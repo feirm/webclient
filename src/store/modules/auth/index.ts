@@ -2,12 +2,17 @@ export const auth = {
   // Authentication module state
   state: {
     auth: {
+      username: localStorage.getItem("username") || "",
       accessToken: localStorage.getItem("accessToken") || "",
     }
   },
 
   // Mutations
   mutations: {
+    setUsername(state: any, username: string) {
+      state.auth.username = username;
+      localStorage.setItem("username", username);
+    },
     setAccessToken(state: any, accessToken: string) {
       state.auth.accessToken = accessToken;
       localStorage.setItem("accessToken", accessToken);
@@ -18,11 +23,16 @@ export const auth = {
   actions: {
     login({ commit }, accessToken: string) {
       commit("setAccessToken", accessToken);
+    },
+
+    setUsername({ commit }, username: string) {
+      commit("setUsername", username);
     }
   },
 
   // Getters
   getters: {
+    getUsername: (state: any) => state.auth.username,
     getAccessToken: (state: any) => state.auth.accessToken,
 
     isLoggedIn: (state: any) => {

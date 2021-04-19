@@ -49,7 +49,7 @@
             >Create an account</router-link
           >
 
-          <router-link v-if="isLoggedIn" to="/app/account" class="text-gray-100 pl-3">My Account</router-link>
+          <router-link v-if="isLoggedIn" to="/app/account" class="text-gray-100 pl-3">{{ getUsername }}</router-link>
         </div>
 
         <!-- Mobile burger button -->
@@ -97,7 +97,7 @@ import { mapGetters } from "vuex";
 export default defineComponent({
   name: "Navigation",
   computed: {
-    ...mapGetters(["isLoggedIn"])
+    ...mapGetters(["isLoggedIn", "getUsername"])
   }
 });
 </script>

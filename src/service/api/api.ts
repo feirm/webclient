@@ -60,7 +60,6 @@ gatewayApi.interceptors.response.use(
       const signed = await account.signMessage(keypair, nonce);
 
       const signedToken: SignedSessionToken = {
-        username: "",
         token_id: tokenId,
         signature: signed
       }

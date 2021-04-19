@@ -27,7 +27,6 @@ interface EphemeralToken {
 
 // Representation of a signed session token
 interface SignedSessionToken {
-  username: string;
   token_id: string;
   signature: string;
 }

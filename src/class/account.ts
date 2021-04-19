@@ -177,30 +177,6 @@ class Account extends DB {
     const signed = identityKeypair.sign(hash).toHex().toLowerCase();
     return signed;
   }
-
-  /*
-    IndexedDB account methods
-  */
-
-  // Save an encrypted blob
-  async saveAccount(account: EncryptedAccount) {
-    // Clear any existing accounts
-    await this.account.clear();
-    await this.account.add(account, account.username); // TODO: Properly fix this
-  }
-
-  // Fetch the encrypted blob
-  async fetchAccount(): Promise<EncryptedAccount> {
-    // Handle empty accounts first
-    const accounts = await this.account.toArray();
-    if (accounts.length === 0) {
-      return {} as EncryptedAccount;
-    }
-
-    // If we get this far, it should be expected to have an account
-    const account = await this.account.orderBy("uid").last();
-    return account!;
-  }
 }
 
 export default new Account();

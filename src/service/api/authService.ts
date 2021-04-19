@@ -76,5 +76,9 @@ export default {
     return gatewayApi.post("auth/v1/account/verify-email", {
       token
     });
+  },
+
+  ResendEmailVerification() {
+    return gatewayApi.post("auth/v1/account/resend-verification-email");
   }
 };

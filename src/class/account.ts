@@ -3,7 +3,6 @@ import hexToBytes from "@/helpers/hexToBytes";
 
 import { EncryptedAccount, EncryptedKey } from "@/models/account";
 import { ArgonType, hash } from "argon2-browser";
-import { DB } from "@/class/db";
 
 import SessionKeystore from 'session-keystore'
 
@@ -18,13 +17,11 @@ enum Keys {
   IDENTITY = "identity"
 }
 
-class Account extends DB {
+class Account {
   private rootKey: Uint8Array;
   public store: SessionKeystore;
 
   constructor() {
-    super();
-
     this.store = new SessionKeystore<"feirm">();
   }
 

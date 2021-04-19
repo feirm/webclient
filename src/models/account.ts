@@ -25,4 +25,11 @@ interface EphemeralToken {
   signature?: string;
 }
 
-export { EncryptedAccount, EncryptedKey };
+// Representation of a signed session token
+interface SignedSessionToken {
+  username: string;
+  token_id: string;
+  signature: string;
+}
+
+export { EncryptedAccount, EncryptedKey, SignedSessionToken };

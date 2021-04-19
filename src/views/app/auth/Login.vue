@@ -151,8 +151,18 @@ export default defineComponent({
               // Set access token in Vuex and push to app
               const accessToken = res.data.access_token;
               this.login(accessToken);
-              this.router.push("/app");
 
+              // Fetch and set username in Vuex
+              try {
+                await authService.GetAccount().then(res => {
+                  const username = res.data.username;
+                  this.store.dispatch("setUsername", username);
+                })
+              } catch (e) {
+                return this.$toast.error(e.response.data.error);
+              }
+              
+              this.router.push("/app");
             } catch (e) {
               this.submitted = false;
               this.checkEmail = false;

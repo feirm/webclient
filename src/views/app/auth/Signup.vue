@@ -276,6 +276,16 @@ export default defineComponent({
         return this.$toast.error(e);
       }
 
+      // Fetch and set username in Vuex
+      try {
+        await authService.GetAccount().then(res => {
+          const username = res.data.username;
+          this.store.dispatch("setUsername", username);
+        })
+      } catch (e) {
+        return this.$toast.error(e.response.data.error);
+      }
+
       // Direct to app home
       this.router.push("/app/");
     },

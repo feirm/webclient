@@ -34,6 +34,17 @@
           placeholder="Please enter your password"
         />
 
+        <!-- TOTP token input -->
+        <div v-if="totpEnabled" class="space-y-3">
+          <label class="block text-orange">TOTP</label>
+          <input
+            class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
+            v-model="totp"
+            type="number"
+            placeholder="Six-digit token"
+        />
+        </div>
+
         <!-- Submit button -->
         <button
           class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
@@ -82,6 +93,9 @@ export default defineComponent({
     return {
       username: "",
       password: "",
+      totp: "",
+
+      totpEnabled: false,
 
       checkEmail: false,
       submitted: false,
@@ -91,66 +105,129 @@ export default defineComponent({
     ...mapActions(["login", "setUsername"]),
 
     async loginRequest() {
-      // Send a login request to users email address
+      // There are two login options for an account - either magic link via email or TOTP token.
+      // They should be handled accordingly in this function.
+
+      // Set the submission state to true
       this.submitted = true;
 
-      let tokenId: string;
+      // Send off for a generic login request
+      if (!this.totpEnabled) {
+        try {
+          const res = await authService.CreateLoginRequest(this.username);
 
-      // Send off for a login request
-      try {
-        const res = await authService.CreateLoginRequest(this.username);
-        tokenId = res.data.id;
-
-      } catch (e) {
-        this.submitted = false;
-        return this.$toast.error(e.response.data.error);
+          if (res.data.totp) {
+            this.totpEnabled = true;
+            this.submitted = false;
+            return
+          }
+        } catch (e) {
+          return this.$toast.error(e.response.data.error);
+        }
       }
 
-      // Prompt user to check their email
-      this.checkEmail = true;
+      // First lets handle TOTP as that is the simplest
+      if (this.totpEnabled) {
+        let encryptedAccount = {} as EncryptedAccount;
 
-      // Check the status of the request every 4 seconds
-      const interval = setInterval(async () => {
-        const res = await authService.LoginRequestStatus(tokenId);
+        try {
+          // Send username and 6-digit token to API to fetch encrypted account and nonce to sign
+          const res = await authService.CreateLoginRequestTOTP(this.username, this.totp);
+          encryptedAccount = res.data;
+        } catch (e) {
+          this.submitted = false;
+          return this.$toast.error(e.response.data.error);
+        }
 
-        if (res.data.approved !== false) {
-          // Stop the interval and set encrypted account payload
-          clearInterval(interval);
-          const encryptedAccount = res.data as EncryptedAccount;
-
-          // Decrypt root key
-          const rootKey = await account.decryptRootKey(this.password, encryptedAccount).catch(() => {
-            this.submitted = false;
-            this.checkEmail = false;
-
-            return this.$toast.error("There was an error decrypting your account! Please try again!");
-          });
-
-          // Derive identity keypair and sign the token nonce
-          const keypair = await account.deriveIdentityKeypair(rootKey);
-          const signature = await account.signMessage(keypair, encryptedAccount.token?.nonce!)
-
-          // Send to API
-          const tokenRes = await authService.CreateLoginSession(this.username, encryptedAccount.token?.id!, signature).catch(e => {
-            this.submitted = false;
-            this.checkEmail = false;
-
-            return this.$toast.error(e.response.data.error);
-          })
-
-          const accessToken = tokenRes.data.access_token;
-
-          // Set token and username in Vuex
-          this.login(accessToken);
-          this.setUsername(this.username);
-
+        // Attempt to decrypt the root key
+        const rootKey = await account.decryptRootKey(this.password, encryptedAccount).catch(() => {
           this.submitted = false;
           this.checkEmail = false;
 
-          // Push to login
-          this.router.push("/app")
+          return this.$toast.error("There was an error decrypting your account! Please try again!");
+        })
+
+        // Derive the identity keypair and sign the token nonce
+        const keypair = await account.deriveIdentityKeypair(rootKey);
+        const signature = await account.signMessage(keypair, encryptedAccount.token?.nonce!)
+
+        // Send the token ID and signature back to the auth API to create a session
+        try {
+          const res = await authService.CreateLoginSession(this.username, encryptedAccount.token?.id!, signature);
+
+          // Extract and set the access token, username
+          const accessToken = res.data.access_token;
+          this.login(accessToken);
+          this.setUsername(this.username);
+        } catch (e) {
+          this.submitted = false;
+          this.checkEmail = false;
+
+          return this.$toast.error(e.response.data.error);
         }
-      }, 4000)
+
+        // Push to app home
+        this.router.push("/app");
+      }
+
+      // If the account doesn't use TOTP, then it must use traditional emai)
+      if (!this.totpEnabled) {
+        let tokenId;
+
+        try {
+          const res = await authService.CreateLoginRequest(this.username);
+          tokenId = res.data.id;
+
+          // Prompt user to check their email
+          this.checkEmail = true;
+        } catch (e) {
+          this.submitted = false;
+          return this.$toast.error(e.response.data.error);
+        }
+
+        // Check the status of the request every 4 seconds
+        const interval = setInterval(async () => {
+          const res = await authService.LoginRequestStatus(tokenId);
+
+          if (res.data.approved !== false) {
+            // Stop the interval and set encrypted account payload
+            clearInterval(interval);
+            const encryptedAccount = res.data as EncryptedAccount;
+
+            // Decrypt root key
+            const rootKey = await account.decryptRootKey(this.password, encryptedAccount).catch(() => {
+              this.submitted = false;
+              this.checkEmail = false;
+
+              return this.$toast.error("There was an error decrypting your account! Please try again!");
+            });
+
+            // Derive identity keypair and sign the token nonce
+            const keypair = await account.deriveIdentityKeypair(rootKey);
+            const signature = await account.signMessage(keypair, encryptedAccount.token?.nonce!)
+
+            // Send to API
+            const tokenRes = await authService.CreateLoginSession(this.username, encryptedAccount.token?.id!, signature).catch(e => {
+              this.submitted = false;
+              this.checkEmail = false;
+
+              return this.$toast.error(e.response.data.error);
+            })
+
+            const accessToken = tokenRes.data.access_token;
+
+            // Set token and username in Vuex
+            this.login(accessToken);
+            this.setUsername(this.username);
+
+            this.submitted = false;
+            this.checkEmail = false;
+
+            // Push to app home
+            this.router.push("/app");
+          }
+        }, 4000);
+      }
     }
   },
   setup() {

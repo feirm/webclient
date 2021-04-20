@@ -88,6 +88,29 @@
                     <button @click="closeModal()" class="p-3 rounded shadow bg-red-500 text-white w-24">Cancel</button>
                 </div>
             </div>
+
+            <!-- Recovery codes -->
+            <div v-if="changeTwoFactor.step === 2" class="space-y-4">
+                <h1 class="text-2xl">Write down your recovery codes</h1>
+                <p>Please take the time now to write down your recovery codes. These are important as they can help you can access to your account if you lose your two-factor authentication device.</p>
+                <p>Feirm cannot change the two-factor authentication method or recover the account on your behalf!</p>
+
+                <div class="flex p-2 bg-gray-200 rounded justify-center text-center">
+                    <div class="flex-col p-2">
+                        <div v-for="(code, index) in recoveryCodes" :key="code">
+                            <code v-if="index < 4">{{ code }}</code>
+                        </div>
+                    </div>
+
+                    <div class="flex-col p-2">
+                        <div v-for="(code, index) in recoveryCodes" :key="code">
+                            <code v-if="index >= 4 && index < 8">{{ code }}</code>
+                        </div>
+                    </div>
+                </div>
+
+                <button @click="closeModal" class="block w-full p-3 rounded shadow bg-orange-500 text-yellow-900">I have written down my recovery codes</button>
+            </div>
         </div>
 
         <div @click="closeModal()" v-if="showModal" class="fixed inset-0 z-40 opacity-50 bg-black"></div>
@@ -117,7 +140,9 @@ export default defineComponent({
                 qrCode: "",
                 secret: "",
                 token: ""
-            }
+            },
+
+            recoveryCodes: []
         }
     },
     computed: {
@@ -181,6 +206,17 @@ export default defineComponent({
             } catch (e) {
                 return this.$toast.error(e.response.data.error);
             }
+
+            // Set recovery codes
+            try {
+                const res = await authService.GetRecoveryCodes();
+                this.recoveryCodes = res.data.codes;
+            } catch (e) {
+                return this.$toast.error(e.response.data.error);
+            }
+
+            // Change to recovery codes step
+            this.changeTwoFactor.step = 2;
         }
     }
 })

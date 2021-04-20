@@ -23,6 +23,14 @@ export default {
     });
   },
 
+  // Create TOTP login request
+  CreateLoginRequestTOTP(username: string, token: string) {
+    return gatewayApi.post("auth/v1/login-totp", {
+      username,
+      token
+    });
+  },
+
   // Get login request status
   LoginRequestStatus(tokenId: string) {
     return gatewayApi.post("auth/v1/login/approve/status", {

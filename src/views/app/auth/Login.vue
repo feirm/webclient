@@ -111,6 +111,9 @@ export default defineComponent({
       // Set the submission state to true
       this.submitted = true;
 
+      // Global token ID (used for email)
+      let tokenId;
+
       // Send off for a generic login request
       if (!this.totpEnabled) {
         try {
@@ -121,6 +124,9 @@ export default defineComponent({
             this.submitted = false;
             return
           }
+
+          // Assign the token ID
+          tokenId = res.data.id;
         } catch (e) {
           return this.$toast.error(e.response.data.error);
         }
@@ -172,18 +178,7 @@ export default defineComponent({
 
       // If the account doesn't use TOTP, then it must use traditional emai)
       if (!this.totpEnabled) {
-        let tokenId;
-
-        try {
-          const res = await authService.CreateLoginRequest(this.username);
-          tokenId = res.data.id;
-
-          // Prompt user to check their email
-          this.checkEmail = true;
-        } catch (e) {
-          this.submitted = false;
-          return this.$toast.error(e.response.data.error);
-        }
+        this.checkEmail = true;
 
         // Check the status of the request every 4 seconds
         const interval = setInterval(async () => {

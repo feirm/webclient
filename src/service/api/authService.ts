@@ -78,7 +78,16 @@ export default {
     });
   },
 
+  // Resend email for account verification
   ResendEmailVerification() {
     return gatewayApi.post("auth/v1/account/resend-verification-email");
+  },
+
+  // Enable TOTP
+  EnableTOTP(secret: string, token: string) {
+    return gatewayApi.post("auth/v1/account/enable-totp", {
+      secret,
+      token
+    });
   }
 };

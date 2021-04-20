@@ -128,6 +128,7 @@ export default defineComponent({
           // Assign the token ID
           tokenId = res.data.id;
         } catch (e) {
+          this.submitted = false;
           return this.$toast.error(e.response.data.error);
         }
       }

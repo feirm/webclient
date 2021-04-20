@@ -84,14 +84,11 @@ export default defineComponent({
       password: "",
 
       checkEmail: false,
-
       submitted: false,
-      readyToDecrypt: false,
-      decrypting: false
     };
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login", "setUsername"]),
 
     async loginRequest() {
       // Send a login request to users email address
@@ -99,6 +96,7 @@ export default defineComponent({
 
       let tokenId: string;
 
+      // Send off for a login request
       try {
         const res = await authService.CreateLoginRequest(this.username);
         tokenId = res.data.id;
@@ -111,72 +109,48 @@ export default defineComponent({
       // Prompt user to check their email
       this.checkEmail = true;
 
-      // Check the status of the token every 2 seconds
-      const interval = setInterval(async() => {
-        try {
-          const res = await authService.LoginRequestStatus(tokenId);
-          // Set the encrypted account payload if it isn't false
-          if (res.data.approved !== false) {
-            // Stop the interval
-            clearInterval(interval);
+      // Check the status of the request every 4 seconds
+      const interval = setInterval(async () => {
+        const res = await authService.LoginRequestStatus(tokenId);
 
-            // Set account payload
-            const encryptedAccount = res.data as EncryptedAccount;
+        if (res.data.approved !== false) {
+          // Stop the interval and set encrypted account payload
+          clearInterval(interval);
+          const encryptedAccount = res.data as EncryptedAccount;
 
-            // Attempt to decrypt the root key with the password
-            try {
-              const rootKey = await account.decryptRootKey(this.password, encryptedAccount);
-              account.setRootKey(rootKey)
+          // Decrypt root key
+          const rootKey = await account.decryptRootKey(this.password, encryptedAccount).catch(() => {
+            this.submitted = false;
+            this.checkEmail = false;
 
-              this.checkEmail = false;
-            } catch (e) {
-                this.checkEmail = false;
-                this.submitted = false;
+            return this.$toast.error("There was an error decrypting your account! Please try again!");
+          });
 
-                return this.$toast.error("Decryption failed, please check your password and try again.")
-            }
+          // Derive identity keypair and sign the token nonce
+          const keypair = await account.deriveIdentityKeypair(rootKey);
+          const signature = await account.signMessage(keypair, encryptedAccount.token?.nonce!)
 
-            // Attempt to sign and submit the login token
-            try {
-              // Get the root key
-              const rootKey = account.getRootKey()
+          // Send to API
+          const tokenRes = await authService.CreateLoginSession(this.username, encryptedAccount.token?.id!, signature).catch(e => {
+            this.submitted = false;
+            this.checkEmail = false;
 
-              // Derive identity keypair and sign the token nonce
-              const keypair = await account.deriveIdentityKeypair(rootKey);
-              const signature = await account.signMessage(keypair, encryptedAccount.token?.nonce!)
+            return this.$toast.error(e.response.data.error);
+          })
 
-              // Send to API
-              const res = await authService.CreateLoginSession(this.username, encryptedAccount.token?.id!, signature)
-              
-              // Set access token in Vuex and push to app
-              const accessToken = res.data.access_token;
-              this.login(accessToken);
+          const accessToken = tokenRes.data.access_token;
 
-              // Fetch and set username in Vuex
-              try {
-                await authService.GetAccount().then(res => {
-                  const username = res.data.username;
-                  this.store.dispatch("setUsername", username);
-                })
-              } catch (e) {
-                return this.$toast.error(e.response.data.error);
-              }
-              
-              this.router.push("/app");
-            } catch (e) {
-              this.submitted = false;
-              this.checkEmail = false;
-          
-              return this.$toast.error(e);
-            }
-          }
-        } catch (e) {
+          // Set token and username in Vuex
+          this.login(accessToken);
+          this.setUsername(this.username);
+
           this.submitted = false;
           this.checkEmail = false;
 
-          return this.$toast.error(e);
+          // Push to login
+          this.router.push("/app")
         }
-      }, 2000);
+      }, 4000)
     }
   },
   setup() {

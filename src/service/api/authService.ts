@@ -97,5 +97,10 @@ export default {
       secret,
       token
     });
+  },
+
+  // Get account recovery codes
+  GetRecoveryCodes() {
+    return gatewayApi.get("auth/v1/account/recovery-codes");
   }
 };

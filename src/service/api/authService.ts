@@ -102,5 +102,10 @@ export default {
   // Get account recovery codes
   GetRecoveryCodes() {
     return gatewayApi.get("auth/v1/account/recovery-codes");
+  },
+
+  // Delete account
+  DeleteAccount() {
+    return gatewayApi.post("auth/v1/account/delete");
   }
 };

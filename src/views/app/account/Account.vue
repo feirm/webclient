@@ -61,9 +61,14 @@
                     </select>
                 </label>
 
-                <!-- Warn when selecting different two factor meythod  -->
-                <div v-if="changeTwoFactor.selected !== profile.two_factor_method && changeTwoFactor.selected" class="p-3 rounded bg-yellow-200">
-                    <p>You are about to change the two-factor authentication method used for this account. Be sure to back up your recovery codes if they are provided as Feirm cannot reset 2FA for user accounts.</p>
+                <!-- Warn when selecting different two factor method (TOTP)  -->
+                <div v-if="changeTwoFactor.selected !== profile.two_factor_method && changeTwoFactor.selected == 'totp'" class="p-3 rounded bg-yellow-200">
+                    <p>You are about to change the two-factor authentication method used for this account to TOTP. Be sure to back up your recovery codes when they are shown to you. Feirm cannot reset 2FA for user accounts if you lose access to your two factor device or recovery codes.</p>
+                </div>
+
+                <!-- Warn when selecting different two factor method (email)  -->
+                <div v-if="changeTwoFactor.selected !== profile.two_factor_method && changeTwoFactor.selected == 'email'" class="p-3 rounded bg-yellow-200">
+                    <p>You are about to disable your TOTP two-factor authentication method. As two-factor authentication is mandatory, you will have to approve your login requests through a magic-link sent to your email address. After disabling TOTP, your existing recovery codes will become invalid.</p>
                 </div>
 
                 <!-- Buttons -->

@@ -136,7 +136,8 @@ import { defineComponent } from 'vue'
 import { authenticator } from "otplib";
 import qrcode from "qrcode";
 
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     data() {
@@ -168,6 +169,7 @@ export default defineComponent({
         });
     },
     methods: {
+        ...mapActions(["logout"]),
         async verifyEmail() {
             // Resend an email confirmation to the user
             try {
@@ -261,6 +263,19 @@ export default defineComponent({
             } catch (e) {
                 return this.$toast.error(e.response.data.error);
             }
+
+            // Update Vuex state
+            this.logout();
+
+            // Push to index
+            this.router.push("/");
+        }
+    },
+    setup() {
+        const router = useRouter();
+
+        return {
+            router
         }
     }
 })

@@ -17,6 +17,14 @@ export const auth = {
       state.auth.accessToken = accessToken;
       localStorage.setItem("accessToken", accessToken);
     },
+
+    logout(state: any) {
+      state.auth.accessToken = "";
+      state.auth.username = "";
+
+      localStorage.removeItem("username");
+      localStorage.removeItem("accessToken");
+    }
   },
 
   // Actions
@@ -27,6 +35,10 @@ export const auth = {
 
     setUsername({ commit }, username: string) {
       commit("setUsername", username);
+    },
+
+    logout({ commit }) {
+      commit("logout");
     }
   },
 

@@ -173,6 +173,9 @@ export default defineComponent({
           return this.$toast.error(e.response.data.error);
         }
 
+        // Set root key
+        account.setRootKey(rootKey);
+
         // Push to app home
         this.router.push("/app");
       }
@@ -218,6 +221,9 @@ export default defineComponent({
 
             this.submitted = false;
             this.checkEmail = false;
+
+            // Set root key
+            account.setRootKey(rootKey);
 
             // Push to app home
             this.router.push("/app");

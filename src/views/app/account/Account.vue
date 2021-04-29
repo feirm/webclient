@@ -68,7 +68,7 @@
 
                 <!-- Buttons -->
                 <div class="space-x-3">
-                    <button @click="nextStep" :disabled="changeTwoFactor.selected === profile.two_factor_method" class="disabled:opacity-50 p-3 rounded shadow bg-orange-500 w-24 text-yellow-900">Next</button>
+                    <button @click="nextStep()" :disabled="changeTwoFactor.selected === profile.two_factor_method" class="disabled:opacity-50 p-3 rounded shadow bg-orange-500 w-24 text-yellow-900">Next</button>
                     <button @click="closeModal()" class="p-3 rounded shadow bg-red-500 text-white w-24">Cancel</button>
                 </div>
             </div>
@@ -193,6 +193,12 @@ export default defineComponent({
 
         // Determine next step based on two-factor method chosen
         async nextStep() {
+            // If the profile says TOTP is their two factor method,
+            // but they have selected email, disable TOTP
+            if (this.profile.two_factor_method === 'totp' && this.changeTwoFactor.selected === 'email') {
+                await authService.DisableTOTP();
+            }
+
             // Go to TOTP enable screen
             if (this.changeTwoFactor.selected === "totp") {
                 // Generate TOTP secret

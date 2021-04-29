@@ -25,6 +25,14 @@
                 <button @click="showModal = !showModal" class="block p-3 w-28 rounded bg-orange-500 text-white">Edit</button>
             </div>
 
+            <!-- Deletion -->
+            <div class="p-6 shadow bg-white rounded space-y-6">
+                <h2 class="text-xl font-light">Account deletion</h2>
+                
+                <p>Delete your Feirm account and all data associated to it. All of your data will be wiped immediately from our production servers, so there is no going back! We maintain rolling backups for 7 days, so your data could remain in these backups until then.</p>
+                <button @click="deleteAccount" class="block p-3 w-48 rounded bg-red-500 text-white">Delete my Feirm account</button>
+            </div>
+
             <!-- Logout -->
             <div class="p-6 shadow bg-white rounded space-y-6">
                 <h2 class="text-xl font-light">Logout</h2>
@@ -217,6 +225,15 @@ export default defineComponent({
 
             // Change to recovery codes step
             this.changeTwoFactor.step = 2;
+        },
+
+        // Delete user account
+        async deleteAccount() {
+            try {
+                await authService.DeleteAccount();
+            } catch (e) {
+                return this.$toast.error(e.response.data.error);
+            }
         }
     }
 })

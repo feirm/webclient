@@ -122,7 +122,7 @@
                     </div>
                 </div>
 
-                <button @click="closeModal" class="block w-full p-3 rounded shadow bg-orange-500 text-yellow-900">I have written down my recovery codes</button>
+                <button @click="confirmRecovery" class="block w-full p-3 rounded shadow bg-orange-500 text-yellow-900">I have written down my recovery codes</button>
             </div>
         </div>
 
@@ -202,6 +202,13 @@ export default defineComponent({
             // but they have selected email, disable TOTP
             if (this.profile.two_factor_method === 'totp' && this.changeTwoFactor.selected === 'email') {
                 await authService.DisableTOTP();
+
+                // Fetch updated profile data and close modal
+                await authService.GetAccount().then(res => {
+                    this.profile = res.data;
+                });
+
+                this.closeModal();
             }
 
             // Go to TOTP enable screen
@@ -236,6 +243,15 @@ export default defineComponent({
 
             // Change to recovery codes step
             this.changeTwoFactor.step = 2;
+        },
+
+        // User has confirmed they've written down their recovery codes, so fetch and update profile data
+        async confirmRecovery() {
+            await authService.GetAccount().then(res => {
+                this.profile = res.data;
+            });
+
+            this.closeModal();
         },
 
         // Delete user account

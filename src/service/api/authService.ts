@@ -99,6 +99,11 @@ export default {
     });
   },
 
+  // Disable TOTP
+  DisableTOTP() {
+    return gatewayApi.post("auth/v1/account/disable-totp");
+  },
+
   // Get account recovery codes
   GetRecoveryCodes() {
     return gatewayApi.get("auth/v1/account/recovery-codes");

@@ -17,6 +17,8 @@ import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
 import Account from "@/views/app/account/Account.vue";
 import Protected from "@/views/app/Protected.vue";
 
+// Wallet
+import WalletIndex from "@/views/app/wallet/Index.vue";
 import WalletNew from "@/views/app/wallet/New.vue";
 
 // Bridge
@@ -79,6 +81,14 @@ const routes: Array<RouteRecordRaw> = [
         component: Account,
         meta: {
           title: "My Account",
+          authRequired: true
+        }
+      },
+      {
+        path: "wallet",
+        component: WalletIndex,
+        meta: {
+          title: "Wallet",
           authRequired: true
         }
       },

@@ -8,3 +8,8 @@ interface EncryptedWallet {
     iv: string;
     signature: string;
 }
+
+export {
+    Wallet,
+    EncryptedWallet
+}

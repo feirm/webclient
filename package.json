@@ -11,6 +11,7 @@
     "@meforma/vue-toaster": "^1.2.2",
     "argon2-browser": "^1.15.3",
     "axios": "^0.21.1",
+    "bip39": "^3.0.4",
     "core-js": "^3.6.5",
     "elliptic": "^6.5.4",
     "keccak256": "^1.0.2",

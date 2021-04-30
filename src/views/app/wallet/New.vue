@@ -66,6 +66,10 @@ export default defineComponent({
 
       // Split the mnemonic
       this.splitMnemonic = mnemonic.split(" ");
+
+      // Set mnemonic and create a keypair
+      ETHWallet.setMnemonic(mnemonic);
+      ETHWallet.getWallet(0);
     },
     setup() {
         const router = useRouter();

@@ -2,8 +2,8 @@ import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
 
 export abstract class AbstractWallet {
-    id: string; // Random UUID
-    mnemonic: string; // BIP39 mnemonic
+    private id: string; // Random UUID
+    private mnemonic: string; // BIP39 mnemonic
 
     // Get wallet ID
     public getId() {
@@ -35,7 +35,7 @@ export abstract class AbstractWallet {
     }
 
     // Generate a 24-word mnemonic
-    public static generateMnemonic() {
+    public generateMnemonic(): string {
         const entropy = window.crypto.getRandomValues(new Uint8Array(32));
         const entropyBytes = Buffer.from(entropy);
 

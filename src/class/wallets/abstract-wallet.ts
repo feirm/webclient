@@ -1,7 +1,6 @@
 import bufferToHex from "@/helpers/bufferToHex";
 import { EncryptedWallet } from "@/models/wallet";
 import { entropyToMnemonic, validateMnemonic } from "bip39";
-import Wallet from "ethereumjs-wallet";
 import { v4 as uuidv4 } from "uuid";
 import account from "../account";
 
@@ -82,5 +81,12 @@ export abstract class AbstractWallet {
         wallet.signature = signature;
 
         return wallet;
+    }
+
+    // TODO: Decrypt wallet
+
+    // Save encrypted wallet to disk
+    public saveToDisk(wallet: EncryptedWallet) {
+        localStorage.setItem("wallet", JSON.stringify(wallet));
     }
 }

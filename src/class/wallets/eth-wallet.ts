@@ -10,7 +10,7 @@ class ETHWallet extends AbstractWallet {
     private address: string;
 
     // Derive root key etc
-    public getWallet(index: number): Wallet {
+    public getWallet(): Wallet {
         // Convert mnemonic to seed
         const mnemonic = this.getMnemonic();
         const seed = mnemonicToSeedSync(mnemonic);
@@ -20,7 +20,7 @@ class ETHWallet extends AbstractWallet {
 
         // Derive a wallet from node
         const path = "m/44'/60'/0'/0"; // Standard BIP-44
-        const node = rootKey.derivePath(path).deriveChild(index);
+        const node = rootKey.derivePath(path).deriveChild(0);
 
         const wallet = node.getWallet();
         return wallet;

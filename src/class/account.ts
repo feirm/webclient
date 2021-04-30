@@ -174,6 +174,26 @@ class Account {
     const signed = identityKeypair.sign(hash).toHex().toLowerCase();
     return signed;
   }
+
+  // Derive encryption key
+  async deriveEncryptionKey(rootKey: Uint8Array): Promise<CryptoKey> {
+    // Construct master encryption key by SHA-256 hashing root key + enc
+    const keyType = new TextEncoder().encode(Keys.ENCRYPTION);
+    const mergedKey = new Uint8Array([...rootKey, ...keyType])
+    const encKey = await window.crypto.subtle.digest("SHA-256", mergedKey);
+
+    // Derive AES256 encryption key
+    const aesKey = await window.crypto.subtle.importKey(
+      "raw",
+      encKey,
+      { name: "AES-CBC" },
+      false,
+      ["encrypt", "decrypt"]
+    );
+
+    // Return the AES key
+    return aesKey;
+  }
 }
 
 export default new Account();

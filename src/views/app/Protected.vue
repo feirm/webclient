@@ -9,7 +9,7 @@
       <div class="bg-white p-6 rounded shadow space-y-3">
         <h1 class="text-xl text-center">Create a new wallet</h1>
         <p>Don't have a cryptocurrency wallet just yet? We'll take you through the process of creating one, backing it up and using it with a wide variety of cryptocurrencies we support.</p>
-        <button class="block p-3 bg-orange-500 w-full rounded shadow text-white font-light">Get started</button>
+        <button @click="createWallet" class="block p-3 bg-orange-500 w-full rounded shadow text-white font-light">Get started</button>
       </div>
 
       <div class="bg-white p-6 rounded shadow space-y-3">
@@ -24,13 +24,21 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Protected",
-  data() {
+  setup() {
+    const router = useRouter();
+
     return {
-      account: ""
-    };
+      router
+    }
   },
+  methods: {
+    createWallet() {
+      this.router.push("/app/wallet/new");
+    }
+  }
 });
 </script>

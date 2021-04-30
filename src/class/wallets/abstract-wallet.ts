@@ -83,7 +83,25 @@ export abstract class AbstractWallet {
         return wallet;
     }
 
-    // TODO: Decrypt wallet
+    // Decrypt wallet to return mnemonic
+    public async decryptWallet(rootKey: Uint8Array, wallet: EncryptedWallet): Promise<string> {
+        // Reconstruct encryption key and convert some properties to buffer form
+        const encryptionKey = await account.deriveEncryptionKey(rootKey);
+        const iv = Buffer.from(wallet.iv, 'hex');
+
+        const mnemonicBytes = Buffer.from(wallet.ciphertext, 'hex');
+
+        // Decrypt the wallet
+        const decryptWallet = await window.crypto.subtle.decrypt(
+            { name: "AES-CBC", iv: iv },
+            encryptionKey,
+            mnemonicBytes
+        );
+
+        // Convert from buffer to utf-8 readable
+        const mnemonic = new TextDecoder().decode(decryptWallet)
+        return mnemonic;
+    }
 
     // Save encrypted wallet to disk
     public saveToDisk(wallet: EncryptedWallet) {

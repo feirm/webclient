@@ -39,6 +39,8 @@
                 <p>Your wallet will be AES encrypted before it is linked to your Feirm account. Do not solely rely on your wallet being linked to your account - always make sure you have a backup of your wallet for peace of mind.</p>
             </div>
 
+            {{ address }}
+
             <!-- Move onto recovery -->
             <button class="block p-3 rounded bg-orange-500 w-full text-yellow-900">Next</button>
         </div>
@@ -50,16 +52,18 @@ import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ETHWallet from "@/class/wallets/eth-wallet";
+import account from '@/class/account';
 
 export default defineComponent({
     data() {
         return {
+            address: "",
             mnemonic: "",
             splitMnemonic: [],
             cloudBackup: false
         }
     },
-    mounted() {
+    async mounted() {
       // Generate and set mnemonic
       const mnemonic = ETHWallet.generateMnemonic();
       this.mnemonic = mnemonic;
@@ -67,9 +71,17 @@ export default defineComponent({
       // Split the mnemonic
       this.splitMnemonic = mnemonic.split(" ");
 
-      // Set mnemonic and create a keypair
+      // Create wallet
       ETHWallet.setMnemonic(mnemonic);
-      ETHWallet.getWallet(0);
+      const wallet = ETHWallet.getWallet();
+
+      ETHWallet.setAddress(wallet.getAddressString());
+      this.address = ETHWallet.getAddress();
+
+      // Encrypt wallet
+      const rootKey = account.getRootKey();
+      const encryptedWallet = await ETHWallet.encrypt(rootKey);
+      console.log(encryptedWallet);
     },
     setup() {
         const router = useRouter();

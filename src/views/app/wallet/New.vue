@@ -39,10 +39,8 @@
                 <p>Your wallet will be AES encrypted before it is linked to your Feirm account. Do not solely rely on your wallet being linked to your account - always make sure you have a backup of your wallet for peace of mind.</p>
             </div>
 
-            {{ address }}
-
             <!-- Move onto recovery -->
-            <button class="block p-3 rounded bg-orange-500 w-full text-yellow-900">Next</button>
+            <button @click="next" class="block p-3 rounded bg-orange-500 w-full text-yellow-900">Next</button>
         </div>
     </div>
 </template>
@@ -57,10 +55,30 @@ import account from '@/class/account';
 export default defineComponent({
     data() {
         return {
-            address: "",
             mnemonic: "",
             splitMnemonic: [],
             cloudBackup: false
+        }
+    },
+    methods: {
+        async next() {
+            // Create the wallet from the mnemonic
+            ETHWallet.setMnemonic(this.mnemonic);
+            const wallet = ETHWallet.getWallet();
+
+            // Encrypt wallet
+            const rootKey = account.getRootKey();
+            const encryptedWallet = await ETHWallet.encrypt(rootKey);
+
+            // If the user has backup enabled, send encrypted copy to API
+            if (this.cloudBackup) {
+                console.log("TODO: Send encrypted wallet to API...");
+            }
+      
+            // Save wallet to disk
+            ETHWallet.saveToDisk(encryptedWallet);
+
+            this.router.push("/app/wallet")
         }
     },
     async mounted() {
@@ -70,21 +88,13 @@ export default defineComponent({
 
       // Split the mnemonic
       this.splitMnemonic = mnemonic.split(" ");
-
-      // Create wallet
-      ETHWallet.setMnemonic(mnemonic);
-      const wallet = ETHWallet.getWallet();
-
-      ETHWallet.setAddress(wallet.getAddressString());
-      this.address = ETHWallet.getAddress();
-
-      // Encrypt wallet
-      const rootKey = account.getRootKey();
-      const encryptedWallet = await ETHWallet.encrypt(rootKey);
-      console.log(encryptedWallet);
     },
     setup() {
         const router = useRouter();
+
+        return {
+            router
+        }
     },
 })
 </script>

@@ -1,79 +1,72 @@
 <template>
-  <div class="flex flex-row h-screen">
-    <!-- Login form -->
-    <div
-      class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-12 space-y-4 max-w-xl"
-    >
-      <img class="mx-auto w-24" src="@/assets/img/logo.webp" alt="Feirm Logo" />
-
-      <h1 class="text-4xl text-center text-orange">
-        Welcome back to Feirm! 👋
-      </h1>
-      <p class="text-lg text-gray-50">
-        It is good to see you again! To pick up from where you left off, please
-        enter the credentials for your Feirm account.
-      </p>
-
-      <form v-on:submit.prevent="loginRequest" class="space-y-3">
-        <!-- Username -->
-        <label class="block text-orange">Username</label>
-        <input
-          class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-          v-model="username"
-          type="text"
-          placeholder="Please enter your username"
-          autofocus
-        />
-
-        <!-- Password input -->
-        <label class="block text-orange">Password</label>
-        <input
-          class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-          v-model="password"
-          type="password"
-          placeholder="Please enter your password"
-        />
-
-        <!-- TOTP token input -->
-        <div v-if="totpEnabled" class="space-y-3">
-          <label class="block text-orange">TOTP</label>
-          <input
-            class="w-full border-2 border-gray-200 p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-            v-model="totp"
-            type="number"
-            placeholder="Six-digit token"
-        />
+  <div class="min-h-screen bg-white flex">
+    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+      <div class="mx-auto w-full max-w-sm lg:w-96 space-y-6">
+        <div>
+          <img class="h-12 w-auto mx-auto" src="@/assets/img/logo.webp" alt="Feirm" />
+          <h2 class="mt-6 text-3xl font-light text-gray-900 text-center">
+            Sign in to your <span class="text-orange">Feirm</span> account
+          </h2>
         </div>
 
-        <!-- Submit button -->
-        <button
-          class="block w-full bg-orange-500 hover:bg-orange-400 p-4 rounded text-yellow-900 transition duration-300"
-          type="submit"
-          :disabled="submitted"
-        >
-          <p v-if="!submitted">Log in</p>
-          <img
-            v-else
-            class="mx-auto w-6"
-            src="@/assets/loading_spinner.svg"
-            alt="Loading spinner"
-          />
-        </button>
-      </form>
+        <div class="mt-8">
+          <div class="mt-6">
+            <form @submit.prevent="loginRequest" class="space-y-6">
+              <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">
+                  Username
+                </label>
+                <div class="mt-1">
+                  <input name="username" type="text" v-model="username" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
+              </div>
 
-      <!-- Check email prompt -->
-      <div v-if="checkEmail" class="bg-green-300 text-center p-3 rounded">
-        <p>Please check your email and approve the login request for your account. Keep this page open.</p>
+              <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <div class="mt-1">
+                  <input name="password" type="password" v-model="password" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
+              </div>
+
+              <TransitionRoot :show="totpEnabled" enter="transition-opacity duration-1000" enter-from="opacity-0" enter-to="opacity-100">
+                <div class="space-y-1">
+                  <label for="password" class="block text-sm font-medium text-gray-700">
+                    TOTP Token
+                  </label>
+                  <div class="mt-1">
+                    <input name="totp" type="text" v-model="totp" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                  </div>
+                </div>
+              </TransitionRoot>
+
+              <div class="text-sm text-center">
+                <router-link to="/app/signup" class="font-medium text-gray-600 hover:text-gray-900">
+                  Don't have an account? Sign up.
+                </router-link>
+              </div>
+
+              <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                  <span v-if="!submitted">Sign in</span>
+                  <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Only show if user needs to check their email -->
+        <TransitionRoot :show="checkEmail" enter="transition-opacity duration-1000" enter-from="opacity-0" enter-to="opacity-100">
+          <div class="bg-green-100 text-center text-gray-900 p-3 rounded">
+            <p>Please check your email and approve the login request for your account. Keep this page open.</p>
+          </div>
+        </TransitionRoot>
       </div>
     </div>
-
-    <!-- Image from Unsplash -->
-    <div class="flex-auto bg-grey-500 text-gray-900 hidden lg:contents">
-      <img
-        class="object-right h-full w-full"
-        src="https://images.unsplash.com/photo-1592838890225-2c052fa0cf34?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        alt=""
-      />
+    <div class="hidden lg:block relative w-0 flex-1">
+      <img class="absolute inset-0 h-full w-full object-cover" src="@/assets/lava.jpg" alt="" />
     </div>
   </div>
 </template>
@@ -87,8 +80,13 @@ import authService from "@/service/api/authService";
 import account from "@/class/account";
 import { EncryptedAccount } from "@/models/account";
 
+import { TransitionRoot } from "@headlessui/vue";
+
 export default defineComponent({
   name: "Login",
+  components: {
+    TransitionRoot
+  },
   data() {
     return {
       username: "",

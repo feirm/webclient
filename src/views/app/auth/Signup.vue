@@ -1,119 +1,78 @@
 <template>
-  <div class="flex flex-row h-screen">
-    <!-- Signup form -->
-    <div
-      class="flex flex-col justify-center bg-gradient-to-t from-grey-500 to-grey-900 p-6 md:p-12 w-full"
-    >
-      <div
-        class="bg-white p-4 md:p-8 rounded shadow md:w-1/3 mx-auto"
-      >
-        <img
-          class="mx-auto w-16"
-          src="@/assets/img/logo.webp"
-          alt="Feirm Logo"
-        />
-
-        <!-- Details -->
-        <div v-if="step === 0" class="space-y-3">
-          <h1 class="text-3xl md:text-4xl text-center text-orange font-light">
-            Create your Feirm account!
-          </h1>
-          <p class="md:text-lg text-left text-gray-900">
-            Welcome! Feirm is the all-in-one platform for your cryptocurrency
-            needs. Getting started won't take long!
-          </p>
-
-          <form v-on:submit.prevent="checkForm" class="space-y-3">
-            <!-- Email input -->
-            <label class="block text-gray-900">Email address</label>
-            <input
-              class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-              v-model="email"
-              type="text"
-              placeholder="Please enter an email address"
-              autofocus
-            />
-
-            <!-- Username input -->
-            <label class="block text-gray-900">Username</label>
-            <input
-              class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-              v-model="username"
-              type="text"
-              placeholder="Please pick a username"
-              v-on:input="usernameValid($event.target.value)"
-            />
-
-            <p class="text-red-400" v-if="error">{{ error }}</p>
-
-            <!-- Password input -->
-            <label class="block text-gray-900">Password</label>
-            <input
-              class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-              v-model="password"
-              type="password"
-              placeholder="Please enter your password"
-              v-on:input="checkPassword"
-            />
-
-            <meter max="4" id="password-strength-meter"></meter>
-            <p class="text-grey-400 text-center" v-if="pwError">{{ pwError }}</p>
-
-            <!-- Password confirmation input -->
-            <label class="block text-gray-900">Confirm password</label>
-            <input
-              class="w-full border-2 border-gray-200 p-2 md:p-3 rounded outline-none focus:border-orange-500 transition duration-200"
-              v-model="confirmPassword"
-              type="password"
-              placeholder="Please confirm your password"
-            />
-
-            <!-- Submit button -->
-            <button
-              class="block w-full bg-orange-500 hover:bg-orange-400 p-3 md:p-4 rounded text-yellow-900 transition duration-300"
-              type="submit"
-            >
-              <p v-if="!submitted">Submit</p>
-              <img
-                v-else
-                class="mx-auto w-6"
-                src="@/assets/loading_spinner.svg"
-                alt="Loading spinner"
-              />
-            </button>
-
-            <p class="text-center">
-              Already have an account?
-              <router-link to="/app/login" class="text-orange"
-                >Sign in</router-link
-              >.
-            </p>
-          </form>
+  <div class="min-h-screen bg-white flex">
+    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+      <div class="mx-auto w-full max-w-sm lg:w-96 space-y-6">
+        <div>
+          <img class="h-12 w-auto mx-auto" src="@/assets/img/logo.webp" alt="Feirm" />
+          <h2 class="mt-6 text-3xl font-light text-gray-900 text-center">
+            Create your <span class="text-orange">Feirm</span> account
+          </h2>
         </div>
 
-        <!-- Disclaimer -->
-        <div v-if="step === 1" class="space-y-3">
-          <h1 class="text-3xl md:text-4xl text-center text-orange font-light">
-            Disclaimer
-          </h1>
+        <div class="mt-8">
+          <div class="mt-6">
+            <form @submit.prevent="register" class="space-y-6">
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">
+                  Email address
+                </label>
+                <div class="mt-1">
+                  <input name="email" type="email" v-model="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
+              </div>
 
-          <p class="md:text-lg text-center text-gray-900">
-            You understand that due to the nature of client-side encryption, Feirm cannot recover your account or wallet(s) in the event you forget your password or mnemonic.
-          </p>
+              <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">
+                  Username
+                </label>
+                <div class="mt-1">
+                  <input name="username" type="text" v-model="username" required v-on:input="usernameValid($event.target.value)" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
 
-          <p class="md:text-lg text-center text-gray-900">
-            Additionally, if you lose access to your two-factor authentication device and recovery codes, Feirm cannot reset this on your behalf.
-          </p>
+                <TransitionRoot :show="error !== ''" class="pt-3" enter="transition-opacity duration-1000" enter-from="opacity-0" enter-to="opacity-100">
+                  <p class="text-red-400">{{ error }}</p>
+                </TransitionRoot>
+              </div>
 
-          <p class="md:text-lg text-center text-gray-900">
-            By accepting, you understand all of the above and agree to the Feirm
-            <router-link class="text-orange" to="/privacy">privacy policy</router-link> enforced throughout our projects.
-          </p>
+              <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <div class="mt-1">
+                  <input name="password" type="password" v-model="password" v-on:input="checkPassword" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
+                <meter max="4" id="password-strength-meter"></meter>
+                <p class="text-grey-400 text-center" v-if="pwError">{{ pwError }}</p>
+              </div>
 
-          <button @click="register" class="block w-full p-3 rounded shadow bg-orange-500 text-yellow-900">I agree</button>
-          <router-link to="/" class="block w-full p-3 rounded shadow bg-red-400 text-red-900 text-center">I do not agree</router-link>
+              <div class="space-y-1">
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+                  Confirm password
+                </label>
+                <div class="mt-1">
+                  <input name="confirmPassword" type="password" v-model="confirmPassword" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
+              </div>
+
+              <div class="text-sm text-center">
+                <router-link to="/app/login" class="font-medium text-gray-600 hover:text-gray-900">
+                  Already have an account? Sign in.
+                </router-link>
+              </div>
+
+              <div>
+                <button :disabled="submitted" type="submit" class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                  <span v-if="!submitted">Sign up</span>
+                  <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="hidden lg:block relative w-0 flex-1">
+      <img class="absolute inset-0 h-full w-full object-cover" src="@/assets/lava2.jpg" alt="" />
     </div>
   </div>
 </template>
@@ -129,8 +88,13 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import bufferToHex from "@/helpers/bufferToHex";
 
+import { TransitionRoot } from "@headlessui/vue";
+
 export default defineComponent({
   name: "Signup",
+  components: {
+    TransitionRoot
+  },
   data() {
     return {
       step: 0,
@@ -192,8 +156,7 @@ export default defineComponent({
           break;
       }
     },
-
-    async checkForm() {
+    async register() {
       // Check if email is empty
       if (!this.email) {
         return this.$toast.error("Email address cannot be empty!");
@@ -204,16 +167,16 @@ export default defineComponent({
         return this.$toast.error("Username cannot be empty!");
       }
 
-      // Check if username valid
+      // Check if email valid
       try {
-        await authService.CheckUsername(this.username);
+        await authService.CheckEmail(this.email);
       } catch (e) {
         return this.$toast.error(e.response.data.error);
       }
 
-      // Check if email valid
+      // Check if username valid
       try {
-        await authService.CheckEmail(this.email);
+        await authService.CheckUsername(this.username);
       } catch (e) {
         return this.$toast.error(e.response.data.error);
       }
@@ -228,10 +191,6 @@ export default defineComponent({
         return this.$toast.error("Passwords do not match!");
       }
 
-      // Continue to disclaimer page
-      this.step++;
-    },
-    async register() {
       // Generate a root key and encrypt it
       const rootKey = account.generateRootKey();
       const encryptedKey = await account.generateEncryptedRootKey(rootKey, this.password);

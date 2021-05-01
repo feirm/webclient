@@ -30,7 +30,7 @@
                 </div>
               </div>
 
-              <TransitionRoot :show="totpEnabled" enter="transition-opacity duration-1000" enter-from="opacity-0" enter-to="opacity-100">
+              <TransitionRoot :show="totpEnabled" enter="transition-opacity duration-750" enter-from="opacity-0" enter-to="opacity-100">
                 <div class="space-y-1">
                   <label for="password" class="block text-sm font-medium text-gray-700">
                     TOTP Token
@@ -48,7 +48,7 @@
               </div>
 
               <div>
-                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                <button :disabled="submitted" type="submit" class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                   <span v-if="!submitted">Sign in</span>
                   <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
                 </button>

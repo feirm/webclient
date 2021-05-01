@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.1.1",
+    "@heroicons/vue": "^1.0.1",
     "@meforma/vue-toaster": "^1.2.2",
     "argon2-browser": "^1.15.3",
     "axios": "^0.21.1",

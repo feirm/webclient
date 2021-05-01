@@ -4,13 +4,15 @@
       <div class="flex justify-between h-16">
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
-            <img class="block lg:hidden h-10 w-auto" src="@/assets/img/logo.webp" alt="Feirm" />
-            <img class="hidden lg:block h-10 w-auto" src="@/assets/img/logo.webp" alt="Feirm" />
+            <router-link to="/">
+              <img class="block lg:hidden h-10 w-auto" src="@/assets/img/logo.webp" alt="Feirm" />
+              <img class="hidden lg:block h-10 w-auto" src="@/assets/img/logo.webp" alt="Feirm" />
+            </router-link>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <a href="#" class="border-orange-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+            <router-link to="/app/wallet" class="border-orange-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
               Wallet
-            </a>
+            </router-link>
           </div>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:items-center">
@@ -49,8 +51,7 @@
 
     <DisclosurePanel class="sm:hidden">
       <div class="pt-2 pb-3 space-y-1">
-        <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-        <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
+        <a href="#" class="bg-orange-50 border-orange-500 text-gray-900 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
         <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Team</a>
         <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Projects</a>
         <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Calendar</a>

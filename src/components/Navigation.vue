@@ -23,15 +23,15 @@
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex items-center">
               <div class="flex-shrink ml-3" v-if="!isLoggedIn">
-                <button type="button" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-900 bg-gray-200 hover:bg-gray-100">
+                <router-link to="/app/login" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-900 bg-gray-200 hover:bg-gray-100">
                   <span>Sign in</span>
-                </button>
+                </router-link>
               </div>
 
             <div class="flex-shrink-0 ml-3" v-if="!isLoggedIn">
-              <button type="button" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400">
+              <router-link to="/app/signup" class="block items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-yellow-900 bg-orange-500 hover:bg-orange-400">
                 <span>Sign up</span>
-              </button>
+              </router-link>
             </div>
 
             <!-- Profile dropdown -->

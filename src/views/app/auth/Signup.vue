@@ -10,14 +10,14 @@
         </div>
 
         <div class="mt-8">
-          <div class="mt-6">
-            <form @submit.prevent="register" class="space-y-6">
+          <div class="mt-6" v-if="formStep === 0">
+            <form @submit.prevent="checkForm" class="space-y-6">
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">
-                  Email address
+                  Email address (Optional)
                 </label>
                 <div class="mt-1">
-                  <input name="email" type="email" v-model="email" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                  <input name="email" type="email" v-model="email" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
                 </div>
               </div>
 
@@ -68,6 +68,27 @@
               </div>
             </form>
           </div>
+
+          <!-- TOTP setup -->
+          <div class="mt-6 space-y-3" v-if="formStep === 1">
+            <p>You have chosen to create your Feirm account with a username only. To protect your account, you need to setup TOTP. Please scan the QR code or manually enter the secret below into your authenticator app.</p>
+            <img class="mx-auto" :src="totpSecretQr">
+
+            <div class="border-2 border-gray-200 rounded text-sm p-2 w-3/4 text-center mx-auto">
+              <code>{{ totp.secret }}</code>
+            </div>
+
+            <div class="space-y-3">
+              <label for="totp" class="block text-sm font-medium text-gray-700">
+                TOTP Token
+              </label>
+              <input name="totp" type="text" v-model="totp.token" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+            </div>
+
+            <button :disabled="submitted" @click="register" class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+              <span>Submit</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -87,8 +108,10 @@ import { EncryptedAccount } from "@/models/account";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import bufferToHex from "@/helpers/bufferToHex";
+import qrcode from "qrcode";
 
 import { TransitionRoot } from "@headlessui/vue";
+import { authenticator } from "@otplib/preset-default";
 
 export default defineComponent({
   name: "Signup",
@@ -97,11 +120,17 @@ export default defineComponent({
   },
   data() {
     return {
-      step: 0,
+      formStep: 0,
 
       email: "",
       username: "",
       password: "",
+
+      totpSecretQr: "",
+      totp: {
+        secret: "",
+        token: ""
+      },
 
       error: "",
       pwError: "",
@@ -141,7 +170,7 @@ export default defineComponent({
           break;
 
         case 2:
-          this.pwError = "Password is medium!";
+          this.pwError = "Password is medium strength!";
           break;
 
         case 3:
@@ -156,29 +185,11 @@ export default defineComponent({
           break;
       }
     },
-    async register() {
-      // Check if email is empty
-      if (!this.email) {
-        return this.$toast.error("Email address cannot be empty!");
-      }
 
+    async checkForm() {
       // Check if username is empty
       if (!this.username) {
         return this.$toast.error("Username cannot be empty!");
-      }
-
-      // Check if email valid
-      try {
-        await authService.CheckEmail(this.email);
-      } catch (e) {
-        return this.$toast.error(e.response.data.error);
-      }
-
-      // Check if username valid
-      try {
-        await authService.CheckUsername(this.username);
-      } catch (e) {
-        return this.$toast.error(e.response.data.error);
       }
 
       // Check if passwords are empty
@@ -191,6 +202,31 @@ export default defineComponent({
         return this.$toast.error("Passwords do not match!");
       }
 
+      // Check if username valid
+      try {
+        await authService.CheckUsername(this.username);
+      } catch (e) {
+        return this.$toast.error(e.response.data.error);
+      }
+
+      // Determine if an email address is present and if not, navigate to TOTP setup
+      if (this.email == "") {
+        // Generate TOTP secret
+        const secret = authenticator.generateSecret(16);
+        this.totp.secret = secret;
+
+        // Generate scannable QR code
+        const otpauth = authenticator.keyuri(this.username, "Feirm", secret);
+        this.totpSecretQr = await qrcode.toDataURL(otpauth);
+
+        return this.formStep = 1;
+      }
+
+      // Othwerise register
+      await this.register();
+    },
+
+    async register() {
       // Generate a root key and encrypt it
       const rootKey = account.generateRootKey();
       const encryptedKey = await account.generateEncryptedRootKey(rootKey, this.password);
@@ -211,7 +247,8 @@ export default defineComponent({
         token: {
           id: token.data.id,
           signature: signature
-        }
+        },
+        totp: this.totp
       };
 
       // Submit account object to API

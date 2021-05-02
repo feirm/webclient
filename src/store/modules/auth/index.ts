@@ -62,6 +62,10 @@ export const auth = {
         return false;
       }
 
+      if (!token || !rootKey) {
+        return false;
+      }
+
       return true;
     }
   }

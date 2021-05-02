@@ -13,15 +13,6 @@
           <div class="mt-6" v-if="formStep === 0">
             <form @submit.prevent="checkForm" class="space-y-6">
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">
-                  Email address (Optional)
-                </label>
-                <div class="mt-1">
-                  <input name="email" type="email" v-model="email" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
-                </div>
-              </div>
-
-              <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">
                   Username
                 </label>
@@ -32,6 +23,15 @@
                 <TransitionRoot :show="error !== ''" class="pt-3" enter="transition-opacity duration-1000" enter-from="opacity-0" enter-to="opacity-100">
                   <p class="text-red-400">{{ error }}</p>
                 </TransitionRoot>
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">
+                  Email address (optional)
+                </label>
+                <div class="mt-1">
+                  <input name="email" type="email" v-model="email" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                </div>
               </div>
 
               <div class="space-y-1">
@@ -86,7 +86,8 @@
             </div>
 
             <button :disabled="submitted" @click="register" class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-              <span>Submit</span>
+              <span v-if="!submitted">Submit</span>
+              <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
             </button>
           </div>
         </div>
@@ -121,6 +122,7 @@ export default defineComponent({
   data() {
     return {
       formStep: 0,
+      submitted: false,
 
       email: "",
       username: "",
@@ -203,9 +205,12 @@ export default defineComponent({
       }
 
       // Check if username valid
+      this.submitted = true;
       try {
+        this.submitted = false;
         await authService.CheckUsername(this.username);
       } catch (e) {
+        this.submitted = false;
         return this.$toast.error(e.response.data.error);
       }
 
@@ -227,6 +232,8 @@ export default defineComponent({
     },
 
     async register() {
+      this.submitted = true;
+
       // Generate a root key and encrypt it
       const rootKey = account.generateRootKey();
       const encryptedKey = await account.generateEncryptedRootKey(rootKey, this.password);
@@ -261,6 +268,7 @@ export default defineComponent({
         // Set refresh and access token
         this.store.dispatch("login", accessToken);
       } catch (e) {
+        this.submitted = false;
         return this.$toast.error(e.response.data.error);
       }
 
@@ -269,6 +277,7 @@ export default defineComponent({
         const rootKey = await account.decryptRootKey(this.password, encryptedAccount);
         account.setRootKey(rootKey);
       } catch (e) {
+        this.submitted = false;
         return this.$toast.error(e);
       }
 
@@ -279,10 +288,12 @@ export default defineComponent({
           this.store.dispatch("setUsername", username);
         })
       } catch (e) {
+        this.submitted = false;
         return this.$toast.error(e.response.data.error);
       }
 
       // Direct to app home
+      this.submitted = false;
       this.router.push("/app/");
     },
   },

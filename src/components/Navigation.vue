@@ -11,12 +11,12 @@
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
-              <a href="#" class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platform</a>
-              <a href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Token</a>
-              <a href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Bridge</a>
+              <a v-if="!isLoggedIn" href="#" class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platform</a>
+              <a v-if="!isLoggedIn" href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Token</a>
+              <a v-if="!isLoggedIn" href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Bridge</a>
 
               <!-- Authenticated routes -->
-              <a href="#" v-if="isLoggedIn" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wallet</a>
+              <router-link to="/app/wallet" v-if="isLoggedIn" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wallet</router-link>
             </div>
           </div>
         </div>

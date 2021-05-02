@@ -26,6 +26,8 @@ import { defineComponent } from "vue";
 
 import Navigation from "@/components/Navigation.vue";
 import Footer from "@/components/Footer.vue";
+import account from "./class/account";
+import hexToBytes from "./helpers/hexToBytes";
 
 export default defineComponent({
   components: {
@@ -53,6 +55,13 @@ export default defineComponent({
     }
   },
   created() {
+    // Check if there is a root key already saved to this device
+    const rootKey = localStorage.getItem("rootKey");
+    if (rootKey) {
+      account.setRootKey(hexToBytes(rootKey));
+    }
+
+    // Event listener for service worker
     document.addEventListener("serviceWorkerUpdateEvent", this.updateUI, {
       once: true
     });

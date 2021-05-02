@@ -25,6 +25,12 @@
                 <button @click="showModal = !showModal" class="block p-3 w-28 rounded bg-orange-500 text-white">Edit</button>
             </div>
 
+            <!-- Device -->
+            <div class="p-6 shadow bg-white rounded space-y-6">
+                <h2 class="text-xl font-light">Device</h2>
+                <button class="block p-3 rounded bg-orange-500 text-yellow-900" @click="saveRootKey">Save root key to device</button>
+            </div>
+
             <!-- Deletion -->
             <div class="p-6 shadow bg-white rounded space-y-6">
                 <h2 class="text-xl font-light">Account deletion</h2>
@@ -138,6 +144,8 @@ import qrcode from "qrcode";
 
 import { mapActions, mapGetters } from 'vuex';
 import { useRouter } from 'vue-router';
+import account from '@/class/account';
+import bufferToHex from '@/helpers/bufferToHex';
 
 export default defineComponent({
     data() {
@@ -273,6 +281,11 @@ export default defineComponent({
 
             // Push to index
             this.router.push("/");
+        },
+
+        saveRootKey() {
+            const rootKey = account.getRootKey();
+            localStorage.setItem("rootKey", bufferToHex(rootKey));
         }
     },
     setup() {

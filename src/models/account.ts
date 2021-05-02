@@ -1,11 +1,12 @@
 // Representation of an encrypted account
 interface EncryptedAccount {
-  email: string;
+  email?: string;
   username: string;
   identity_publickey: string;
   encrypted_key: EncryptedKey;
   created_at?: number;
   version?: number;
+  totp?: TOTP;
 
   token?: EphemeralToken;
 }
@@ -29,6 +30,12 @@ interface EphemeralToken {
 interface SignedSessionToken {
   token_id: string;
   signature: string;
+}
+
+// Representation for TOTP field on sign-up
+interface TOTP {
+  secret?: string;
+  token?: string;
 }
 
 export { EncryptedAccount, EncryptedKey, SignedSessionToken };

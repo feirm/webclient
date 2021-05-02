@@ -9,8 +9,8 @@
                 
                 <p>Username: {{ profile.username }}</p>
 
-                <p>Email: {{ profile.email }}</p>
-                <button @click="verifyEmail" class="block p-3 rounded bg-orange-500" v-if="!profile.email_verified">Resend verification email</button>
+                <p v-if="profile.email">Email: {{ profile.email }}</p>
+                <button v-show="profile.email" @click="verifyEmail" class="block p-3 rounded bg-orange-500" v-if="!profile.email_verified">Resend verification email</button>
             </div>
 
             <!-- Security -->
@@ -203,7 +203,11 @@ export default defineComponent({
             // If the profile says TOTP is their two factor method,
             // but they have selected email, disable TOTP
             if (this.profile.two_factor_method === 'totp' && this.changeTwoFactor.selected === 'email') {
-                await authService.DisableTOTP();
+                try {
+                    await authService.DisableTOTP();
+                } catch (e) {
+                    return this.$toast.error(e.response.data.error);
+                }
 
                 // Fetch updated profile data and close modal
                 await authService.GetAccount().then(res => {

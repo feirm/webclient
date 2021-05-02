@@ -16,7 +16,7 @@
               <a href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Bridge</a>
 
               <!-- Authenticated routes -->
-              <a href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wallet</a>
+              <a href="#" v-if="isLoggedIn" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wallet</a>
             </div>
           </div>
         </div>
@@ -25,7 +25,7 @@
             <!-- Profile dropdown -->
             <Menu as="div" class="ml-3 relative">
               <div>
-                <MenuButton class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                <MenuButton v-if="isLoggedIn" class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                   <span class="sr-only">Open user menu</span>
                   <span class="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
                     <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
@@ -96,6 +96,7 @@
 import { ref } from 'vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { MenuIcon, XIcon } from '@heroicons/vue/outline'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -108,6 +109,9 @@ export default {
     MenuItems,
     MenuIcon,
     XIcon,
+  },
+  computed: {
+    ...mapGetters(["isLoggedIn"])
   },
   setup() {
     const open = ref(false)

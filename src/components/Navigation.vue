@@ -22,10 +22,22 @@
         </div>
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex items-center">
+              <div class="flex-shrink ml-3" v-if="!isLoggedIn">
+                <button type="button" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-900 bg-gray-200 hover:bg-gray-100">
+                  <span>Sign in</span>
+                </button>
+              </div>
+
+            <div class="flex-shrink-0 ml-3" v-if="!isLoggedIn">
+              <button type="button" class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400">
+                <span>Sign up</span>
+              </button>
+            </div>
+
             <!-- Profile dropdown -->
-            <Menu as="div" class="ml-3 relative">
+            <Menu v-if="isLoggedIn" as="div" class="ml-3 relative">
               <div>
-                <MenuButton v-if="isLoggedIn" class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                <MenuButton class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                   <span class="sr-only">Open user menu</span>
                   <span class="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
                     <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">

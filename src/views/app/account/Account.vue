@@ -44,7 +44,7 @@
                 <h2 class="text-xl font-light">Logout</h2>
                 
                 <p>When using a shared device, it is recommended for you to log out before leaving.</p>
-                <button @click="logout" class="block p-3 w-28 rounded bg-red-500 text-white">Logout</button>
+                <button @click="logoutUser" class="block p-3 w-28 rounded bg-red-500 text-white">Logout</button>
             </div>
         </div>
     </div>
@@ -204,6 +204,12 @@ export default defineComponent({
             this.showModal = false;
             this.changeTwoFactor.selected = "";
             this.changeTwoFactor.step = 0;
+        },
+
+        // Logout user
+        logoutUser() {
+            this.logout();
+            this.router.push("/");
         },
 
         // Determine next step based on two-factor method chosen

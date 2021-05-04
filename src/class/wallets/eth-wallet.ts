@@ -1,6 +1,5 @@
-import { mnemonicToSeedSync } from "bip39";
 import { AbstractWallet } from "./abstract-wallet";
-import Wallet, { hdkey } from "ethereumjs-wallet";
+import HDWalletProvider from "@truffle/hdwallet-provider";
 
 /**
  * A BIP-44 compatible wallet suitable for Ethereum and Binance Smart Chain
@@ -10,20 +9,16 @@ class ETHWallet extends AbstractWallet {
     private address: string;
 
     // Derive root key etc
-    public getWallet(): Wallet {
-        // Convert mnemonic to seed
+    public getWallet(): HDWalletProvider {
+        // Create a new HDWalletProvider
         const mnemonic = this.getMnemonic();
-        const seed = mnemonicToSeedSync(mnemonic);
 
-        // Derive root key
-        const rootKey = hdkey.fromMasterSeed(seed);
-
-        // Derive a wallet from node
-        const path = "m/44'/60'/0'/0"; // Standard BIP-44
-        const node = rootKey.derivePath(path).deriveChild(0);
-
-        const wallet = node.getWallet();
-        return wallet;
+        const provider = new HDWalletProvider({
+            mnemonic: mnemonic,
+            providerOrUrl: "https://bsc-dataseed.binance.org"
+        });
+        
+        return provider;
     }
 
     // Set address

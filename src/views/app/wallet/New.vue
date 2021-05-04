@@ -64,7 +64,6 @@ export default defineComponent({
         async next() {
             // Create the wallet from the mnemonic
             ETHWallet.setMnemonic(this.mnemonic);
-            const wallet = ETHWallet.getWallet();
 
             // Encrypt wallet
             const rootKey = account.getRootKey();
@@ -76,8 +75,7 @@ export default defineComponent({
             }
       
             // Save wallet to disk
-            ETHWallet.saveToDisk(encryptedWallet);
-
+            await ETHWallet.saveToDisk(encryptedWallet);
             this.router.push("/app/wallet")
         }
     },

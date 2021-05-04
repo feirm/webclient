@@ -8,16 +8,32 @@ import HDWalletProvider from "@truffle/hdwallet-provider";
 class ETHWallet extends AbstractWallet {
     private address: string;
 
-    // Derive root key etc
-    public getWallet(): HDWalletProvider {
-        // Create a new HDWalletProvider
+    public createProvider(network: string): HDWalletProvider {
+        // Determine the provider URL based on the network
+        let providerUrl;
+
+        switch (network) {
+            case "eth": {
+                providerUrl = "https://main-light.eth.linkpool.io";
+                break;
+            }
+            case "bsc": {
+                providerUrl = "https://bsc-dataseed.binance.org";
+                break;
+            }
+            default: {
+                throw new Error("Network not valid!");
+            }
+        }
+
+        // Create a new HD provider using the mnemonic and URL determined
         const mnemonic = this.getMnemonic();
 
         const provider = new HDWalletProvider({
             mnemonic: mnemonic,
-            providerOrUrl: "https://bsc-dataseed.binance.org"
+            providerOrUrl: providerUrl
         });
-        
+
         return provider;
     }
 

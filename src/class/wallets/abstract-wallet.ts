@@ -2,9 +2,11 @@ import bufferToHex from "@/helpers/bufferToHex";
 import { EncryptedWallet } from "@/models/wallet";
 import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
-import account from "../account";
 
-export abstract class AbstractWallet {
+import account from "../account";
+import { DB } from "../db";
+
+export abstract class AbstractWallet extends DB {
     private id: string; // Random UUID
     private mnemonic: string; // BIP39 mnemonic
 
@@ -103,8 +105,10 @@ export abstract class AbstractWallet {
         return mnemonic;
     }
 
-    // Save encrypted wallet to disk
-    public saveToDisk(wallet: EncryptedWallet) {
-        localStorage.setItem("wallet", JSON.stringify(wallet));
+    // Save encrypted wallet to IndexedDB
+    public async saveToDisk(wallet: EncryptedWallet) {
+        // Remove existing wallets before adding the new one
+        await this.wallets.clear();
+        await this.wallets.add(wallet, wallet.id);
     }
 }

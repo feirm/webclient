@@ -16,6 +16,7 @@
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
     "core-js": "^3.6.5",
+    "dexie": "^3.0.3",
     "elliptic": "^6.5.4",
     "ethereumjs-wallet": "^1.0.1",
     "keccak256": "^1.0.2",

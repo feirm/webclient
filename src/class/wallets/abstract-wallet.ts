@@ -111,4 +111,12 @@ export abstract class AbstractWallet extends DB {
         await this.wallets.clear();
         await this.wallets.add(wallet, wallet.id);
     }
+
+    // Fetch an encrypted wallet from IndexedDB
+    public async getFromDisk() {
+        const collection = this.wallets.toCollection();
+        const wallet = collection.first();
+
+        return wallet!;
+    }
 }

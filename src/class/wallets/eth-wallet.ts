@@ -1,5 +1,7 @@
 import { AbstractWallet } from "./abstract-wallet";
 import HDWalletProvider from "@truffle/hdwallet-provider";
+import Web3 from "web3";
+import { Provider } from "@truffle/hdwallet-provider/dist/constructor/types";
 
 /**
  * A BIP-44 compatible wallet suitable for Ethereum and Binance Smart Chain
@@ -7,8 +9,9 @@ import HDWalletProvider from "@truffle/hdwallet-provider";
  */
 class ETHWallet extends AbstractWallet {
     private address: string;
+    private web3: Web3;
 
-    public createProvider(network: string): HDWalletProvider {
+    public createProvider(network: string): Provider {
         // Determine the provider URL based on the network
         let providerUrl;
 
@@ -34,6 +37,11 @@ class ETHWallet extends AbstractWallet {
             providerOrUrl: providerUrl
         });
 
+        // Create new Web3
+        const web3 = new Web3(provider);
+        this.web3 = web3;
+
+        // Return the provider
         return provider;
     }
 
@@ -45,6 +53,12 @@ class ETHWallet extends AbstractWallet {
     // Get address
     public getAddress(): string {
         return this.address
+    }
+
+    // Get address balance
+    public async getBalance(): Promise<string> {
+        const balance = await this.web3.eth.getBalance(this.address);
+        return balance;
     }
 }
 

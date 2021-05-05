@@ -18,6 +18,7 @@ import Account from "@/views/app/account/Account.vue";
 import Protected from "@/views/app/Protected.vue";
 
 // Wallet
+import WalletHome from "@/views/app/wallet/Wallet.vue";
 import WalletIndex from "@/views/app/wallet/Index.vue";
 import WalletNew from "@/views/app/wallet/New.vue";
 
@@ -87,6 +88,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "wallet",
         component: WalletIndex,
+        meta: {
+          title: "Wallet",
+          authRequired: true
+        }
+      },
+      {
+        path: "wallet/:ticker",
+        component: WalletHome,
         meta: {
           title: "Wallet",
           authRequired: true

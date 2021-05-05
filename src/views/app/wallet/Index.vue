@@ -35,7 +35,6 @@
 import { onMounted, ref } from "vue";
 import ethWallet from "@/class/wallets/eth-wallet";
 import account from "@/class/account";
-import Web3 from "web3";
 import { useRouter } from 'vue-router';
 
 // ETH/BSC tokens
@@ -78,15 +77,13 @@ export default {
       const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
       ethWallet.setMnemonic(mnemonic);
 
-      // Create a new provider and Web3
-      const provider = ethWallet.createProvider("bsc");
-      const web3 = new Web3(provider);
+      // We can get a Web3 provider and our wallet
+      const web3 = ethWallet.getWeb3();
+      const newWallet = ethWallet.getWallet();
 
-      const addresses = await web3.eth.getAccounts();
-      address.value = addresses[0];
-
-      // Set the value of ETH address in the wallet
-      ethWallet.setAddress(address.value);
+      // Get wallet balance
+      const balance = web3.eth.getBalance(newWallet.getAddressString());
+      console.log(balance);
     });
 
     return {

@@ -5,7 +5,7 @@
                 <!-- Balance -->
                 <div class="space-y-0">
                     <h1 class="font-light text-2xl">Balance</h1>
-                    <h2 class="font-medium text-2xl">0.00 {{ ticker.toUpperCase() }}</h2>
+                    <h2 class="font-medium text-2xl">{{ balance }} {{ ticker.toUpperCase() }}</h2>
                 </div>
 
                 <hr class="m-3">
@@ -13,18 +13,18 @@
                 <!-- Send actions -->
                 <h1 class="font-light text-xl">Send {{ ticker.toUpperCase() }}</h1>
 
-                <form @submit.prevent="" class="space-y-6">
+                <form @submit.prevent="send(ticker)" class="space-y-6">
                     <div>
                         <label for="username" class="block text-sm font-medium text-gray-700">Recipient address</label>
                         <div class="mt-1">
-                            <input name="address" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                            <input name="address" v-model="recipientAddress" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
                         </div>
                     </div>
 
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">Amount</label>
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
                         <div class="mt-1">
-                            <input name="address" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                            <input name="amount" v-model="amount" type="number" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
                         </div>
                     </div>
 
@@ -61,24 +61,50 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import qrcode from "qrcode";
+import Web3 from 'web3';
+import account from '@/class/account';
 
 export default defineComponent({
     name: "Wallet",
+    data() {
+        return {
+            recipientAddress: "",
+            amount: ""
+        }
+    },
+    methods: {
+        async send(token: string) {
+            // Handle BNB only
+            if (token === 'bnb') {
+                const tx = await ethWallet.sendCoin(this.recipientAddress, this.amount);
+            }
+        }
+    },
     setup() {
         const route = useRoute();
         const ticker = route.params.ticker;
 
-        const address = ethWallet.getAddress();
+        const address = ethWallet.getWallet().getAddressString();
+
         const addressQr = ref();
+        const balance = ref();
 
         onMounted(async () => {
+            // Get Web3 connection and fetch balance
+            const web3 = ethWallet.getWeb3("bsc");
+            const bal = await web3.eth.getBalance(address);
+            const amount = Web3.utils.fromWei(bal, "ether");
+            balance.value = amount;
+
+            // Generate a QR of receiving address
             addressQr.value = await qrcode.toDataURL(address);
         })
 
         return {
             ticker,
             address,
-            addressQr
+            addressQr,
+            balance
         }
     }
 })

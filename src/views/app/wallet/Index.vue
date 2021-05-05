@@ -10,6 +10,7 @@
       v-for="token in tokens"
       :key="token.ticker"
       class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400"
+      @click="wallet(token.ticker)"
     >
       <div class="flex-shrink-0">
         <img :src="token.logo" class="w-12" alt="Feirm">
@@ -35,6 +36,7 @@ import { onMounted, ref } from "vue";
 import ethWallet from "@/class/wallets/eth-wallet";
 import account from "@/class/account";
 import Web3 from "web3";
+import { useRouter } from 'vue-router';
 
 // ETH/BSC tokens
 const tokens = [
@@ -56,8 +58,14 @@ const tokens = [
 
 export default {
   setup() {
+    const router = useRouter();
     const open = ref(false);
     const address = ref();
+
+    // Navigate to specific wallet
+    const wallet = (ticker) => {
+      router.push("/app/wallet/" + ticker);
+    }
 
     onMounted(async () => {
       // Check for encrypted wallet in IDB
@@ -82,6 +90,7 @@ export default {
       address,
       open,
       tokens,
+      wallet
     };
   },
 };

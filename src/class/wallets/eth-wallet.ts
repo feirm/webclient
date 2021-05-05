@@ -70,6 +70,10 @@ class ETHWallet extends AbstractWallet {
 
     // Normal transfer
     public async sendCoin(recipient: string, amount: string) {
+        // Convert the amount from ether to Wei
+        const value = Web3.utils.toWei(amount, "ether");
+
+        // TODO: Fetch this data from somewhere...
         const bsc = Common.forCustomChain('mainnet', {
             name: 'Binance',
             networkId: 97,
@@ -83,7 +87,7 @@ class ETHWallet extends AbstractWallet {
         // Construct the transaction]
         const tx = new Transaction({
             to: recipient,
-            value: Web3.utils.toHex(amount),
+            value: Web3.utils.toHex(value),
             gasPrice: Web3.utils.toHex(gasPrice),
             gasLimit: Web3.utils.toHex(210000),
             nonce: Web3.utils.toHex(nonce)

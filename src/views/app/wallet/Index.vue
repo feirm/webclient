@@ -84,6 +84,9 @@ export default {
 
       const addresses = await web3.eth.getAccounts();
       address.value = addresses[0];
+
+      // Set the value of ETH address in the wallet
+      ethWallet.setAddress(address.value);
     });
 
     return {

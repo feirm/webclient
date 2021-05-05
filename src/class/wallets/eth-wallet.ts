@@ -11,16 +11,21 @@ import { mnemonicToSeedSync } from "bip39";
  * Derived from a BIP39 mnemonic
  */
 class ETHWallet extends AbstractWallet {
-    private address: string;
     private wallet: Wallet;
     private web3: Web3;
 
-    public setWeb3(network: string) {
+    public getWeb3(network: string) {
+        // Cache hit
+        if (this.web3) {
+            return this.web3;
+        }
+
         // Determine network provider
         const provider = this.determineProviderUrl(network);
         const web3 = new Web3(provider);
 
         this.web3 = web3;
+        return web3;
     }
 
     public getWallet(): Wallet {
@@ -63,33 +68,25 @@ class ETHWallet extends AbstractWallet {
         return providerUrl;
     }
 
-    // Set address
-    public setAddress(address: string) {
-        this.address = address;
-    }
-
-    // Get address
-    public getAddress(): string {
-        return this.address
-    }
-
     // Normal transfer
-    public async sendCoin(recipient: string, amount: string, network: string) {
+    public async sendCoin(recipient: string, amount: string) {
         const bsc = Common.forCustomChain('mainnet', {
             name: 'Binance',
             networkId: 97,
             chainId: 97
         }, 'petersburg');
 
-        // Fetch gas
+        // Fetch gas and nonce
         const gasPrice = await this.web3.eth.getGasPrice();
+        const nonce = await this.web3.eth.getTransactionCount(this.wallet.getAddressString());
 
         // Construct the transaction]
         const tx = new Transaction({
             to: recipient,
             value: Web3.utils.toHex(amount),
             gasPrice: Web3.utils.toHex(gasPrice),
-            gasLimit: Web3.utils.toHex(210000)
+            gasLimit: Web3.utils.toHex(210000),
+            nonce: Web3.utils.toHex(nonce)
         }, { common: bsc });
 
         const signedTx = tx.sign(this.wallet.getPrivateKey());

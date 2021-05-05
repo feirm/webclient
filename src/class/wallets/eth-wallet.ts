@@ -1,7 +1,10 @@
 import { AbstractWallet } from "./abstract-wallet";
-import HDWalletProvider from "@truffle/hdwallet-provider";
 import Web3 from "web3";
-import { Provider } from "@truffle/hdwallet-provider/dist/constructor/types";
+
+import Common from "@ethereumjs/common";
+import { Transaction } from "@ethereumjs/tx";
+import Wallet, { hdkey } from "ethereumjs-wallet";
+import { mnemonicToSeedSync } from "bip39";
 
 /**
  * A BIP-44 compatible wallet suitable for Ethereum and Binance Smart Chain
@@ -9,10 +12,37 @@ import { Provider } from "@truffle/hdwallet-provider/dist/constructor/types";
  */
 class ETHWallet extends AbstractWallet {
     private address: string;
+    private wallet: Wallet;
     private web3: Web3;
 
-    public createProvider(network: string): Provider {
-        // Determine the provider URL based on the network
+    public setWeb3(network: string) {
+        // Determine network provider
+        const provider = this.determineProviderUrl(network);
+        const web3 = new Web3(provider);
+
+        this.web3 = web3;
+    }
+
+    public getWallet(): Wallet {
+        // Convert mnemonic to seed
+        const mnemonic = this.getMnemonic();
+        const seed = mnemonicToSeedSync(mnemonic);
+
+        // Derive root key
+        const rootKey = hdkey.fromMasterSeed(seed);
+
+        // Derive an account at 0th index
+        const path = "m/44'/60'/0'/0";
+        const account = rootKey.derivePath(path).deriveChild(0);
+
+        const wallet = account.getWallet();
+        this.wallet = wallet;
+
+        return wallet;
+    }
+
+    // Determine the provider URL based on the network
+    public determineProviderUrl(network: string): string {
         let providerUrl;
 
         switch (network) {
@@ -29,20 +59,8 @@ class ETHWallet extends AbstractWallet {
             }
         }
 
-        // Create a new HD provider using the mnemonic and URL determined
-        const mnemonic = this.getMnemonic();
-
-        const provider = new HDWalletProvider({
-            mnemonic: mnemonic,
-            providerOrUrl: providerUrl
-        });
-
-        // Create new Web3
-        const web3 = new Web3(provider);
-        this.web3 = web3;
-
         // Return the provider
-        return provider;
+        return providerUrl;
     }
 
     // Set address
@@ -55,12 +73,33 @@ class ETHWallet extends AbstractWallet {
         return this.address
     }
 
-    // Get address balance
-    public async getBalance(): Promise<string> {
-        const balance = await this.web3.eth.getBalance(this.address);
-        return balance;
+    // Normal transfer
+    public async sendCoin(recipient: string, amount: string, network: string) {
+        const bsc = Common.forCustomChain('mainnet', {
+            name: 'Binance',
+            networkId: 97,
+            chainId: 97
+        }, 'petersburg');
+
+        // Fetch gas
+        const gasPrice = await this.web3.eth.getGasPrice();
+
+        // Construct the transaction]
+        const tx = new Transaction({
+            to: recipient,
+            value: Web3.utils.toHex(amount),
+            gasPrice: Web3.utils.toHex(gasPrice),
+            gasLimit: Web3.utils.toHex(210000)
+        }, { common: bsc });
+
+        const signedTx = tx.sign(this.wallet.getPrivateKey());
+        const rawTx = signedTx.serialize().toString('hex');
+
+        const hash = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
+        alert(hash.transactionHash);
     }
+
+    // Token transfer
 }
 
-// Export a single instance of the ETH Wallet
 export default new ETHWallet();

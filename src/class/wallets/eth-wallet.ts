@@ -18,7 +18,7 @@ class ETHWallet extends AbstractWallet {
                 break;
             }
             case "bsc": {
-                providerUrl = "https://bsc-dataseed.binance.org";
+                providerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
                 break;
             }
             default: {

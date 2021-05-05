@@ -1,38 +1,58 @@
 <template>
-  <div>
-    <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl leading-tight text-gray-900">
-          My Wallet
-        </h1>
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl leading-tight text-gray-900">My Wallet</h1>
+    </div>
+  </header>
+  <div class="max-w-7xl mx-auto py-6 p-4 lg:px-8">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div
+      v-for="token in tokens"
+      :key="token.ticker"
+      class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400"
+    >
+      <div class="flex-shrink-0">
+        <img :src="token.logo" class="w-12" alt="Feirm">
       </div>
-    </header>
-    <main>
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <h1 class="text-2xl">{{ address }}</h1>
-        <div class="p-3 rounded shadow" v-for="token in tokens" :key="token.name">
-          <p>{{ token.name }}</p>
-          <p>{{ token.contract }}</p>
-        </div>
+      <div class="flex-1 min-w-0">
+        <a href="#" class="focus:outline-none">
+          <span class="absolute inset-0" aria-hidden="true" />
+          <p class="text-sm font-medium text-gray-900">
+            {{ token.name }}
+          </p>
+          <p class="text-sm text-gray-500 truncate">
+            0.00 <b>{{ token.ticker.toUpperCase() }}</b>
+          </p>
+        </a>
       </div>
-    </main>
+    </div>
+  </div>
   </div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
-import ethWallet from '@/class/wallets/eth-wallet';
-import account from '@/class/account';
-import Web3 from 'web3';
+import { onMounted, ref } from "vue";
+import ethWallet from "@/class/wallets/eth-wallet";
+import account from "@/class/account";
+import Web3 from "web3";
 
 // ETH/BSC tokens
 const tokens = [
   {
     name: "Feirm (XFE)",
+    ticker: "xfe",
+    logo: require("@/assets/img/logo.webp"),
     contract: "0x3de70dd9f65a860140f69f286a483f46e9be875a",
-    network: "binance"
-  }
-]
+    network: "binance",
+  },
+  {
+    name: "Binance Coin (BNB)",
+    ticker: "bnb",
+    logo: require("@/assets/img/binance.png"),
+    contract: "",
+    network: "binance",
+  },
+];
 
 export default {
   setup() {
@@ -56,13 +76,13 @@ export default {
 
       const addresses = await web3.eth.getAccounts();
       address.value = addresses[0];
-    })
+    });
 
     return {
       address,
       open,
-      tokens
-    }
+      tokens,
+    };
   },
-}
+};
 </script>

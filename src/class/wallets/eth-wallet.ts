@@ -6,6 +6,33 @@ import { Transaction } from "@ethereumjs/tx";
 import Wallet, { hdkey } from "ethereumjs-wallet";
 import { mnemonicToSeedSync } from "bip39";
 
+// Here is the minimum ABI we need for interacting with ERC20 contracts
+const erc20Abi: any = [
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
+
 /**
  * A BIP-44 compatible wallet suitable for Ethereum and Binance Smart Chain
  * Derived from a BIP39 mnemonic
@@ -101,6 +128,41 @@ class ETHWallet extends AbstractWallet {
     }
 
     // Token transfer
+    public async sendTokens(recipient: string, amount: string, token: string) {
+        // Convert the amount from ether to Wei
+        const value = Web3.utils.toWei(amount, "ether");
+
+        // Hardcoded address for XFE contract
+        const tokenAddress = "0x6ebfe4b1674b0c7d45f3a2b898904b268b6f3b06";
+        const contract = new this.web3.eth.Contract(erc20Abi, tokenAddress);
+
+        // Fetch gas and nonce
+        const gasPrice = await this.web3.eth.getGasPrice();
+        const nonce = await this.web3.eth.getTransactionCount(this.wallet.getAddressString());
+
+        const bsc = Common.forCustomChain('mainnet', {
+            name: 'Binance',
+            networkId: 97,
+            chainId: 97
+        }, 'petersburg');
+
+        // Construct the transfer transaction
+        const data = contract.methods.transfer(recipient, value).encodeABI();
+        const tx = new Transaction({
+            to: tokenAddress,
+            value: 0x00,
+            gasPrice: Web3.utils.toHex(gasPrice),
+            gasLimit: Web3.utils.toHex(210000),
+            nonce: Web3.utils.toHex(nonce),
+            data: data
+        }, { common: bsc });
+
+        const signedTx = tx.sign(this.wallet.getPrivateKey());
+        const rawTx = signedTx.serialize().toString('hex');
+
+        const hash = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
+        alert(hash.transactionHash);
+    }
 }
 
 export default new ETHWallet();

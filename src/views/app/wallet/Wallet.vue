@@ -62,7 +62,6 @@ import { useRoute } from 'vue-router'
 
 import qrcode from "qrcode";
 import Web3 from 'web3';
-import account from '@/class/account';
 
 export default defineComponent({
     name: "Wallet",
@@ -77,6 +76,11 @@ export default defineComponent({
             // Handle BNB only
             if (token === 'bnb') {
                 const tx = await ethWallet.sendCoin(this.recipientAddress, this.amount);
+            }
+
+            // Handle XFE
+            if (token === 'xfe') {
+                const tx = await ethWallet.sendTokens(this.recipientAddress, this.amount, this.token);
             }
         }
     },

@@ -57,19 +57,28 @@ const erc20Abi: any = [
  */
 class ETHWallet extends AbstractWallet {
     private wallet: Wallet;
-    private web3: Web3;
+    private web3: Map<string, Web3>;
 
+    /*
+     * Web3.js methods
+    */
+
+    // Check to see if a Web3 connection exists for a network
+    // If it does, return it
+    // If it doesn't, create one and add it to the map
     public getWeb3(network: string) {
-        // Cache hit
-        if (this.web3) {
-            return this.web3;
+        // Check for existing Web3
+        let web3 = this.web3.get(network);
+        if (web3) {
+            return web3;
         }
 
-        // Determine network provider
-        const provider = this.determineProviderUrl(network, true);
-        const web3 = new Web3(provider);
+        // Need to create a Web3 connection
+        const provider = this.determineProviderUrl(network, true) // Testnet for now (change this!!!)
+        web3 = new Web3(provider);
 
-        this.web3 = web3;
+        // Add connection to map and return it
+        this.web3.set(network, web3);
         return web3;
     }
 
@@ -151,14 +160,16 @@ class ETHWallet extends AbstractWallet {
 
     // Normal transfer
     public async sendCoin(recipient: string, amount: string, network: string): Promise<string> {
-        // Convert the amount from ether to Wei
-        const value = Web3.utils.toWei(amount, "ether");
+        // Fetch Web3 connection for network
+        const web3 = this.getWeb3(network);
 
+        const value = Web3.utils.toWei(amount, "ether");
         const common = this.determineChainParameters(network, true);
+        const address = this.wallet.getAddressString();
 
         // Fetch gas and nonce
-        const gasPrice = await this.web3.eth.getGasPrice();
-        const nonce = await this.web3.eth.getTransactionCount(this.wallet.getAddressString());
+        const gasPrice = await web3.eth.getGasPrice();
+        const nonce = await web3.eth.getTransactionCount(address);
 
         /*
         TODO: Ethereum will use legacy transaction format.
@@ -177,22 +188,25 @@ class ETHWallet extends AbstractWallet {
         const signedTx = tx.sign(this.wallet.getPrivateKey());
         const rawTx = signedTx.serialize().toString('hex');
 
-        const receipt = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
+        const receipt = await web3.eth.sendSignedTransaction('0x' + rawTx);
         return receipt.transactionHash;
     }
 
     // Token transfer
     public async sendTokens(recipient: string, amount: string, tokenContract: string, network: string): Promise<string> {
+        // Get Web3 connection
+        const web3 = this.getWeb3(network);
+
         // Convert the amount from ether to Wei
         const value = Web3.utils.toWei(amount, "ether");
 
         const common = this.determineChainParameters(network, true);
-        const contract = new this.web3.eth.Contract(erc20Abi, tokenContract);
+        const contract = new web3.eth.Contract(erc20Abi, tokenContract);
         const address = this.wallet.getAddressString();
 
         // Fetch gas and nonce
-        const gasPrice = await this.web3.eth.getGasPrice();
-        const nonce = await this.web3.eth.getTransactionCount(address);
+        const gasPrice = await web3.eth.getGasPrice();
+        const nonce = await web3.eth.getTransactionCount(address);
 
         // Construct the transfer transaction
         const data = contract.methods.transfer(recipient, value).encodeABI();
@@ -209,7 +223,7 @@ class ETHWallet extends AbstractWallet {
         const signedTx = tx.sign(this.wallet.getPrivateKey());
         const rawTx = signedTx.serialize().toString('hex');
 
-        const receipt = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
+        const receipt = await web3.eth.sendSignedTransaction('0x' + rawTx);
         return receipt.transactionHash;
     }
 }

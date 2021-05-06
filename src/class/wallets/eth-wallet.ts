@@ -48,7 +48,7 @@ class ETHWallet extends AbstractWallet {
         }
 
         // Determine network provider
-        const provider = this.determineProviderUrl(network);
+        const provider = this.determineProviderUrl(network, true);
         const web3 = new Web3(provider);
 
         this.web3 = web3;
@@ -74,16 +74,26 @@ class ETHWallet extends AbstractWallet {
     }
 
     // Determine the provider URL based on the network
-    public determineProviderUrl(network: string): string {
+    public determineProviderUrl(network: string, testnet: boolean): string {
         let providerUrl;
 
         switch (network) {
             case "eth": {
-                providerUrl = "https://main-light.eth.linkpool.io";
+                if (testnet) {
+                    providerUrl = "https://rinkeby-light.eth.linkpool.io";
+                } else {
+                    providerUrl = "https://main-light.eth.linkpool.io";
+                }
+                
                 break;
             }
             case "bsc": {
-                providerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+                if (testnet) {
+                    providerUrl = "https://bsc-dataseed.binance.org"
+                } else {
+                    providerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+                }
+
                 break;
             }
             default: {
@@ -93,6 +103,41 @@ class ETHWallet extends AbstractWallet {
 
         // Return the provider
         return providerUrl;
+    }
+
+    // Determine common chain parameters
+    public determineChainParameters(network: string, testnet: boolean): Common {
+        let common;
+
+        // Mainnet Binance Smart Chain
+        if (network === 'binance' && !testnet) {
+            common = Common.forCustomChain('mainnet', {
+                name: 'Binance',
+                networkId: 56,
+                chainId: 56
+            }, 'petersburg');
+        }
+
+        // Testnet Binance Smart Chain
+        if (network === 'binance' && testnet) {
+            common = Common.forCustomChain('mainnet', {
+                name: 'Binance',
+                networkId: 97,
+                chainId: 97
+            }, 'petersburg');
+        }
+
+        // Mainnet Ethereum
+        if (network === 'ethereum' && !testnet) {
+            common = new Common({ chain: 'mainnet' });
+        }
+
+        // Testnet Ethereum
+        if (network === 'ethereum' && testnet) {
+            common = new Common({ chain: 'rinkeby' })
+        }
+
+        return common;
     }
 
     // Normal transfer

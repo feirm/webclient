@@ -30,6 +30,24 @@ const erc20Abi: any = [
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_owner",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "name": "balance",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "type": "function"
     }
 ]
 
@@ -80,21 +98,17 @@ class ETHWallet extends AbstractWallet {
         switch (network) {
             case "eth": {
                 if (testnet) {
-                    providerUrl = "https://rinkeby-light.eth.linkpool.io";
+                    return providerUrl = "https://rinkeby-light.eth.linkpool.io";
                 } else {
-                    providerUrl = "https://main-light.eth.linkpool.io";
+                    return providerUrl = "https://main-light.eth.linkpool.io";
                 }
-                
-                break;
             }
             case "bsc": {
                 if (testnet) {
-                    providerUrl = "https://bsc-dataseed.binance.org"
+                    return providerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
                 } else {
-                    providerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+                    return providerUrl = "https://bsc-dataseed.binance.org"
                 }
-
-                break;
             }
             default: {
                 throw new Error("Network not valid!");
@@ -179,10 +193,11 @@ class ETHWallet extends AbstractWallet {
 
         const common = this.determineChainParameters(network, true);
         const contract = new this.web3.eth.Contract(erc20Abi, tokenContract);
+        const address = this.wallet.getAddressString();
 
         // Fetch gas and nonce
         const gasPrice = await this.web3.eth.getGasPrice();
-        const nonce = await this.web3.eth.getTransactionCount(this.wallet.getAddressString());
+        const nonce = await this.web3.eth.getTransactionCount(address);
 
         // Construct the transfer transaction
         const data = contract.methods.transfer(recipient, value).encodeABI();

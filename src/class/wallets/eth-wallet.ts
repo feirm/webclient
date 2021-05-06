@@ -141,29 +141,29 @@ class ETHWallet extends AbstractWallet {
     }
 
     // Normal transfer
-    public async sendCoin(recipient: string, amount: string) {
+    public async sendCoin(recipient: string, amount: string, network: string) {
         // Convert the amount from ether to Wei
         const value = Web3.utils.toWei(amount, "ether");
 
-        // TODO: Fetch this data from somewhere...
-        const bsc = Common.forCustomChain('mainnet', {
-            name: 'Binance',
-            networkId: 97,
-            chainId: 97
-        }, 'petersburg');
+        const common = this.determineChainParameters(network, true);
 
         // Fetch gas and nonce
         const gasPrice = await this.web3.eth.getGasPrice();
         const nonce = await this.web3.eth.getTransactionCount(this.wallet.getAddressString());
 
-        // Construct the transaction]
+        /*
+        TODO: Ethereum will use legacy transaction format.
+              Need to figure out how to use EIP-2930 standard for Berlin hardfork.
+        */
+
+        // Construct the transaction
         const tx = new Transaction({
             to: recipient,
             value: Web3.utils.toHex(value),
             gasPrice: Web3.utils.toHex(gasPrice),
             gasLimit: Web3.utils.toHex(210000),
             nonce: Web3.utils.toHex(nonce)
-        }, { common: bsc });
+        }, { common });
 
         const signedTx = tx.sign(this.wallet.getPrivateKey());
         const rawTx = signedTx.serialize().toString('hex');
@@ -173,34 +173,27 @@ class ETHWallet extends AbstractWallet {
     }
 
     // Token transfer
-    public async sendTokens(recipient: string, amount: string, token: string) {
+    public async sendTokens(recipient: string, amount: string, tokenContract: string, network: string) {
         // Convert the amount from ether to Wei
         const value = Web3.utils.toWei(amount, "ether");
 
-        // Hardcoded address for XFE contract
-        const tokenAddress = "0x6ebfe4b1674b0c7d45f3a2b898904b268b6f3b06";
-        const contract = new this.web3.eth.Contract(erc20Abi, tokenAddress);
+        const common = this.determineChainParameters(network, true);
+        const contract = new this.web3.eth.Contract(erc20Abi, tokenContract);
 
         // Fetch gas and nonce
         const gasPrice = await this.web3.eth.getGasPrice();
         const nonce = await this.web3.eth.getTransactionCount(this.wallet.getAddressString());
 
-        const bsc = Common.forCustomChain('mainnet', {
-            name: 'Binance',
-            networkId: 97,
-            chainId: 97
-        }, 'petersburg');
-
         // Construct the transfer transaction
         const data = contract.methods.transfer(recipient, value).encodeABI();
         const tx = new Transaction({
-            to: tokenAddress,
+            to: tokenContract,
             value: 0x00,
             gasPrice: Web3.utils.toHex(gasPrice),
             gasLimit: Web3.utils.toHex(210000),
             nonce: Web3.utils.toHex(nonce),
             data: data
-        }, { common: bsc });
+        }, { common });
 
         const signedTx = tx.sign(this.wallet.getPrivateKey());
         const rawTx = signedTx.serialize().toString('hex');

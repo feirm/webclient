@@ -22,7 +22,7 @@
             {{ token.name }}
           </p>
           <p class="text-sm text-gray-500 truncate">
-            0.00 <b>{{ token.ticker.toUpperCase() }}</b>
+            {{ token.balance }} <b>{{ token.ticker.toUpperCase() }}</b>
           </p>
         </a>
       </div>
@@ -39,6 +39,7 @@ import ethWallet from "@/class/wallets/eth-wallet";
 import account from "@/class/account";
 
 import { CoinFactory } from "@/class/coins";
+import Web3 from 'web3';
 
 export default {
   setup() {
@@ -63,6 +64,33 @@ export default {
       const rootKey = account.getRootKey();
       const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
       ethWallet.setMnemonic(mnemonic);
+
+      // Get address from wallet
+      const w = ethWallet.getWallet();
+      const address = w.getAddressString();
+
+      // Iterate over all the tokens, establish Web3 connections and set balances
+      for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+
+        // If token has a contract, fetch balance from contract
+        if (token.contract) {
+          const contract = ethWallet.getContract(token.contract, token.network);
+          const weiBalance = await contract.methods.balanceOf(address).call();
+                
+          // Convert Wei balance to Ether
+          const balance = Web3.utils.fromWei(weiBalance, "ether");
+          tokens[i].balance = balance;
+        } else {
+          // Otherwise fetch balance for address
+          const web3 = ethWallet.getWeb3(token.network);
+          const weiBalance = await web3.eth.getBalance(address);
+
+          // Convert Wei balance to Ether
+          const balance = Web3.utils.fromWei(weiBalance, "ether");
+          tokens[i].balance = balance;
+        }
+      }
     });
 
     return {

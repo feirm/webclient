@@ -2,6 +2,7 @@
 export interface Coin {
     name: string;
     ticker: string;
+    balance?: string;
     logo: any;
     network: string;
     contract?: string;

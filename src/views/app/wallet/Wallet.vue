@@ -68,19 +68,25 @@ export default defineComponent({
     data() {
         return {
             recipientAddress: "",
-            amount: ""
+            amount: "",
+            submitted: false
         }
     },
     methods: {
         async send() {
+            this.submitted = true;
+
             // Need to handle normal send and token transfers differently,
             // so check if token has a contract associated to it
             if (this.token.contract) {
                 // Initialise a token transfer
                 try {
                     const hash = await ethWallet.sendTokens(this.recipientAddress, this.amount, this.token.contract, this.token.network);
+
+                    this.submitted = false;
                     return this.$toast.success(hash);
                 } catch (e) {
+                    this.submitted = false;
                     return this.$toast.error(e);
                 }
             }
@@ -89,8 +95,11 @@ export default defineComponent({
             if (!this.token.contract) {
                 try {
                     const hash = await ethWallet.sendCoin(this.recipientAddress, this.amount, this.token.network)
+
+                    this.submitted = false;
                     return this.$toast.success(hash);
                 } catch (e) {
+                    this.submitted = false;
                     return this.$toast.error(e);
                 }
             }

@@ -85,11 +85,18 @@ export default defineComponent({
                     const hash = await ethWallet.sendTokens(this.recipientAddress, this.amount, this.token.contract, this.token.network);
 
                     this.submitted = false;
-                    return this.$toast.success(hash);
+                    this.$toast.success(hash);
                 } catch (e) {
                     this.submitted = false;
                     return this.$toast.error(e);
                 }
+
+                // Balance update
+                const contract = ethWallet.getContract(this.token.contract, this.token.network);
+                const weiBalance = await contract.methods.balanceOf(this.address).call();
+                
+                // Convert Wei balance to Ether
+                this.balance = Web3.utils.fromWei(weiBalance, "ether");
             }
 
             // Otherwise it's likely a normal transfer
@@ -98,11 +105,18 @@ export default defineComponent({
                     const hash = await ethWallet.sendCoin(this.recipientAddress, this.amount, this.token.network)
 
                     this.submitted = false;
-                    return this.$toast.success(hash);
+                    this.$toast.success(hash);
                 } catch (e) {
                     this.submitted = false;
                     return this.$toast.error(e);
                 }
+
+                // Balance update
+                const web3 = ethWallet.getWeb3(this.token.network);
+                const weiBalance = await web3.eth.getBalance(this.address);
+
+                // Convert Wei balance to Ether
+                this.balance = Web3.utils.fromWei(weiBalance, "ether");
             }
         }
     },

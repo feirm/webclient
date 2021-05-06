@@ -13,7 +13,7 @@ class Feirm implements Coin {
     ticker = "xfe";
     logo = require("@/assets/img/logo.webp");
     network = "binance";
-    contract = "0x6ebfe4b1674b0c7d45f3a2b898904b268b6f3b06" // TESTNET
+    contract = "0x6ebfe4b1674b0c7d45f3a2b898904b268b6f3b06"; // TESTNET
 }
 
 // Binance coin
@@ -42,7 +42,9 @@ export class CoinFactory {
 
     // Full coins list
     static coinsList: Coin[] = [
-        CoinFactory.coins.xfe
+        CoinFactory.coins.xfe,
+        CoinFactory.coins.bnb,
+        CoinFactory.coins.eth
     ]
 
     // Fetch coin by its ticker

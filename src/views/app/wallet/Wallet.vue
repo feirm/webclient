@@ -62,6 +62,7 @@ import { useRoute } from 'vue-router'
 
 import qrcode from "qrcode";
 import { Coin, CoinFactory } from '@/class/coins';
+import Web3 from 'web3';
 
 export default defineComponent({
     name: "Wallet",
@@ -120,6 +121,23 @@ export default defineComponent({
 
             // Generate a QR of receiving address
             addressQr.value = await qrcode.toDataURL(address);
+
+            // Need to fetch token balance. If token has a contract,
+            // get balance from the contract
+            if (token.value.contract) {
+                const contract = ethWallet.getContract(token.value.contract, token.value.network);
+                const weiBalance = await contract.methods.balanceOf(address).call();
+                
+                // Convert Wei balance to Ether
+                balance.value = Web3.utils.fromWei(weiBalance, "ether");
+            } else {
+                // Otherwise fetch balance for address
+                const web3 = ethWallet.getWeb3(token.value.network);
+                const weiBalance = await web3.eth.getBalance(address);
+
+                // Convert Wei balance to Ether
+                balance.value = Web3.utils.fromWei(weiBalance, "ether");
+            }
         })
 
         return {

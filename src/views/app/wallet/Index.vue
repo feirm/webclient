@@ -33,40 +33,20 @@
 
 <script>
 import { onMounted, ref } from "vue";
-import ethWallet from "@/class/wallets/eth-wallet";
-import account from "@/class/account";
 import { useRouter } from 'vue-router';
 
-// ETH/BSC tokens
-const tokens = [
-  {
-    name: "Feirm (XFE)",
-    ticker: "xfe",
-    logo: require("@/assets/img/logo.webp"),
-    contract: "0x3de70dd9f65a860140f69f286a483f46e9be875a",
-    network: "binance",
-  },
-  {
-    name: "Binance Coin (BNB)",
-    ticker: "bnb",
-    logo: require("@/assets/img/binance.png"),
-    contract: "",
-    network: "binance",
-  },
-  {
-    name: "Ethereum (ETH)",
-    ticker: "eth",
-    logo: require("@/assets/img/ethereum.png"),
-    contract: "",
-    network: "ethereum",
-  },
-];
+import ethWallet from "@/class/wallets/eth-wallet";
+import account from "@/class/account";
+
+import { CoinFactory } from "@/class/coins";
 
 export default {
   setup() {
     const router = useRouter();
     const open = ref(false);
     const address = ref();
+
+    const tokens = CoinFactory.getCoins();
 
     // Navigate to specific wallet
     const wallet = (ticker) => {

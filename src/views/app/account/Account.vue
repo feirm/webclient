@@ -29,7 +29,20 @@
             <div class="p-6 shadow bg-white rounded space-y-3">
                 <h2 class="text-xl font-light">Device security</h2>
                 <p>It can be an inconvenience having to login to your Feirm account every time you open the app. By saving your account key to this device, you can skip the login step when you next open the app.</p>
-                <button class="block p-2 rounded text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400" @click="showDeviceSecurityModal = !showDeviceSecurityModal">Save root key to device</button>
+       
+                <div class="mt-8 flex justify-left">
+                    <div class="inline-flex rounded-md shadow">
+                        <button v-if="!hasRootKey" @click="showDeviceSecurityModal = !showDeviceSecurityModal" class="inline-flex items-center justify-center px-5 py-2 rounded text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400">
+                            Save to device
+                        </button>
+                    </div>
+        
+                    <div v-if="hasRootKey" class="inline-flex">
+                        <button @click="deleteRootKey" href="#" class="inline-flex items-center justify-center px-5 py-2 rounded text-sm font-medium text-white bg-red-500 hover:bg-red-400">
+                            Remove from device
+                        </button>
+                    </div>
+                </div>
             </div>
             
             <confirm-modal
@@ -162,6 +175,7 @@ export default defineComponent({
         return {
             showModal: false,
             showDeviceSecurityModal: false,
+            hasRootKey: false,
             profile: {} as any,
 
             changeTwoFactor: {
@@ -185,6 +199,12 @@ export default defineComponent({
         ...mapGetters(["getUsername"])
     },
     async mounted() {
+        // Check LocalStorage for Root Key
+        const rootKey = localStorage.getItem("rootKey");
+        if (rootKey) {
+            this.hasRootKey = true;
+        }
+
         // Fetch account data
         await authService.GetAccount().then(res => {
             this.profile = res.data;
@@ -308,6 +328,12 @@ export default defineComponent({
             localStorage.setItem("rootKey", bufferToHex(rootKey));
 
             this.showDeviceSecurityModal = false;
+            this.hasRootKey = true;
+        },
+
+        deleteRootKey() {
+            localStorage.removeItem("rootKey");
+            this.hasRootKey = false;
         }
     },
     setup() {

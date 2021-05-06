@@ -93,30 +93,25 @@ class ETHWallet extends AbstractWallet {
 
     // Determine the provider URL based on the network
     public determineProviderUrl(network: string, testnet: boolean): string {
-        let providerUrl;
-
         switch (network) {
             case "eth": {
                 if (testnet) {
-                    return providerUrl = "https://rinkeby-light.eth.linkpool.io";
+                    return "https://rinkeby-light.eth.linkpool.io";
                 } else {
-                    return providerUrl = "https://main-light.eth.linkpool.io";
+                    return "https://main-light.eth.linkpool.io";
                 }
             }
             case "bsc": {
                 if (testnet) {
-                    return providerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545";
+                    return "https://data-seed-prebsc-1-s1.binance.org:8545";
                 } else {
-                    return providerUrl = "https://bsc-dataseed.binance.org"
+                    return "https://bsc-dataseed.binance.org"
                 }
             }
             default: {
                 throw new Error("Network not valid!");
             }
         }
-
-        // Return the provider
-        return providerUrl;
     }
 
     // Determine common chain parameters

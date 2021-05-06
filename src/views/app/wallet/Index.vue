@@ -53,6 +53,13 @@ const tokens = [
     contract: "",
     network: "binance",
   },
+  {
+    name: "Ethereum (ETH)",
+    ticker: "eth",
+    logo: require("@/assets/img/ethereum.png"),
+    contract: "",
+    network: "ethereum",
+  },
 ];
 
 export default {
@@ -76,14 +83,6 @@ export default {
       const rootKey = account.getRootKey();
       const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
       ethWallet.setMnemonic(mnemonic);
-
-      // We can get a Web3 provider and our wallet
-      const web3 = ethWallet.getWeb3();
-      const newWallet = ethWallet.getWallet();
-
-      // Get wallet balance
-      const balance = web3.eth.getBalance(newWallet.getAddressString());
-      console.log(balance);
     });
 
     return {

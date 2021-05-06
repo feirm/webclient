@@ -82,7 +82,59 @@ class ETHWallet extends AbstractWallet {
         return web3;
     }
 
+    // Determine common chain parameters
+    public determineChainParameters(network: string, testnet: boolean): Common {
+        let common;
+
+        // Mainnet Binance Smart Chain
+        if (network === 'binance' && !testnet) {
+            common = Common.forCustomChain('mainnet', {
+                name: 'Binance',
+                networkId: 56,
+                chainId: 56
+            }, 'petersburg');
+        }
+
+        // Testnet Binance Smart Chain
+        if (network === 'binance' && testnet) {
+            common = Common.forCustomChain('mainnet', {
+                name: 'Binance',
+                networkId: 97,
+                chainId: 97
+            }, 'petersburg');
+        }
+
+        // Mainnet Ethereum
+        if (network === 'ethereum' && !testnet) {
+            common = new Common({ chain: 'mainnet' });
+        }
+
+        // Testnet Ethereum
+        if (network === 'ethereum' && testnet) {
+            common = new Common({ chain: 'rinkeby' })
+        }
+
+        return common;
+    }
+
+    // Get ERC20 contract from Web3
+    public getContract(address: string, network: string) {
+        const web3 = this.getWeb3(network);
+        const contract = new web3.eth.Contract(erc20Abi, address);
+        return contract;
+    }
+
+    /*
+     * Wallet methods
+    */
+
+    // Derive a ETH wallet from mnemonic
     public getWallet(): Wallet {
+        // Cache hit
+        if (this.wallet) {
+            return this.wallet;
+        }
+
         // Convert mnemonic to seed
         const mnemonic = this.getMnemonic();
         const seed = mnemonicToSeedSync(mnemonic);
@@ -121,41 +173,6 @@ class ETHWallet extends AbstractWallet {
                 throw new Error("Network not valid!");
             }
         }
-    }
-
-    // Determine common chain parameters
-    public determineChainParameters(network: string, testnet: boolean): Common {
-        let common;
-
-        // Mainnet Binance Smart Chain
-        if (network === 'binance' && !testnet) {
-            common = Common.forCustomChain('mainnet', {
-                name: 'Binance',
-                networkId: 56,
-                chainId: 56
-            }, 'petersburg');
-        }
-
-        // Testnet Binance Smart Chain
-        if (network === 'binance' && testnet) {
-            common = Common.forCustomChain('mainnet', {
-                name: 'Binance',
-                networkId: 97,
-                chainId: 97
-            }, 'petersburg');
-        }
-
-        // Mainnet Ethereum
-        if (network === 'ethereum' && !testnet) {
-            common = new Common({ chain: 'mainnet' });
-        }
-
-        // Testnet Ethereum
-        if (network === 'ethereum' && testnet) {
-            common = new Common({ chain: 'rinkeby' })
-        }
-
-        return common;
     }
 
     // Normal transfer

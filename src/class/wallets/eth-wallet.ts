@@ -57,7 +57,7 @@ const erc20Abi: any = [
  */
 class ETHWallet extends AbstractWallet {
     private wallet: Wallet;
-    private web3: Map<string, Web3>;
+    private web3: Map<string, Web3> = new Map();
 
     /*
      * Web3.js methods
@@ -67,15 +67,15 @@ class ETHWallet extends AbstractWallet {
     // If it does, return it
     // If it doesn't, create one and add it to the map
     public getWeb3(network: string) {
-        // Check for existing Web3
+        // Check if Web3 connection is active for network
         let web3 = this.web3.get(network);
         if (web3) {
             return web3;
         }
 
         // Need to create a Web3 connection
-        const provider = this.determineProviderUrl(network, true) // Testnet for now (change this!!!)
-        web3 = new Web3(provider);
+        const providerUrl = this.determineProviderUrl(network, true) // Testnet for now (change this!!!)
+        web3 = new Web3(providerUrl);
 
         // Add connection to map and return it
         this.web3.set(network, web3);
@@ -103,14 +103,14 @@ class ETHWallet extends AbstractWallet {
     // Determine the provider URL based on the network
     public determineProviderUrl(network: string, testnet: boolean): string {
         switch (network) {
-            case "eth": {
+            case "ethereum": {
                 if (testnet) {
                     return "https://rinkeby-light.eth.linkpool.io";
                 } else {
                     return "https://main-light.eth.linkpool.io";
                 }
             }
-            case "bsc": {
+            case "binance": {
                 if (testnet) {
                     return "https://data-seed-prebsc-1-s1.binance.org:8545";
                 } else {

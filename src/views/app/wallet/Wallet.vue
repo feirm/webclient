@@ -75,6 +75,11 @@ export default defineComponent({
     },
     methods: {
         async send() {
+            // Check balance
+            if (this.amount == "0") {
+                return this.$toast.error("Cannot send empty balance!");
+            }
+
             this.submitted = true;
 
             // Need to handle normal send and token transfers differently,

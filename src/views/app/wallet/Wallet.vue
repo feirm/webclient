@@ -61,7 +61,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import qrcode from "qrcode";
-import Web3 from 'web3';
+import { Coin, CoinFactory } from '@/class/coins';
 
 export default defineComponent({
     name: "Wallet",
@@ -72,15 +72,27 @@ export default defineComponent({
         }
     },
     methods: {
-        async send(token: string) {
-            // Handle BNB only
-            if (token === 'bnb') {
-                const tx = await ethWallet.sendCoin(this.recipientAddress, this.amount);
+        async send() {
+            // Need to handle normal send and token transfers differently,
+            // so check if token has a contract associated to it
+            if (this.token.contract) {
+                // Initialise a token transfer
+                try {
+                    const hash = await ethWallet.sendTokens(this.recipientAddress, this.amount, this.token.contract, this.token.network);
+                    return this.$toast.success(hash);
+                } catch (e) {
+                    return this.$toast.error(e);
+                }
             }
 
-            // Handle XFE
-            if (token === 'xfe') {
-                const tx = await ethWallet.sendTokens(this.recipientAddress, this.amount, this.token);
+            // Otherwise it's likely a normal transfer
+            if (!this.token.contract) {
+                try {
+                    const hash = await ethWallet.sendCoin(this.recipientAddress, this.amount, this.token.network)
+                    return this.$toast.success(hash);
+                } catch (e) {
+                    return this.$toast.error(e);
+                }
             }
         }
     },
@@ -90,21 +102,19 @@ export default defineComponent({
 
         const address = ethWallet.getWallet().getAddressString();
 
+        const token = ref({} as Coin);
         const addressQr = ref();
         const balance = ref();
 
         onMounted(async () => {
-            // Get Web3 connection and fetch balance
-            const web3 = ethWallet.getWeb3("bsc");
-            const bal = await web3.eth.getBalance(address);
-            const amount = Web3.utils.fromWei(bal, "ether");
-            balance.value = amount;
+            token.value = CoinFactory.getCoin(ticker as string);
 
             // Generate a QR of receiving address
             addressQr.value = await qrcode.toDataURL(address);
         })
 
         return {
+            token,
             ticker,
             address,
             addressQr,

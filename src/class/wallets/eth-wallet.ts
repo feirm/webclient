@@ -155,7 +155,7 @@ class ETHWallet extends AbstractWallet {
     }
 
     // Normal transfer
-    public async sendCoin(recipient: string, amount: string, network: string) {
+    public async sendCoin(recipient: string, amount: string, network: string): Promise<string> {
         // Convert the amount from ether to Wei
         const value = Web3.utils.toWei(amount, "ether");
 
@@ -182,12 +182,12 @@ class ETHWallet extends AbstractWallet {
         const signedTx = tx.sign(this.wallet.getPrivateKey());
         const rawTx = signedTx.serialize().toString('hex');
 
-        const hash = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
-        alert(hash.transactionHash);
+        const receipt = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
+        return receipt.transactionHash;
     }
 
     // Token transfer
-    public async sendTokens(recipient: string, amount: string, tokenContract: string, network: string) {
+    public async sendTokens(recipient: string, amount: string, tokenContract: string, network: string): Promise<string> {
         // Convert the amount from ether to Wei
         const value = Web3.utils.toWei(amount, "ether");
 
@@ -210,11 +210,12 @@ class ETHWallet extends AbstractWallet {
             data: data
         }, { common });
 
+        // Sign the transaction and serialise it for broadcasting
         const signedTx = tx.sign(this.wallet.getPrivateKey());
         const rawTx = signedTx.serialize().toString('hex');
 
-        const hash = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
-        alert(hash.transactionHash);
+        const receipt = await this.web3.eth.sendSignedTransaction('0x' + rawTx);
+        return receipt.transactionHash;
     }
 }
 

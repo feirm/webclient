@@ -5,9 +5,10 @@ import Common from "@ethereumjs/common";
 import { Transaction } from "@ethereumjs/tx";
 import Wallet, { hdkey } from "ethereumjs-wallet";
 import { mnemonicToSeedSync } from "bip39";
+import { AbiItem } from "web3-utils";
 
 // Here is the minimum ABI we need for interacting with ERC20 contracts
-const erc20Abi: any = [
+const erc20Abi: AbiItem[] = [
   {
     constant: false,
     inputs: [

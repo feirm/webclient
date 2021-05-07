@@ -72,32 +72,21 @@
       </div>
     </div>
 
+    <!-- MOBILE VIEW -->
     <DisclosurePanel class="sm:hidden">
       <div class="px-2 pt-2 pb-3 space-y-1">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
-        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Team</a>
-        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Projects</a>
-        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Calendar</a>
+        <a v-if="!isLoggedIn" href="#" class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platform</a>
+        <a v-if="!isLoggedIn" href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Token</a>
+        <a v-if="!isLoggedIn" href="#" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Bridge</a>
+
+        <!-- Authenticated routes -->
+        <router-link to="/app/wallet" v-if="isLoggedIn" class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wallet</router-link>
       </div>
-      <div class="pt-4 pb-3 border-t border-gray-700">
-        <div class="flex items-center px-5">
-          <div class="flex-shrink-0">
-            <span class="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
-              <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </span>
-          </div>
-          <div class="ml-3">
-            <div class="text-base font-medium text-white">Tom Cook</div>
-            <div class="text-sm font-medium text-gray-400">tom@example.com</div>
-          </div>
-        </div>
+      <div class="pb-3 border-t border-gray-700">
         <div class="mt-3 px-2 space-y-1">
-          <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Your Profile</a>
-          <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Settings</a>
-          <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Sign out</a>
+
+          <router-link v-if="isLoggedIn" to="/app/account" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">My account</router-link>
         </div>
       </div>
     </DisclosurePanel>

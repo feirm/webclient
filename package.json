@@ -13,6 +13,7 @@
     "@headlessui/vue": "^1.1.1",
     "@heroicons/vue": "^1.0.1",
     "@meforma/vue-toaster": "^1.2.2",
+    "aes-js": "^3.1.2",
     "argon2-browser": "^1.15.3",
     "axios": "^0.21.1",
     "bip32": "^2.0.6",

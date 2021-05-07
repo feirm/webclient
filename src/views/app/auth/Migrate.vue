@@ -7,7 +7,7 @@
           <h2 class="mt-6 text-3xl font-light text-gray-900 text-center">
             Migrate your <span class="text-orange">Feirm</span> account
           </h2>
-          <p class="text-sm mt-3">If you came from the original Feirm app, you will need to migrate your account to use the improved encryption methods on this version. You will be asked for your username, password and six-digit PIN. This won't take long!</p>
+          <p class="text-sm mt-3">If you came from the original Feirm app, you will need to migrate your account to use the improved encryption methods in this version. You will be asked for your username, password and six-digit PIN. This won't take long!</p>
         </div>
 
         <div class="mt-8">

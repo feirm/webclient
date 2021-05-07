@@ -26,6 +26,7 @@ export const auth = {
 
       localStorage.removeItem("username");
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("rootKey")
     }
   },
 

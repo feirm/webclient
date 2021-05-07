@@ -8,9 +8,7 @@
         >
           An ecosystem where privacy is for everyone.
         </h1>
-        <p
-          class="md:w-1/3 mx-auto text-2xl text-center text-gray-100"
-        >
+        <p class="md:w-1/3 mx-auto text-2xl text-center text-gray-100">
           A blockchain project and platform built for your privacy. Take a deep
           dive into the Feirm Ecosystem and experience the ultimate privacy and
           security provided by design.
@@ -114,15 +112,28 @@
 
     <!-- Are you interested section -->
     <div class="bg-grey-500">
-    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 lg:flex lg:justify-between">
-      <div class="mx-auto space-y-6 text-center">
-        <img class="mx-auto w-16" src="@/assets/img/logo.webp" alt="Feirm">
-        <h2 class="text-4xl font-semibold text-gray-100 sm:text-5xl sm:tracking-tight lg:text-5xl">Are you still interested?</h2>
-        <p class="mt-5 text-xl text-gray-100">Creating a <span class="text-orange">Feirm</span> account is quick, free and easy.</p>
-        <router-link to="/app/signup" class="block mx-auto text-yellow-900 p-3 bg-orange-500 w-48 rounded-md">Get started</router-link>
+      <div
+        class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 lg:flex lg:justify-between"
+      >
+        <div class="mx-auto space-y-6 text-center">
+          <img class="mx-auto w-16" src="@/assets/img/logo.webp" alt="Feirm" />
+          <h2
+            class="text-4xl font-semibold text-gray-100 sm:text-5xl sm:tracking-tight lg:text-5xl"
+          >
+            Are you still interested?
+          </h2>
+          <p class="mt-5 text-xl text-gray-100">
+            Creating a <span class="text-orange">Feirm</span> account is quick,
+            free and easy.
+          </p>
+          <router-link
+            to="/app/signup"
+            class="block mx-auto text-yellow-900 p-3 bg-orange-500 w-48 rounded-md"
+            >Get started</router-link
+          >
+        </div>
       </div>
     </div>
-  </div>
 
     <!-- Blog posts -->
     <div class="relative bg-gray-50 pt-16 pb-20 px-4 sm:px-6 lg:pb-28 lg:px-8">
@@ -194,25 +205,25 @@ const features = [
     name: "Ultimate security",
     description:
       "Feirm accounts are protected with mandatory two-factor authentication, and heavily encrypted on your device with zero-knowledge encryption before being sent to our servers.",
-    icon: FingerPrintIcon,
+    icon: FingerPrintIcon
   },
   {
     name: "Web wallet",
     description:
       "Feirm provides a non-custodial wallet featuring support for many cryptocurrencies and tokens. Link an encrypted version of your wallet to your Feirm account, or keep your wallet local to your device.",
-    icon: CurrencyPoundIcon,
+    icon: CurrencyPoundIcon
   },
   {
     name: "Open source",
     description:
       "Trust is important when it comes to dealing with cryptography, but it isn't enough. The Feirm web-client is open source for everyone to see.",
-    icon: HeartIcon,
+    icon: HeartIcon
   },
   {
     name: "Available for everyone",
     description:
       "Privacy should be accessible for everyone. Your Feirm account can be accessed on any device with a web browser - no need for more smartphone apps!",
-    icon: GlobeIcon,
+    icon: GlobeIcon
   }
 ];
 
@@ -221,18 +232,19 @@ const ecosystem = [
     name: "Feirm token",
     description:
       "Feirm has its own utility token called XFE currently operating on the Binance Smart Chain. It is the backbone of the Feirm ecosystem.",
-    icon: CollectionIcon,
+    icon: CollectionIcon
   },
   {
     name: "Bridge",
     description:
       "Migrate your old native XFE coins to the new token through our bridge. The process is entirely automated and instant!",
-    icon: SwitchHorizontalIcon,
+    icon: SwitchHorizontalIcon
   },
   {
     name: "Social media rewards",
-    description: "By engaging on social media, you can earn additional XFE tokens. You'll be spreading awareness of the Feirm project and earning at the same time!",
-    icon: UsersIcon,
+    description:
+      "By engaging on social media, you can earn additional XFE tokens. You'll be spreading awareness of the Feirm project and earning at the same time!",
+    icon: UsersIcon
   }
 ];
 
@@ -240,7 +252,7 @@ export default defineComponent({
   name: "Index",
   data() {
     return {
-      articles: [],
+      articles: []
     };
   },
   async mounted() {
@@ -254,8 +266,8 @@ export default defineComponent({
   setup() {
     return {
       features,
-      ecosystem,
+      ecosystem
     };
-  },
+  }
 });
 </script>

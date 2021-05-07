@@ -62,7 +62,7 @@ gatewayApi.interceptors.response.use(
       const signedToken: SignedSessionToken = {
         token_id: tokenId,
         signature: signed
-      }
+      };
 
       // Submit to API
       const res = await authService.SubmitSignedSessionToken(signedToken);
@@ -82,7 +82,7 @@ gatewayApi.interceptors.response.use(
 
 // Tatsuya API for legacy accounts
 const tatsuyaApi = axios.create({
-  baseURL: 'https://tatsuya.feirm.com/api',
+  baseURL: "https://tatsuya.feirm.com/api",
   headers: {
     "Content-Type": "application/json"
   }

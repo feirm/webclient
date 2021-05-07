@@ -40,10 +40,8 @@ module.exports = {
   },
   variants: {
     extend: {
-      opacity: ['disabled']
+      opacity: ["disabled"]
     }
   },
-  plugins: [
-    require('@tailwindcss/forms')
-  ]
+  plugins: [require("@tailwindcss/forms")]
 };

@@ -1,15 +1,10 @@
-interface Wallet {};
-
 // Representation of an encrypted wallet payload
 interface EncryptedWallet {
-    id: string;
-    uid?: string;
-    ciphertext: string;
-    iv: string;
-    signature: string;
+  id: string;
+  uid?: string;
+  ciphertext: string;
+  iv: string;
+  signature: string;
 }
 
-export {
-    Wallet,
-    EncryptedWallet
-}
+export { Wallet, EncryptedWallet };

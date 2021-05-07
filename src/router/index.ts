@@ -157,20 +157,20 @@ router.beforeEach(async (to, from, next) => {
 
   const rootKey = account.getRootKey();
   const loggedIn = store.getters.isLoggedIn;
-  
+
   if (to.matched.some(route => route.meta.authRequired)) {
     // If not logged in, redirect to login page
     if (!loggedIn) {
-      console.log("[Authentication] User is not logged in.")
+      console.log("[Authentication] User is not logged in.");
       next({ path: "/app/login" });
     }
 
     // If there is no root key present, redirect to login page
     else if (rootKey.length === 0) {
-      console.log("[Authentication] Root key not present in memory.")
-      next({ path: "/app/login" })
+      console.log("[Authentication] Root key not present in memory.");
+      next({ path: "/app/login" });
     }
-    
+
     // Continue as normal
     else {
       next();

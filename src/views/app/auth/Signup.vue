@@ -1,9 +1,15 @@
 <template>
   <div class="min-h-screen bg-white flex">
-    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+    <div
+      class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+    >
       <div class="mx-auto w-full max-w-sm lg:w-96 space-y-6">
         <div>
-          <img class="h-12 w-auto mx-auto" src="@/assets/img/logo.webp" alt="Feirm" />
+          <img
+            class="h-12 w-auto mx-auto"
+            src="@/assets/img/logo.webp"
+            alt="Feirm"
+          />
           <h2 class="mt-6 text-3xl font-light text-gray-900 text-center">
             Create your <span class="text-orange">Feirm</span> account
           </h2>
@@ -13,57 +19,115 @@
           <div class="mt-6" v-if="formStep === 0">
             <form @submit.prevent="checkForm" class="space-y-6">
               <div>
-                <label for="username" class="block text-sm font-medium text-gray-700">
+                <label
+                  for="username"
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Username
                 </label>
                 <div class="mt-1">
-                  <input name="username" type="text" v-model="username" required v-on:input="usernameValid($event.target.value)" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                  <input
+                    name="username"
+                    type="text"
+                    v-model="username"
+                    required
+                    v-on:input="usernameValid($event.target.value)"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  />
                 </div>
 
-                <TransitionRoot :show="error !== ''" class="pt-3" enter="transition-opacity duration-1000" enter-from="opacity-0" enter-to="opacity-100">
+                <TransitionRoot
+                  :show="error !== ''"
+                  class="pt-3"
+                  enter="transition-opacity duration-1000"
+                  enter-from="opacity-0"
+                  enter-to="opacity-100"
+                >
                   <p class="text-red-400">{{ error }}</p>
                 </TransitionRoot>
               </div>
 
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Email address (optional)
                 </label>
                 <div class="mt-1">
-                  <input name="email" type="email" v-model="email" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                  <input
+                    name="email"
+                    type="email"
+                    v-model="email"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  />
                 </div>
               </div>
 
               <div class="space-y-1">
-                <label for="password" class="block text-sm font-medium text-gray-700">
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Password
                 </label>
                 <div class="mt-1">
-                  <input name="password" type="password" v-model="password" v-on:input="checkPassword" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                  <input
+                    name="password"
+                    type="password"
+                    v-model="password"
+                    v-on:input="checkPassword"
+                    autocomplete="current-password"
+                    required
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  />
                 </div>
                 <meter max="4" id="password-strength-meter"></meter>
-                <p class="text-grey-400 text-center" v-if="pwError">{{ pwError }}</p>
+                <p class="text-grey-400 text-center" v-if="pwError">
+                  {{ pwError }}
+                </p>
               </div>
 
               <div class="space-y-1">
-                <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+                <label
+                  for="confirmPassword"
+                  class="block text-sm font-medium text-gray-700"
+                >
                   Confirm password
                 </label>
                 <div class="mt-1">
-                  <input name="confirmPassword" type="password" v-model="confirmPassword" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    v-model="confirmPassword"
+                    autocomplete="current-password"
+                    required
+                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  />
                 </div>
               </div>
 
               <div class="text-sm text-center">
-                <router-link to="/app/login" class="font-medium text-gray-600 hover:text-gray-900">
+                <router-link
+                  to="/app/login"
+                  class="font-medium text-gray-600 hover:text-gray-900"
+                >
                   Already have an account? Sign in.
                 </router-link>
               </div>
 
               <div>
-                <button :disabled="submitted" type="submit" class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                <button
+                  :disabled="submitted"
+                  type="submit"
+                  class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                >
                   <span v-if="!submitted">Sign up</span>
-                  <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
+                  <img
+                    v-else
+                    class="mx-auto w-5"
+                    src="@/assets/loading_spinner.svg"
+                  />
                 </button>
               </div>
             </form>
@@ -71,10 +135,17 @@
 
           <!-- TOTP setup -->
           <div class="mt-6 space-y-3" v-if="formStep === 1">
-            <p>You have chosen to create your Feirm account with a username only. To protect your account, you need to setup TOTP. Please scan the QR code or manually enter the secret below into your authenticator app.</p>
-            <img class="mx-auto" :src="totpSecretQr">
+            <p>
+              You have chosen to create your Feirm account with a username only.
+              To protect your account, you need to setup TOTP. Please scan the
+              QR code or manually enter the secret below into your authenticator
+              app.
+            </p>
+            <img class="mx-auto" :src="totpSecretQr" />
 
-            <div class="border-2 border-gray-200 rounded text-sm p-2 w-3/4 text-center mx-auto">
+            <div
+              class="border-2 border-gray-200 rounded text-sm p-2 w-3/4 text-center mx-auto"
+            >
               <code>{{ totp.secret }}</code>
             </div>
 
@@ -82,19 +153,38 @@
               <label for="totp" class="block text-sm font-medium text-gray-700">
                 TOTP Token
               </label>
-              <input name="totp" type="text" v-model="totp.token" autocomplete="current-password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" />
+              <input
+                name="totp"
+                type="text"
+                v-model="totp.token"
+                autocomplete="current-password"
+                required
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
             </div>
 
-            <button :disabled="submitted" @click="register" class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+            <button
+              :disabled="submitted"
+              @click="register"
+              class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+            >
               <span v-if="!submitted">Submit</span>
-              <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
+              <img
+                v-else
+                class="mx-auto w-5"
+                src="@/assets/loading_spinner.svg"
+              />
             </button>
           </div>
         </div>
       </div>
     </div>
     <div class="hidden lg:block relative w-0 flex-1">
-      <img class="absolute inset-0 h-full w-full object-cover" src="@/assets/lava2.jpg" alt="" />
+      <img
+        class="absolute inset-0 h-full w-full object-cover"
+        src="@/assets/lava2.jpg"
+        alt=""
+      />
     </div>
   </div>
 </template>
@@ -150,7 +240,7 @@ export default defineComponent({
         try {
           await authService.CheckUsername(username);
         } catch (e) {
-          return this.error = e.response.data.error;
+          return (this.error = e.response.data.error);
         }
       }, 600);
     },
@@ -158,17 +248,17 @@ export default defineComponent({
     checkPassword() {
       // Check password strength with ZXCVBN
       const pw = zxcvbn(this.password);
-      
-      const meter: any = document.getElementById('password-strength-meter');
+
+      const meter: any = document.getElementById("password-strength-meter");
       meter.value = pw.score;
 
       switch (pw.score) {
         case 0:
-          this.pwError = "Password is very weak!"
+          this.pwError = "Password is very weak!";
           break;
 
         case 1:
-          this.pwError = "Password is weak!"
+          this.pwError = "Password is weak!";
           break;
 
         case 2:
@@ -178,11 +268,11 @@ export default defineComponent({
         case 3:
           this.pwError = "Password is strong!";
           break;
-        
+
         case 4:
           this.pwError = "Password is very strong!";
           break;
-      
+
         default:
           break;
       }
@@ -224,7 +314,7 @@ export default defineComponent({
         const otpauth = authenticator.keyuri(this.username, "Feirm", secret);
         this.totpSecretQr = await qrcode.toDataURL(otpauth);
 
-        return this.formStep = 1;
+        return (this.formStep = 1);
       }
 
       // Othwerise register
@@ -236,7 +326,10 @@ export default defineComponent({
 
       // Generate a root key and encrypt it
       const rootKey = account.generateRootKey();
-      const encryptedKey = await account.generateEncryptedRootKey(rootKey, this.password);
+      const encryptedKey = await account.generateEncryptedRootKey(
+        rootKey,
+        this.password
+      );
 
       // Derive identity keypair
       const keypair = await account.deriveIdentityKeypair(rootKey);
@@ -274,7 +367,10 @@ export default defineComponent({
 
       // Decrypt account payload and set the root key
       try {
-        const rootKey = await account.decryptRootKey(this.password, encryptedAccount);
+        const rootKey = await account.decryptRootKey(
+          this.password,
+          encryptedAccount
+        );
         account.setRootKey(rootKey);
       } catch (e) {
         this.submitted = false;
@@ -286,7 +382,7 @@ export default defineComponent({
         await authService.GetAccount().then(res => {
           const username = res.data.username;
           this.store.dispatch("setUsername", username);
-        })
+        });
       } catch (e) {
         this.submitted = false;
         return this.$toast.error(e.response.data.error);
@@ -295,7 +391,7 @@ export default defineComponent({
       // Direct to app home
       this.submitted = false;
       this.router.push("/app/");
-    },
+    }
   },
   setup() {
     const store = useStore();
@@ -303,9 +399,9 @@ export default defineComponent({
 
     return {
       store,
-      router,
+      router
     };
-  },
+  }
 });
 </script>
 
@@ -313,8 +409,8 @@ export default defineComponent({
 meter {
   /* Reset the default appearance */
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
   margin: 0 auto 1em;
   width: 100%;
@@ -331,14 +427,30 @@ meter::-webkit-meter-bar {
 }
 
 /* Webkit based browsers */
-meter[value="1"]::-webkit-meter-optimum-value { background: #EF4444; }
-meter[value="2"]::-webkit-meter-optimum-value { background: #FCD34D; }
-meter[value="3"]::-webkit-meter-optimum-value { background: #6EE7B7; }
-meter[value="4"]::-webkit-meter-optimum-value { background: #10B981; }
+meter[value="1"]::-webkit-meter-optimum-value {
+  background: #ef4444;
+}
+meter[value="2"]::-webkit-meter-optimum-value {
+  background: #fcd34d;
+}
+meter[value="3"]::-webkit-meter-optimum-value {
+  background: #6ee7b7;
+}
+meter[value="4"]::-webkit-meter-optimum-value {
+  background: #10b981;
+}
 
 /* Gecko based browsers */
-meter[value="1"]::-moz-meter-bar { background: #EF4444; }
-meter[value="2"]::-moz-meter-bar { background: #FCD34D; }
-meter[value="3"]::-moz-meter-bar { background: #6EE7B7; }
-meter[value="4"]::-moz-meter-bar { background: #10B981; }
+meter[value="1"]::-moz-meter-bar {
+  background: #ef4444;
+}
+meter[value="2"]::-moz-meter-bar {
+  background: #fcd34d;
+}
+meter[value="3"]::-moz-meter-bar {
+  background: #6ee7b7;
+}
+meter[value="4"]::-moz-meter-bar {
+  background: #10b981;
+}
 </style>

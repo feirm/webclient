@@ -12,7 +12,7 @@ export default {
   // Check email availability
   CheckEmail(email: string) {
     return gatewayApi.post("auth/v1/check-email", {
-      email,
+      email
     });
   },
 
@@ -58,7 +58,7 @@ export default {
   CreateAccount(account: EncryptedAccount) {
     return gatewayApi.post("auth/v1/register", account);
   },
-  
+
   // Get ephemeral register token
   GetRegisterToken() {
     return gatewayApi.get("auth/v1/register/new");

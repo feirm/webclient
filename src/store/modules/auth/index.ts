@@ -5,7 +5,7 @@ export const auth = {
   state: {
     auth: {
       username: localStorage.getItem("username") || "",
-      accessToken: localStorage.getItem("accessToken") || "",
+      accessToken: localStorage.getItem("accessToken") || ""
     }
   },
 
@@ -26,7 +26,7 @@ export const auth = {
 
       localStorage.removeItem("username");
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("rootKey")
+      localStorage.removeItem("rootKey");
     }
   },
 

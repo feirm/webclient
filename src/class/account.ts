@@ -4,13 +4,13 @@ import hexToBytes from "@/helpers/hexToBytes";
 import { EncryptedAccount, EncryptedKey } from "@/models/account";
 import { ArgonType, hash } from "argon2-browser";
 
-import SessionKeystore from 'session-keystore'
+import SessionKeystore from "session-keystore";
 
 import keccak256 from "keccak256";
 
 import { eddsa } from "elliptic";
 import { sign, SignKeyPair } from "tweetnacl";
-const ec = new eddsa('ed25519');
+const ec = new eddsa("ed25519");
 
 // Key types
 enum Keys {
@@ -31,7 +31,7 @@ class Account {
     this.rootKey = rootKey;
 
     // Store root key
-    this.store.set("rootKey", bufferToHex(rootKey))
+    this.store.set("rootKey", bufferToHex(rootKey));
   }
 
   // Get account root key
@@ -52,7 +52,10 @@ class Account {
   }
 
   // Generate an encrypted root key
-  async generateEncryptedRootKey(rootKey: Uint8Array, password: string): Promise<EncryptedKey> {
+  async generateEncryptedRootKey(
+    rootKey: Uint8Array,
+    password: string
+  ): Promise<EncryptedKey> {
     // Generate some salt to be used when stretching the encryption key, and an IV for the encryption itself
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
     const iv = window.crypto.getRandomValues(new Uint8Array(16));
@@ -103,7 +106,7 @@ class Account {
     payload: EncryptedAccount
   ): Promise<Uint8Array> {
     // Verify the signature of the encrypted root key to check it hasn't been tampered
-    const key = ec.keyFromPublic(payload.identity_publickey)
+    const key = ec.keyFromPublic(payload.identity_publickey);
 
     // Hash the root key ciphertext using Keccak256
     const msg = keccak256(payload.encrypted_key.key);
@@ -111,7 +114,9 @@ class Account {
     // Error if signature is not valid
     const valid = key.verify(msg, payload.encrypted_key.signature);
     if (!valid) {
-      return Promise.reject("Signature is invalid, encrypted payload might be tampered.")
+      return Promise.reject(
+        "Signature is invalid, encrypted payload might be tampered."
+      );
     }
 
     // Extract the salt used for password hashing
@@ -120,7 +125,7 @@ class Account {
     const iv = hexToBytes(payload.encrypted_key.iv).slice(0, 16);
 
     // Convert the encrypted key into byte form
-    const keyBytes = Buffer.from(payload.encrypted_key.key, 'hex');
+    const keyBytes = Buffer.from(payload.encrypted_key.key, "hex");
 
     // Derive stretched key from password
     const stretchedKey = await hash({
@@ -164,7 +169,10 @@ class Account {
   }
 
   // Sign a message using Ed25519
-  async signMessage(identityKeypair: eddsa.KeyPair, message: string): Promise<string> {
+  async signMessage(
+    identityKeypair: eddsa.KeyPair,
+    message: string
+  ): Promise<string> {
     // Convert the message to bytes
     const msg = new TextEncoder().encode(message);
 
@@ -172,7 +180,10 @@ class Account {
     const hash = keccak256(Buffer.from(msg));
 
     // Sign and return hex signature
-    const signed = identityKeypair.sign(hash).toHex().toLowerCase();
+    const signed = identityKeypair
+      .sign(hash)
+      .toHex()
+      .toLowerCase();
     return signed;
   }
 
@@ -180,7 +191,7 @@ class Account {
   async deriveEncryptionKey(rootKey: Uint8Array): Promise<CryptoKey> {
     // Construct master encryption key by SHA-256 hashing root key + enc
     const keyType = new TextEncoder().encode(Keys.ENCRYPTION);
-    const mergedKey = new Uint8Array([...rootKey, ...keyType])
+    const mergedKey = new Uint8Array([...rootKey, ...keyType]);
     const encKey = await window.crypto.subtle.digest("SHA-256", mergedKey);
 
     // Derive AES256 encryption key
@@ -197,7 +208,9 @@ class Account {
   }
 
   // Derive a legacy identity keypair using TweetNaCl.js
-  public async deriveIdentityKeypairLegacy(rootKey: Uint8Array): Promise<SignKeyPair> {
+  public async deriveIdentityKeypairLegacy(
+    rootKey: Uint8Array
+  ): Promise<SignKeyPair> {
     // It isn't sensible to use the same key for multiple use cases, so we
     // should derive a signing "key" which is used as the seed to produce
     // a full ed25519 signing keypair.

@@ -9,6 +9,7 @@ import SessionKeystore from 'session-keystore'
 import keccak256 from "keccak256";
 
 import { eddsa } from "elliptic";
+import { sign, SignKeyPair } from "tweetnacl";
 const ec = new eddsa('ed25519');
 
 // Key types
@@ -193,6 +194,22 @@ class Account {
 
     // Return the AES key
     return aesKey;
+  }
+
+  // Derive a legacy identity keypair using TweetNaCl.js
+  public async deriveIdentityKeypairLegacy(rootKey: Uint8Array): Promise<SignKeyPair> {
+    // It isn't sensible to use the same key for multiple use cases, so we
+    // should derive a signing "key" which is used as the seed to produce
+    // a full ed25519 signing keypair.
+    const identityKeyString = bufferToHex(rootKey) + Keys.IDENTITY;
+    const identityKey = await window.crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(identityKeyString)
+    );
+
+    // Derive signing keypair from seed
+    const identityKeypair = sign.keyPair.fromSeed(new Uint8Array(identityKey));
+    return identityKeypair;
   }
 }
 

@@ -82,7 +82,7 @@ gatewayApi.interceptors.response.use(
 
 // Tatsuya API for legacy accounts
 const tatsuyaApi = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: 'https://tatsuya.feirm.com/api',
   headers: {
     "Content-Type": "application/json"
   }

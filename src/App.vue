@@ -42,7 +42,7 @@ export default defineComponent({
     };
   },
   methods: {
-    updateUI(e: any) {
+    updateUI(e: CustomEvent) {
       this.registration = e.detail;
       this.isRefresh = true;
     },

@@ -226,14 +226,14 @@ export default defineComponent({
         const keypair = await account.deriveIdentityKeypair(rootKey);
         const signature = await account.signMessage(
           keypair,
-          encryptedAccount.token?.nonce!
+          encryptedAccount.token?.nonce as string
         );
 
         // Send the token ID and signature back to the auth API to create a session
         try {
           const res = await authService.CreateLoginSession(
             this.username,
-            encryptedAccount.token?.id!,
+            encryptedAccount.token?.id as string,
             signature
           );
 
@@ -284,14 +284,14 @@ export default defineComponent({
             const keypair = await account.deriveIdentityKeypair(rootKey);
             const signature = await account.signMessage(
               keypair,
-              encryptedAccount.token?.nonce!
+              encryptedAccount.token?.nonce as string
             );
 
             // Send to API
             const tokenRes = await authService
               .CreateLoginSession(
                 this.username,
-                encryptedAccount.token?.id!,
+                encryptedAccount.token?.id as string,
                 signature
               )
               .catch(e => {

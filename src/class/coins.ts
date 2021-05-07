@@ -3,7 +3,7 @@ export interface Coin {
   name: string;
   ticker: string;
   balance?: string;
-  logo: any;
+  logo: NodeRequire;
   network: string;
   contract?: string;
 }

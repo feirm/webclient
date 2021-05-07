@@ -7,4 +7,4 @@ interface EncryptedWallet {
   signature: string;
 }
 
-export { Wallet, EncryptedWallet };
+export { EncryptedWallet };

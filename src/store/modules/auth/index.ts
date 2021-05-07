@@ -11,16 +11,16 @@ export const auth = {
 
   // Mutations
   mutations: {
-    setUsername(state: any, username: string) {
+    setUsername(state, username: string) {
       state.auth.username = username;
       localStorage.setItem("username", username);
     },
-    setAccessToken(state: any, accessToken: string) {
+    setAccessToken(state, accessToken: string) {
       state.auth.accessToken = accessToken;
       localStorage.setItem("accessToken", accessToken);
     },
 
-    logout(state: any) {
+    logout(state) {
       state.auth.accessToken = "";
       state.auth.username = "";
 
@@ -47,10 +47,10 @@ export const auth = {
 
   // Getters
   getters: {
-    getUsername: (state: any) => state.auth.username,
-    getAccessToken: (state: any) => state.auth.accessToken,
+    getUsername: state => state.auth.username,
+    getAccessToken: state => state.auth.accessToken,
 
-    isLoggedIn: (state: any) => {
+    isLoggedIn: state => {
       // If there is no access token, user is not logged in
       const token = state.auth.accessToken;
       if (!token) {

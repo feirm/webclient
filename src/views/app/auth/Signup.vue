@@ -249,7 +249,7 @@ export default defineComponent({
       // Check password strength with ZXCVBN
       const pw = zxcvbn(this.password);
 
-      const meter: any = document.getElementById("password-strength-meter");
+      const meter = document.getElementById("password-strength-meter") as HTMLMeterElement;
       meter.value = pw.score;
 
       switch (pw.score) {

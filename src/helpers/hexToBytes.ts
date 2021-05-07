@@ -1,4 +1,4 @@
-export default function hexToBytes(str: any) {
+export default function hexToBytes(str) {
   if (!str) {
     return new Uint8Array();
   }

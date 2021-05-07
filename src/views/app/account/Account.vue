@@ -301,7 +301,7 @@ export default defineComponent({
       showModal: false,
       showDeviceSecurityModal: false,
       hasRootKey: false,
-      profile: {} as any,
+      profile: {},
 
       changeTwoFactor: {
         step: 0,

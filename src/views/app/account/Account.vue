@@ -94,12 +94,20 @@
           could remain in these backups until then.
         </p>
         <button
-          @click="deleteAccount"
-          class="block p-3 w-48 rounded bg-red-500 text-white"
+          @click="showDeleteAccountModal = !showDeleteAccountModal"
+          class="inline-flex items-center justify-center px-5 py-2 rounded text-sm font-medium text-white bg-red-500 hover:bg-red-400"
         >
           Delete my Feirm account
         </button>
       </div>
+
+      <confirm-modal
+        v-if="showDeleteAccountModal"
+        heading="Delete your Feirm account?"
+        message="This is a permanent and irreversible action. Your Feirm account data will be instantly deleted from our servers."
+        @confirmEvent="deleteAccount"
+        @close="showDeleteAccountModal = false"
+      ></confirm-modal>
 
       <!-- Logout -->
       <div class="p-6 shadow bg-white rounded space-y-6">
@@ -107,11 +115,12 @@
 
         <p>
           When using a shared device, it is recommended for you to log out
-          before leaving.
+          before leaving. This will remove all traces of your wallet from this
+          device.
         </p>
         <button
           @click="logoutUser"
-          class="block p-3 w-28 rounded bg-red-500 text-white"
+          class="inline-flex items-center justify-center px-5 py-2 rounded text-sm font-medium text-white bg-red-500 hover:bg-red-400"
         >
           Logout
         </button>
@@ -300,28 +309,30 @@ export default defineComponent({
     return {
       showModal: false,
       showDeviceSecurityModal: false,
+      showDeleteAccountModal: false,
+
       hasRootKey: false,
       profile: {},
 
       changeTwoFactor: {
         step: 0,
-        selected: ""
+        selected: "",
       },
 
       totp: {
         qrCode: "",
         secret: "",
-        token: ""
+        token: "",
       },
 
-      recoveryCodes: []
+      recoveryCodes: [],
     };
   },
   components: {
-    ConfirmModal
+    ConfirmModal,
   },
   computed: {
-    ...mapGetters(["getUsername"])
+    ...mapGetters(["getUsername"]),
   },
   async mounted() {
     // Check LocalStorage for Root Key
@@ -331,7 +342,7 @@ export default defineComponent({
     }
 
     // Fetch account data
-    await authService.GetAccount().then(res => {
+    await authService.GetAccount().then((res) => {
       this.profile = res.data;
     });
   },
@@ -388,7 +399,7 @@ export default defineComponent({
         }
 
         // Fetch updated profile data and close modal
-        await authService.GetAccount().then(res => {
+        await authService.GetAccount().then((res) => {
           this.profile = res.data;
         });
 
@@ -431,7 +442,7 @@ export default defineComponent({
 
     // User has confirmed they've written down their recovery codes, so fetch and update profile data
     async confirmRecovery() {
-      await authService.GetAccount().then(res => {
+      await authService.GetAccount().then((res) => {
         this.profile = res.data;
       });
 
@@ -464,14 +475,14 @@ export default defineComponent({
     deleteRootKey() {
       localStorage.removeItem("rootKey");
       this.hasRootKey = false;
-    }
+    },
   },
   setup() {
     const router = useRouter();
 
     return {
-      router
+      router,
     };
-  }
+  },
 });
 </script>

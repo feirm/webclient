@@ -8,6 +8,7 @@ import {
 // Website
 import Index from "@/views/Index.vue";
 import Token from "@/views/Token.vue";
+import Security from "@/views/Security.vue";
 
 // App
 import Signup from "@/views/app/auth/Signup.vue";
@@ -39,6 +40,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/token",
     name: "Token",
     component: Token,
+  },
+  {
+    path: "/security",
+    name: "Security",
+    component: Security,
   },
 
   // App nested routes

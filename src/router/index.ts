@@ -2,11 +2,12 @@ import {
   createRouter,
   createWebHistory,
   RouteRecordRaw,
-  RouterView
+  RouterView,
 } from "vue-router";
 
 // Website
 import Index from "@/views/Index.vue";
+import Token from "@/views/Token.vue";
 
 // App
 import Signup from "@/views/app/auth/Signup.vue";
@@ -32,7 +33,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Index",
-    component: Index
+    component: Index,
+  },
+  {
+    path: "/token",
+    name: "Token",
+    component: Token,
   },
 
   // App nested routes
@@ -45,80 +51,80 @@ const routes: Array<RouteRecordRaw> = [
         component: Protected,
         meta: {
           title: "Platform",
-          authRequired: true
-        }
+          authRequired: true,
+        },
       },
       {
         path: "signup",
         component: Signup,
         meta: {
           title: "Signup",
-          hideNavigation: true
-        }
+          hideNavigation: true,
+        },
       },
       {
         path: "login",
         component: Login,
         meta: {
           title: "Login",
-          hideNavigation: true
-        }
+          hideNavigation: true,
+        },
       },
       {
         path: "login/migrate",
         component: Migrate,
         meta: {
           title: "Migrate",
-          hideNavigation: true
-        }
+          hideNavigation: true,
+        },
       },
       {
         path: "user/verify-email",
         component: VerifyEmail,
         meta: {
-          title: "Email Verification"
-        }
+          title: "Email Verification",
+        },
       },
       {
         path: "login/approve",
         component: ApproveLogin,
         meta: {
-          title: "Approve Login Request"
-        }
+          title: "Approve Login Request",
+        },
       },
       {
         path: "account",
         component: Account,
         meta: {
           title: "My Account",
-          authRequired: true
-        }
+          authRequired: true,
+        },
       },
       {
         path: "wallet",
         component: WalletIndex,
         meta: {
           title: "Wallet",
-          authRequired: true
-        }
+          authRequired: true,
+        },
       },
       {
         path: "wallet/:ticker",
         component: WalletHome,
         meta: {
           title: "Wallet",
-          authRequired: true
-        }
+          authRequired: true,
+        },
       },
       {
         path: "wallet/new",
         component: WalletNew,
         meta: {
           title: "New Wallet",
-          authRequired: true
-        }
-      }
-    ]
+          authRequired: true,
+        },
+      },
+    ],
   },
 
   // Bridge nested routes
@@ -130,17 +136,17 @@ const routes: Array<RouteRecordRaw> = [
         path: "",
         component: BridgeIndex,
         meta: {
-          title: "Bridge"
-        }
-      }
-    ]
-  }
+          title: "Bridge",
+        },
+      },
+    ],
+  },
 ];
 
 // Create a router instance
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
 });
 
 // For every route, check if the user is authenticate
@@ -158,7 +164,7 @@ router.beforeEach(async (to, from, next) => {
   const rootKey = account.getRootKey();
   const loggedIn = store.getters.isLoggedIn;
 
-  if (to.matched.some(route => route.meta.authRequired)) {
+  if (to.matched.some((route) => route.meta.authRequired)) {
     // If not logged in, redirect to login page
     if (!loggedIn) {
       console.log("[Authentication] User is not logged in.");

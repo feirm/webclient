@@ -25,11 +25,11 @@
                 class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Platform</a
               >
-              <a
+              <router-link
                 v-if="!isLoggedIn"
-                href="#"
+                to="/token"
                 class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >Token</a
+                >Token</router-link
               >
               <a
                 v-if="!isLoggedIn"
@@ -115,7 +115,7 @@
                       <a
                         :class="[
                           active ? 'bg-gray-100' : '',
-                          'block px-4 py-2 text-sm text-gray-700'
+                          'block px-4 py-2 text-sm text-gray-700',
                         ]"
                         >My account</a
                       >
@@ -151,11 +151,11 @@
           class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
           >Platform</a
         >
-        <a
+        <router-link
           v-if="!isLoggedIn"
-          href="#"
+          to="/token"
           class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >Token</a
+          >Token</router-link
         >
         <a
           v-if="!isLoggedIn"
@@ -195,7 +195,7 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  MenuItems
+  MenuItems,
 } from "@headlessui/vue";
 import { MenuIcon, XIcon } from "@heroicons/vue/outline";
 import { mapGetters } from "vuex";
@@ -210,17 +210,17 @@ export default {
     MenuItem,
     MenuItems,
     MenuIcon,
-    XIcon
+    XIcon,
   },
   computed: {
-    ...mapGetters(["isLoggedIn"])
+    ...mapGetters(["isLoggedIn"]),
   },
   setup() {
     const open = ref(false);
 
     return {
-      open
+      open,
     };
-  }
+  },
 };
 </script>

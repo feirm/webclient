@@ -38,19 +38,23 @@
       </div>
 
       <!-- Option for encrypted backup -->
-      <p>
-        Do you frequently find yourself changing devices? Having to restore your
-        mnemonic every time can be a time consuming process. You can store an
-        encrypted copy of your wallet which is linked to your Feirm account, and
-        access your funds immediately when you sign into a new device.
-      </p>
-      <label class="flex items-center justify-center">
-        <input type="checkbox" class="form-checkbox" v-model="cloudBackup" />
-        <span class="ml-2"
-          >Upload wallet to my
-          <span class="text-orange">Feirm</span> account.</span
-        >
-      </label>
+      <div v-show="false" class="space-y-3">
+        <p>
+          Do you frequently find yourself changing devices? Having to restore
+          your mnemonic every time can be a time consuming process. You can
+          store an encrypted copy of your wallet which is linked to your Feirm
+          account, and access your funds immediately when you sign into a new
+          device.
+        </p>
+
+        <label class="flex items-center justify-center">
+          <input type="checkbox" class="form-checkbox" v-model="cloudBackup" />
+          <span class="ml-2"
+            >Upload wallet to my
+            <span class="text-orange">Feirm</span> account.</span
+          >
+        </label>
+      </div>
 
       <div v-if="cloudBackup" class="p-3 rounded bg-yellow-200">
         <p>
@@ -84,7 +88,7 @@ export default defineComponent({
     return {
       mnemonic: "",
       splitMnemonic: [],
-      cloudBackup: false
+      cloudBackup: false,
     };
   },
   methods: {
@@ -104,7 +108,7 @@ export default defineComponent({
       // Save wallet to disk
       await ETHWallet.saveToDisk(encryptedWallet);
       this.router.push("/app/wallet");
-    }
+    },
   },
   async mounted() {
     // Generate and set mnemonic
@@ -118,8 +122,8 @@ export default defineComponent({
     const router = useRouter();
 
     return {
-      router
+      router,
     };
-  }
+  },
 });
 </script>

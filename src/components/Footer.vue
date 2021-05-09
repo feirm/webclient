@@ -111,7 +111,7 @@ import { defineComponent, h } from "vue";
 const navigation = {
   feirm: [
     { name: "Platform", href: "https://feirm.com/app" },
-    { name: "Token", href: "https://feirm.com/xfe" },
+    { name: "Token", href: "https://feirm.com/token" },
     { name: "Bridge", href: "https://bridge.feirm.com" }
   ],
   support: [

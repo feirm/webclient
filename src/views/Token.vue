@@ -90,6 +90,32 @@
     </div>
   </div>
 
+  <!-- Buy on PancakeSwap -->
+  <div class="bg-grey-500">
+    <div
+      class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 lg:flex lg:justify-between"
+    >
+      <div class="mx-auto space-y-6 text-center">
+        <img class="mx-auto w-16" src="@/assets/img/logo.webp" alt="Feirm" />
+        <h2
+          class="text-4xl font-semibold text-gray-100 sm:text-5xl sm:tracking-tight lg:text-5xl"
+        >
+          Purchase using PancakeSwap.
+        </h2>
+        <p class="mt-5 text-xl text-gray-100">
+          You can purchase the <span class="text-orange">XFE</span> token using
+          PancakeSwap - a decentralised exchange.
+        </p>
+        <a
+          target="_blank"
+          href="https://exchange.pancakeswap.finance/#/swap?outputCurrency=0x3de70dd9f65a860140f69f286a483f46e9be875a"
+          class="block mx-auto text-yellow-900 p-3 bg-orange-500 w-48 rounded-md"
+          >Visit PancakeSwap</a
+        >
+      </div>
+    </div>
+  </div>
+
   <!-- Reserves -->
   <div class="relative max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-6">
     <h2

@@ -17,6 +17,15 @@ class Feirm implements Coin {
   contract = "0x3de70dd9f65a860140f69f286a483f46e9be875a";
 }
 
+// USDT (Ethereum)
+class Tether implements Coin {
+  name = "Tether";
+  ticker = "usdt";
+  logo = require("@/assets/img/tether.png");
+  network = "ethereum";
+  contract = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+}
+
 // Binance coin
 class Binance implements Coin {
   name = "Binance";
@@ -39,6 +48,7 @@ export class CoinFactory {
     xfe: new Feirm(),
     bnb: new Binance(),
     eth: new Ethereum(),
+    usdt: new Tether(),
   };
 
   // Full coins list
@@ -46,6 +56,7 @@ export class CoinFactory {
     CoinFactory.coins.xfe,
     CoinFactory.coins.bnb,
     CoinFactory.coins.eth,
+    CoinFactory.coins.usdt,
   ];
 
   // Fetch coin by its ticker

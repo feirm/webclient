@@ -18,7 +18,6 @@ import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
 import Migrate from "@/views/app/auth/Migrate.vue";
 
 import Account from "@/views/app/account/Account.vue";
-import Protected from "@/views/app/Protected.vue";
 
 // Wallet
 import WalletHome from "@/views/app/wallet/Wallet.vue";
@@ -54,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "",
-        component: Protected,
+        redirect: "/app/wallet",
         meta: {
           title: "Platform",
           authRequired: true,

@@ -50,7 +50,7 @@
         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
           <button
             type="button"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:ml-3 sm:w-auto sm:text-sm"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-yellow-900 hover:bg-orange-400 sm:ml-3 sm:w-auto sm:text-sm"
             @click="confirm"
           >
             Confirm
@@ -79,17 +79,17 @@ export default defineComponent({
     Dialog,
     DialogOverlay,
     DialogTitle,
-    ExclamationIcon
+    ExclamationIcon,
   },
   props: {
     heading: {
       type: String,
-      required: true
+      required: true,
     },
     message: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     confirm() {
@@ -97,14 +97,14 @@ export default defineComponent({
     },
     close() {
       this.$emit("close");
-    }
+    },
   },
   setup() {
     const open = ref(true);
 
     return {
-      open
+      open,
     };
-  }
+  },
 });
 </script>

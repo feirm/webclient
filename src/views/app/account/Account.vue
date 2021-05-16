@@ -38,7 +38,7 @@
 
         <button
           @click="showModal = !showModal"
-          class="block p-3 w-28 rounded bg-orange-500 text-white"
+          class="block px-5 py-2 rounded text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400"
         >
           Edit
         </button>
@@ -167,10 +167,9 @@
           class="p-3 rounded bg-yellow-200"
         >
           <p>
-            You are about to change the two-factor authentication method used
-            for this account to TOTP. Be sure to back up your recovery codes
-            when they are shown to you. Feirm cannot reset 2FA for user accounts
-            if you lose access to your two factor device or recovery codes.
+            You are about to enable the TOTP two-factor authentication method
+            for your account. Please be sure to backup your recovery codes as we
+            are unable to restore access to an account if you are locked out.
           </p>
         </div>
 
@@ -183,11 +182,10 @@
           class="p-3 rounded bg-yellow-200"
         >
           <p>
-            You are about to disable your TOTP two-factor authentication method.
-            As two-factor authentication is mandatory, you will have to approve
-            your login requests through a magic-link sent to your email address.
-            After disabling TOTP, your existing recovery codes will become
-            invalid.
+            You are about to disable the TOTP two-factor authentication method
+            for your account. As two-factor authentication is mandatory, you
+            will have to approve your login requests through a magic-link sent
+            to your email address.
           </p>
         </div>
 
@@ -196,13 +194,13 @@
           <button
             @click="nextStep()"
             :disabled="changeTwoFactor.selected === profile.two_factor_method"
-            class="disabled:opacity-50 p-3 rounded shadow bg-orange-500 w-24 text-yellow-900"
+            class="disabled:opacity-50 rounded shadow bg-orange-500 w-24 text-yellow-900 px-5 py-2 text-sm font-medium"
           >
             Next
           </button>
           <button
             @click="closeModal()"
-            class="p-3 rounded shadow bg-red-500 text-white w-24"
+            class="px-5 py-2 text-sm rounded shadow bg-red-500 text-white w-24"
           >
             Cancel
           </button>

@@ -10,12 +10,12 @@
     class="fixed bottom-0 right-0 m-8 w-5/6 md:w-full max-w-sm"
   >
     <div
-      class="cursor-pointer w-full p-4 bg-green-500 rounded shadow-lg text-white"
+      class="cursor-pointer w-full p-2 bg-green-200 rounded shadow-lg text-white"
     >
       <h2 class="text-2xl font-light mb-2">Update available! 🥳</h2>
       <p>
-        There is an update available for the Feirm app. Please press here to
-        automatically reload and install the update.
+        There is an update available. Press here to reload automatically and
+        install it.
       </p>
     </div>
   </div>
@@ -32,13 +32,13 @@ import hexToBytes from "./helpers/hexToBytes";
 export default defineComponent({
   components: {
     Navigation,
-    Footer
+    Footer,
   },
   data() {
     return {
       registration: null,
       isRefresh: false,
-      refreshing: false
+      refreshing: false,
     };
   },
   methods: {
@@ -52,7 +52,7 @@ export default defineComponent({
       if (this.registration || this.registration.waiting) {
         this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
       }
-    }
+    },
   },
   created() {
     // Check if there is a root key already saved to this device
@@ -63,7 +63,7 @@ export default defineComponent({
 
     // Event listener for service worker
     document.addEventListener("serviceWorkerUpdateEvent", this.updateUI, {
-      once: true
+      once: true,
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -74,6 +74,6 @@ export default defineComponent({
       this.refreshing = true;
       window.location.reload();
     });
-  }
+  },
 });
 </script>

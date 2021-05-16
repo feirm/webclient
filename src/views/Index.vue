@@ -2,7 +2,8 @@
   <div class="min-h-screen flex flex-col">
     <!-- Landing hero -->
     <div class="flex-grow p-10 sm:p-40 bg-grey-500">
-      <div>
+      <div class="space-y-3">
+        <img class="w-24 mx-auto" src="@/assets/img/logo.webp" alt="Logo" />
         <h1
           class="md:w-2/4 mx-auto text-4xl text-center font-semibold md:text-6xl mb-10 text-orange"
         >
@@ -196,7 +197,10 @@ import {
   CurrencyPoundIcon,
   CollectionIcon,
   SwitchHorizontalIcon,
-  UsersIcon
+  UsersIcon,
+  ShoppingBagIcon,
+  DatabaseIcon,
+  ChatAlt2Icon
 } from "@heroicons/vue/outline";
 import axios from "axios";
 
@@ -204,13 +208,13 @@ const features = [
   {
     name: "Ultimate security",
     description:
-      "Feirm accounts are protected with mandatory two-factor authentication, and heavily encrypted on your device with zero-knowledge encryption before being sent to our servers.",
+      "Feirm accounts are protected with mandatory two-factor authentication and heavy zero-knowledge encryption. Your data is safe with us.",
     icon: FingerPrintIcon
   },
   {
     name: "Web wallet",
     description:
-      "Feirm provides a non-custodial wallet featuring support for many cryptocurrencies and tokens. Link an encrypted version of your wallet to your Feirm account, or keep your wallet local to your device.",
+      "Feirm provides a non-custodial wallet featuring support for many cryptocurrencies and tokens. The private keys remain in your browser whilst we link an encrypted version of your wallet to your Feirm account.",
     icon: CurrencyPoundIcon
   },
   {
@@ -237,14 +241,32 @@ const ecosystem = [
   {
     name: "Bridge",
     description:
-      "Migrate your old native XFE coins to the new token through our bridge. The process is entirely automated and instant!",
+      "Stuck on the old Feirm blockchain? Migrate your old native XFE coins to the new token using our bridge. The migration process is instant and automated!",
     icon: SwitchHorizontalIcon
   },
   {
     name: "Social media rewards",
     description:
-      "By engaging on social media, you can earn additional XFE tokens. You'll be spreading awareness of the Feirm project and earning at the same time!",
+      "Coming soon, you'll be able to earn additional XFE tokens by completing small tasks on social media. You'll be spreading awareness of the Feirm project and earning at the same time!",
     icon: UsersIcon
+  },
+  {
+    name: "Marketplace",
+    description:
+      "All users should be able to transact without limits. Soon you will be able to buy/sell digital assets leveraging some of the best decentralised technologies.",
+    icon: ShoppingBagIcon
+  },
+  {
+    name: "Interest",
+    description:
+      "Earn more on top of your investment with compounding interest. You stay in complete control of your funds as they never leave your wallet. There are no lock-in periods either.",
+    icon: DatabaseIcon
+  },
+  {
+    name: "Community",
+    description:
+      "Whether you are a beginner in the cryptocurrency world, or simply need some support, the Feirm community and support channels have you covered.",
+    icon: ChatAlt2Icon
   }
 ];
 

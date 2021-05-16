@@ -3,14 +3,14 @@ import { gatewayApi } from "@/service/api/api";
 
 export default {
   AddWallet(wallet: EncryptedWallet) {
-    return gatewayApi.post("wallet/add-wallet", wallet);
+    return gatewayApi.post("wallet/v1/add-wallet", wallet);
   },
 
   GetWallet() {
-    return gatewayApi.get("wallet/get-wallet");
+    return gatewayApi.get("wallet/v1/get-wallet");
   },
 
   RemoveWallet() {
-    return gatewayApi.post("wallet/remove-wallet");
+    return gatewayApi.post("wallet/v1/remove-wallet");
   },
 };

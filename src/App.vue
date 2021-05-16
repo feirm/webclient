@@ -21,7 +21,7 @@
       </p>
       <span v-if="refreshing">
         <svg
-          class="animate-spin h-12 w-12 text-white mx-auto"
+          class="animate-spin h-12 w-12 text-gray-900 mx-auto"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

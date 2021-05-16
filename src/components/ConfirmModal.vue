@@ -79,17 +79,17 @@ export default defineComponent({
     Dialog,
     DialogOverlay,
     DialogTitle,
-    ExclamationIcon,
+    ExclamationIcon
   },
   props: {
     heading: {
       type: String,
-      required: true,
+      required: true
     },
     message: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   methods: {
     confirm() {
@@ -97,14 +97,14 @@ export default defineComponent({
     },
     close() {
       this.$emit("close");
-    },
+    }
   },
   setup() {
     const open = ref(true);
 
     return {
-      open,
+      open
     };
-  },
+  }
 });
 </script>

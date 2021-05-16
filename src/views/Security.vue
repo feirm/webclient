@@ -27,8 +27,8 @@ export default defineComponent({
     const address = ref();
 
     return {
-      address,
+      address
     };
-  },
+  }
 });
 </script>

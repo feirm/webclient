@@ -206,7 +206,7 @@ import {
   GlobeAltIcon,
   ChartBarIcon,
   MailIcon,
-  ScaleIcon,
+  ScaleIcon
 } from "@heroicons/vue/outline";
 
 const features = [
@@ -214,26 +214,26 @@ const features = [
     name: "Accessibility",
     description:
       "Operating on the Binance Smart Chain, the XFE token is easily accessible through the platform or an external wallet such as Metamask.",
-    icon: GlobeAltIcon,
+    icon: GlobeAltIcon
   },
   {
     name: "Lorem ipsum",
     description:
       "Corporis quisquam nostrum nulla veniam recusandae temporibus aperiam officia incidunt at distinctio ratione.",
-    icon: ScaleIcon,
+    icon: ScaleIcon
   },
   {
     name: "Limited supply",
     description:
       "There can only be a maximum of 40 million XFE tokens in supply, making it a scarce asset.",
-    icon: ChartBarIcon,
+    icon: ChartBarIcon
   },
   {
     name: "Lorem ipsum",
     description:
       "Veniam necessitatibus reiciendis fugit explicabo dolorem nihil et omnis assumenda odit? Quisquam unde accusantium.",
-    icon: MailIcon,
-  },
+    icon: MailIcon
+  }
 ];
 
 const addresses = [
@@ -244,7 +244,7 @@ const addresses = [
     type: "Cold storage",
     description: "Token deployment wallet",
     address: "0x2de02dd1da1883a36c70b452b335a0af21281cd5",
-    amount: 0,
+    amount: 0
   },
   {
     asset: "Feirm (XFE)",
@@ -253,7 +253,7 @@ const addresses = [
     type: "Hot wallet",
     description: "Migration bridge wallet",
     address: "0xfa88d2f56e8265ac935fadae4a8b70c7547e3ce4",
-    amount: 0,
+    amount: 0
   },
   {
     asset: "Feirm (XFE)",
@@ -262,7 +262,7 @@ const addresses = [
     type: "Cold storage",
     description: "Team funds",
     address: "0x5dd03a2de5e1e16cf24e604437d629f10567472b",
-    amount: 0,
+    amount: 0
   },
   {
     asset: "Feirm (XFE)",
@@ -271,8 +271,8 @@ const addresses = [
     type: "Cold storage",
     description: "Platform funds",
     address: "0x7b351bafd338ede7f876f894df863ca3df21ade8",
-    amount: 0,
-  },
+    amount: 0
+  }
 ];
 
 export default defineComponent({
@@ -282,8 +282,8 @@ export default defineComponent({
     return {
       address,
       features,
-      addresses,
+      addresses
     };
-  },
+  }
 });
 </script>

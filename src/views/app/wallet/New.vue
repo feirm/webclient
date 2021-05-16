@@ -71,7 +71,7 @@ export default defineComponent({
   data() {
     return {
       mnemonic: "",
-      splitMnemonic: [],
+      splitMnemonic: []
     };
   },
   methods: {
@@ -88,7 +88,7 @@ export default defineComponent({
       // Save wallet to disk
       await ETHWallet.saveToDisk(encryptedWallet);
       this.router.push("/app/wallet");
-    },
+    }
   },
   async mounted() {
     // Generate and set mnemonic
@@ -102,8 +102,8 @@ export default defineComponent({
     const router = useRouter();
 
     return {
-      router,
+      router
     };
-  },
+  }
 });
 </script>

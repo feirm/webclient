@@ -48,7 +48,7 @@ export class CoinFactory {
     xfe: new Feirm(),
     bnb: new Binance(),
     eth: new Ethereum(),
-    usdt: new Tether(),
+    usdt: new Tether()
   };
 
   // Full coins list
@@ -56,7 +56,7 @@ export class CoinFactory {
     CoinFactory.coins.xfe,
     CoinFactory.coins.bnb,
     CoinFactory.coins.eth,
-    CoinFactory.coins.usdt,
+    CoinFactory.coins.usdt
   ];
 
   // Fetch coin by its ticker

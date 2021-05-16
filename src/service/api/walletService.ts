@@ -12,5 +12,5 @@ export default {
 
   RemoveWallet() {
     return gatewayApi.post("wallet/v1/remove-wallet");
-  },
+  }
 };

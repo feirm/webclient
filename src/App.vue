@@ -47,13 +47,13 @@ import hexToBytes from "./helpers/hexToBytes";
 export default defineComponent({
   components: {
     Navigation,
-    Footer,
+    Footer
   },
   data() {
     return {
       registration: null,
       isRefresh: false,
-      refreshing: false,
+      refreshing: false
     };
   },
   methods: {
@@ -67,7 +67,7 @@ export default defineComponent({
       if (this.registration || this.registration.waiting) {
         this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
       }
-    },
+    }
   },
   created() {
     // Check if there is a root key already saved to this device
@@ -78,7 +78,7 @@ export default defineComponent({
 
     // Event listener for service worker
     document.addEventListener("serviceWorkerUpdateEvent", this.updateUI, {
-      once: true,
+      once: true
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -89,6 +89,6 @@ export default defineComponent({
       this.refreshing = true;
       window.location.reload();
     });
-  },
+  }
 });
 </script>

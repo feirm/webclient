@@ -31,15 +31,18 @@
   </div>
 </template>
 
-<script>
-import { onMounted, ref } from "vue";
+<script lang="ts">
+import { onBeforeMount, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import ethWallet from "@/class/wallets/eth-wallet";
 import account from "@/class/account";
 
+import { EncryptedWallet } from "@/models/wallet";
+
 import { CoinFactory } from "@/class/coins";
 import Web3 from "web3";
+import walletService from "@/service/api/walletService";
 
 export default {
   setup() {
@@ -50,15 +53,32 @@ export default {
     const tokens = CoinFactory.getCoins();
 
     // Navigate to specific wallet
-    const wallet = ticker => {
+    const wallet = (ticker) => {
       router.push("/app/wallet/" + ticker);
     };
 
-    onMounted(async () => {
-      // Check for encrypted wallet in IDB
-      const wallet = await ethWallet.getFromDisk();
+    // Check for wallet before showing page
+    onBeforeMount(async () => {
+      try {
+        const res = await walletService.GetWallet();
+        if (res.data == null) {
+          // Redirect to new wallet page
+          return router.push("/app/wallet/new");
+        }
+      } catch (e) {
+        console.log("[Wallet]: " + e.response.data.error);
+      }
+    });
 
-      // TODO: Check wallet microservice. If there is no wallet for the user, redirect them to the wizard
+    onMounted(async () => {
+      // Fetch and decrypt wallet
+      let wallet: EncryptedWallet;
+      try {
+        const res = await walletService.GetWallet();
+        wallet = res.data;
+      } catch (e) {
+        console.log("[Wallet]: " + e.response.data.error);
+      }
 
       // Decrypt wallet and set mnemonic
       const rootKey = account.getRootKey();
@@ -97,8 +117,8 @@ export default {
       address,
       open,
       tokens,
-      wallet
+      wallet,
     };
-  }
+  },
 };
 </script>

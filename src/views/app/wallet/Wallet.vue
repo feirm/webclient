@@ -94,6 +94,9 @@ import { useRoute } from "vue-router";
 import qrcode from "qrcode";
 import { Coin, CoinFactory } from "@/class/coins";
 import Web3 from "web3";
+import { EncryptedWallet } from "@/models/wallet";
+import walletService from "@/service/api/walletService";
+import account from "@/class/account";
 
 export default defineComponent({
   name: "Wallet",
@@ -101,7 +104,7 @@ export default defineComponent({
     return {
       recipientAddress: "",
       amount: "",
-      submitted: false
+      submitted: false,
     };
   },
   methods: {
@@ -168,23 +171,40 @@ export default defineComponent({
         // Convert Wei balance to Ether
         this.balance = Web3.utils.fromWei(weiBalance, "ether");
       }
-    }
+    },
   },
   setup() {
     const route = useRoute();
     const ticker = route.params.ticker;
 
-    const address = ethWallet.getWallet().getAddressString();
-
     const token = ref({} as Coin);
+    const address = ref();
     const addressQr = ref();
     const balance = ref();
 
     onMounted(async () => {
       token.value = CoinFactory.getCoin(ticker as string);
 
+      // Fetch encrypted wallet and decrypt it
+      let wallet: EncryptedWallet;
+      try {
+        const res = await walletService.GetWallet();
+        wallet = res.data;
+      } catch (e) {
+        console.log("[Wallet]: " + e.response.data.error);
+      }
+
+      // Decrypt wallet and set mnemonic
+      const rootKey = account.getRootKey();
+      const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
+      ethWallet.setMnemonic(mnemonic);
+
+      // Set the address
+      const eth = ethWallet.getWallet();
+      address.value = eth.getAddressString();
+
       // Generate a QR of receiving address
-      addressQr.value = await qrcode.toDataURL(address);
+      addressQr.value = await qrcode.toDataURL(address.value);
 
       // Need to fetch token balance. If token has a contract,
       // get balance from the contract
@@ -193,14 +213,16 @@ export default defineComponent({
           token.value.contract,
           token.value.network
         );
-        const weiBalance = await contract.methods.balanceOf(address).call();
+        const weiBalance = await contract.methods
+          .balanceOf(address.value)
+          .call();
 
         // Convert Wei balance to Ether
         balance.value = Web3.utils.fromWei(weiBalance, "ether");
       } else {
         // Otherwise fetch balance for address
         const web3 = ethWallet.getWeb3(token.value.network);
-        const weiBalance = await web3.eth.getBalance(address);
+        const weiBalance = await web3.eth.getBalance(address.value);
 
         // Convert Wei balance to Ether
         balance.value = Web3.utils.fromWei(weiBalance, "ether");
@@ -212,8 +234,8 @@ export default defineComponent({
       ticker,
       address,
       addressQr,
-      balance
+      balance,
     };
-  }
+  },
 });
 </script>

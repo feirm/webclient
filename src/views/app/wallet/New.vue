@@ -66,12 +66,13 @@ import { useRouter } from "vue-router";
 
 import ETHWallet from "@/class/wallets/eth-wallet";
 import account from "@/class/account";
+import walletService from "@/service/api/walletService";
 
 export default defineComponent({
   data() {
     return {
       mnemonic: "",
-      splitMnemonic: []
+      splitMnemonic: [],
     };
   },
   methods: {
@@ -83,12 +84,15 @@ export default defineComponent({
       const rootKey = account.getRootKey();
       const encryptedWallet = await ETHWallet.encrypt(rootKey);
 
-      // TODO: Upload encrypted wallet to API
+      // Upload encrypted wallet to API
+      try {
+        await walletService.AddWallet(encryptedWallet);
+      } catch (e) {
+        return this.$toast.error(e.response.data.error);
+      }
 
-      // Save wallet to disk
-      await ETHWallet.saveToDisk(encryptedWallet);
       this.router.push("/app/wallet");
-    }
+    },
   },
   async mounted() {
     // Generate and set mnemonic
@@ -102,8 +106,8 @@ export default defineComponent({
     const router = useRouter();
 
     return {
-      router
+      router,
     };
-  }
+  },
 });
 </script>

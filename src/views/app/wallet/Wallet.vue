@@ -15,7 +15,12 @@
         <!-- Send actions -->
         <h1 class="font-light text-xl">Send {{ ticker.toUpperCase() }}</h1>
 
-        <form @submit.prevent="send(ticker)" class="space-y-6">
+        <form
+          @submit.prevent="
+            showConfirmTransactionModal = !showConfirmTransactionModal
+          "
+          class="space-y-6"
+        >
           <div>
             <label
               for="username"
@@ -114,6 +119,14 @@
       </div>
     </div>
   </div>
+
+  <confirm-modal
+    v-if="showConfirmTransactionModal"
+    heading="Send transaction?"
+    message="Are you sure you want to make this transaction?"
+    @confirmEvent="send(ticker)"
+    @close="showConfirmTransactionModal = false"
+  ></confirm-modal>
 </template>
 
 <script lang="ts">
@@ -128,6 +141,8 @@ import { EncryptedWallet } from "@/models/wallet";
 import walletService from "@/service/api/walletService";
 import account from "@/class/account";
 
+import ConfirmModal from "@/components/ConfirmModal.vue";
+
 export default defineComponent({
   name: "Wallet",
   data() {
@@ -137,7 +152,11 @@ export default defineComponent({
       gasprice: "",
       gaslimit: 21000,
       submitted: false,
+      showConfirmTransactionModal: false,
     };
+  },
+  components: {
+    ConfirmModal,
   },
   async mounted() {
     // Fetch recommended gas price
@@ -155,6 +174,8 @@ export default defineComponent({
   },
   methods: {
     async send() {
+      this.showConfirmTransactionModal = !this.showConfirmTransactionModal;
+
       // Check balance
       if (this.amount == "0") {
         return this.$toast.error("Cannot send empty balance!");

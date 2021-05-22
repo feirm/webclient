@@ -147,6 +147,11 @@ export default defineComponent({
     // Convert into gwei
     const gwei = Web3.utils.fromWei(gasPrice, "gwei");
     this.gasprice = gwei;
+
+    // If we are interacting with a contract (likely ERC20 or BEP20 token), then we need to fetch a higher gas limit
+    if (this.token.contract) {
+      this.gaslimit = 100000;
+    }
   },
   methods: {
     async send() {

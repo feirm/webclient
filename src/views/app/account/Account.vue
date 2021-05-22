@@ -90,8 +90,7 @@
         <p>
           Delete your Feirm account and all data associated to it. All of your
           data will be wiped immediately from our production servers, so there
-          is no going back! We maintain rolling backups for 7 days, so your data
-          could remain in these backups until then.
+          is no going back!
         </p>
         <button
           @click="showDeleteAccountModal = !showDeleteAccountModal"

@@ -1,61 +1,58 @@
 <template>
   <div class="flex flex-col bg-gray-100">
     <div class="w-full md:w-2/5 p-12 space-y-4 mx-auto">
-      <h1 class="text-3xl font-light text-center">Here is your new wallet!</h1>
-      <p>
-        Below you will see your non-custodial cryptocurrency wallet. This means
-        that you are in total control of your private keys - the mnemonic you
-        see below never leaves your device. To make sure you get the full Feirm
-        experience, an encrypted version of this wallet will be linked to your
-        account allowing you to access your funds instantly on any device.
+      <h1 class="text-3xl font-light text-center">
+        Welcome to the <span class="text-orange">Feirm</span> Platform.
+      </h1>
+      <p class="text-center">
+        To get started, you need to create a wallet (or restore from a backup if
+        you have one).
       </p>
 
-      <!-- Mnemonic showcase -->
-      <div class="flex md:w-3/4 p-2 rounded-lg justify-center mx-auto">
-        <!-- Words 1-8 -->
-        <div class="flex-col p-2 space-y-2 mt-2">
-          <div v-for="(word, index) in splitMnemonic" :key="word">
-            <span
-              v-if="index < 8"
-              class="p-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800 w-28"
-            >
-              <p>{{ index + 1 }}. {{ word }}</p>
-            </span>
-          </div>
+      <div
+        class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200"
+      >
+        <div class="px-4 py-5 sm:px-6">
+          <!-- Content goes here -->
+          <!-- We use less vertical padding on card headers on desktop than on body sections -->
+          <h2 class="text-xl font-light text-center">
+            Here is your brand new wallet
+          </h2>
         </div>
-
-        <!-- Words 9-16 -->
-        <div class="flex-col p-2 space-y-2">
-          <div v-for="(word, index) in splitMnemonic" :key="word">
-            <span
-              v-if="index >= 8 && index < 16"
-              class="p-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800 w-28"
-            >
-              <p>{{ index + 1 }}. {{ word }}</p>
-            </span>
+        <div class="px-4 py-5 sm:p-6 space-y-2">
+          <!-- Mnemonic showcase -->
+          <p class="text-sm">Your mnemonic:</p>
+          <div class="p-2 rounded bg-gray-200">
+            <code>
+              <p>{{ mnemonic }}</p>
+            </code>
           </div>
-        </div>
 
-        <!-- Words 17-24 -->
-        <div class="flex-col p-2 space-y-2">
-          <div v-for="(word, index) in splitMnemonic" :key="word">
-            <span
-              v-if="index >= 16 && index < 24"
-              class="p-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800 w-28"
-            >
-              <p>{{ index + 1 }}. {{ word }}</p>
-            </span>
+          <!-- Mnemonic confirmation -->
+          <p class="text-sm">Mnemonic confirmation:</p>
+          <div class="pb-2">
+            <textarea
+              v-model="confirmMnemonic"
+              class="resize w-full rounded-md"
+            ></textarea>
           </div>
+
+          <!-- Recovery -->
+          <router-link
+            to="/app"
+            class="text-sm pt-2 font-medium text-gray-600 hover:text-gray-900"
+          >
+            Have a backup? Click to restore it here.
+          </router-link>
+
+          <button
+            @click="next"
+            class="rounded shadow bg-orange-500 w-24 md:w-full mx-auto text-yellow-900 px-5 py-2 text-sm font-medium"
+          >
+            Done
+          </button>
         </div>
       </div>
-
-      <!-- Move onto recovery -->
-      <button
-        @click="next"
-        class="rounded shadow bg-orange-500 w-24 md:w-full mx-auto text-yellow-900 px-5 py-2 text-sm font-medium"
-      >
-        Next
-      </button>
     </div>
   </div>
 </template>
@@ -72,11 +69,16 @@ export default defineComponent({
   data() {
     return {
       mnemonic: "",
-      splitMnemonic: [],
+      confirmMnemonic: "",
     };
   },
   methods: {
     async next() {
+      // Confirm the mnemonics match
+      if (this.mnemonic !== this.confirmMnemonic) {
+        return this.$toast.error("Mnemonics do not match!");
+      }
+
       // Create the wallet from the mnemonic
       ETHWallet.setMnemonic(this.mnemonic);
 
@@ -98,9 +100,6 @@ export default defineComponent({
     // Generate and set mnemonic
     const mnemonic = ETHWallet.generateMnemonic();
     this.mnemonic = mnemonic;
-
-    // Split the mnemonic
-    this.splitMnemonic = mnemonic.split(" ");
   },
   setup() {
     const router = useRouter();

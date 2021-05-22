@@ -54,7 +54,11 @@ export default defineComponent({
   methods: {
     async next() {
       // Create the wallet from the mnemonic
-      ETHWallet.setMnemonic(this.mnemonic);
+      try {
+        ETHWallet.setMnemonic(this.mnemonic);
+      } catch (e) {
+        return this.$toast.error(e);
+      }
 
       // Encrypt wallet
       const rootKey = account.getRootKey();

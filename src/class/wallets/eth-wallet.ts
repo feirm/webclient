@@ -188,6 +188,8 @@ class ETHWallet extends AbstractWallet {
   public async sendCoin(
     recipient: string,
     amount: string,
+    gasPrice: string,
+    gasLimit: string,
     network: string
   ): Promise<string> {
     // Fetch Web3 connection for network
@@ -197,22 +199,19 @@ class ETHWallet extends AbstractWallet {
     const common = this.determineChainParameters(network, false);
     const address = this.wallet.getAddressString();
 
-    // Fetch gas and nonce
-    const gasPrice = await web3.eth.getGasPrice();
+    // Fetch nonce
     const nonce = await web3.eth.getTransactionCount(address);
 
-    /*
-        TODO: Ethereum will use legacy transaction format.
-              Need to figure out how to use EIP-2930 standard for Berlin hardfork.
-        */
+    // Convert the gas price from gwei to wei
+    const gasPriceWei = Web3.utils.toWei(gasPrice, "Gwei");
 
     // Construct the transaction
     const tx = new Transaction(
       {
         to: recipient,
         value: Web3.utils.toHex(value),
-        gasPrice: Web3.utils.toHex(gasPrice),
-        gasLimit: Web3.utils.toHex(210000),
+        gasPrice: Web3.utils.toHex(gasPriceWei),
+        gasLimit: Web3.utils.toHex(gasLimit),
         nonce: Web3.utils.toHex(nonce),
       },
       { common }
@@ -226,10 +225,13 @@ class ETHWallet extends AbstractWallet {
   }
 
   // Token transfer
+  // Gas price is converted from gwei to gwei
   public async sendTokens(
     recipient: string,
     amount: string,
     tokenContract: string,
+    gasPrice: string,
+    gasLimit: string,
     network: string
   ): Promise<string> {
     // Get Web3 connection
@@ -242,9 +244,11 @@ class ETHWallet extends AbstractWallet {
     const contract = new web3.eth.Contract(erc20Abi, tokenContract);
     const address = this.wallet.getAddressString();
 
-    // Fetch gas and nonce
-    const gasPrice = await web3.eth.getGasPrice();
+    // Fetch nonce
     const nonce = await web3.eth.getTransactionCount(address);
+
+    // Convert the gas price from gwei to wei
+    const gasPriceWei = Web3.utils.toWei(gasPrice, "Gwei");
 
     // Construct the transfer transaction
     const data = contract.methods.transfer(recipient, value).encodeABI();
@@ -252,8 +256,8 @@ class ETHWallet extends AbstractWallet {
       {
         to: tokenContract,
         value: 0x00,
-        gasPrice: Web3.utils.toHex(gasPrice),
-        gasLimit: Web3.utils.toHex(210000),
+        gasPrice: Web3.utils.toHex(gasPriceWei),
+        gasLimit: Web3.utils.toHex(gasLimit),
         nonce: Web3.utils.toHex(nonce),
         data: data,
       },

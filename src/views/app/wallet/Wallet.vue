@@ -159,6 +159,7 @@ export default defineComponent({
 
       // Need to handle normal send and token transfers differently,
       // so check if token has a contract associated to it
+      // TODO: FIX GAS LIMIT FOR TOKEN TRANSFER
       if (this.token.contract) {
         // Initialise a token transfer
         try {
@@ -166,6 +167,8 @@ export default defineComponent({
             this.recipientAddress,
             this.amount,
             this.token.contract,
+            this.gasprice,
+            this.gaslimit,
             this.token.network
           );
 
@@ -195,6 +198,8 @@ export default defineComponent({
           const hash = await ethWallet.sendCoin(
             this.recipientAddress,
             this.amount,
+            this.gasprice,
+            this.gaslimit,
             this.token.network
           );
 

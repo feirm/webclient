@@ -49,6 +49,36 @@
           </div>
 
           <div>
+            <label for="amount" class="block text-sm font-medium text-gray-700"
+              >Gas Price</label
+            >
+            <div class="mt-1">
+              <input
+                name="amount"
+                v-model="gasprice"
+                type="text"
+                required
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="amount" class="block text-sm font-medium text-gray-700"
+              >Gas Limit</label
+            >
+            <div class="mt-1">
+              <input
+                name="amount"
+                v-model="gaslimit"
+                type="text"
+                required
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
             <button
               :disabled="submitted"
               type="submit"
@@ -104,8 +134,19 @@ export default defineComponent({
     return {
       recipientAddress: "",
       amount: "",
+      gasprice: "",
+      gaslimit: 21000,
       submitted: false,
     };
+  },
+  async mounted() {
+    // Fetch recommended gas price
+    const web3 = ethWallet.getWeb3(this.token.network);
+    const gasPrice = await web3.eth.getGasPrice();
+
+    // Convert into gwei
+    const gwei = Web3.utils.fromWei(gasPrice, "gwei");
+    this.gasprice = gwei;
   },
   methods: {
     async send() {

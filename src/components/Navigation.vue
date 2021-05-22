@@ -19,11 +19,11 @@
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
-              <a
+              <router-link
                 v-if="!isLoggedIn"
-                href="#"
+                to="/security"
                 class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >Platform</a
+                >Security</router-link
               >
               <router-link
                 v-if="!isLoggedIn"
@@ -145,23 +145,32 @@
     <DisclosurePanel class="sm:hidden">
       <div class="px-2 pt-2 pb-3 space-y-1">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a
+        <router-link
           v-if="!isLoggedIn"
-          href="#"
+          to="/security"
           class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >Platform</a
+          >Security</router-link
         >
+
         <router-link
           v-if="!isLoggedIn"
           to="/token"
           class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
           >Token</router-link
         >
-        <a
+
+        <router-link
           v-if="!isLoggedIn"
-          href="#"
+          to="/app/login"
           class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >Bridge</a
+          >Sign in</router-link
+        >
+
+        <router-link
+          v-if="!isLoggedIn"
+          to="/app/signup"
+          class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+          >Sign up</router-link
         >
 
         <!-- Authenticated routes -->

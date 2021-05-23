@@ -21,9 +21,9 @@
             <div class="flex space-x-4">
               <router-link
                 v-if="!isLoggedIn"
-                to="/security"
+                to="/platform"
                 class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >Security</router-link
+                >Platform</router-link
               >
               <router-link
                 v-if="!isLoggedIn"
@@ -147,9 +147,9 @@
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
         <router-link
           v-if="!isLoggedIn"
-          to="/security"
+          to="/platform"
           class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >Security</router-link
+          >Platform</router-link
         >
 
         <router-link

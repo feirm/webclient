@@ -31,12 +31,6 @@
                 class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >Token</router-link
               >
-              <a
-                v-if="!isLoggedIn"
-                href="#"
-                class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                >Bridge</a
-              >
 
               <!-- Authenticated routes -->
               <router-link

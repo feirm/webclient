@@ -8,7 +8,7 @@ import {
 // Website
 import Index from "@/views/Index.vue";
 import Token from "@/views/Token.vue";
-import Security from "@/views/Security.vue";
+import Platform from "@/views/Platform.vue";
 
 // App
 import Signup from "@/views/app/auth/Signup.vue";
@@ -25,8 +25,6 @@ import WalletIndex from "@/views/app/wallet/Index.vue";
 import WalletNew from "@/views/app/wallet/New.vue";
 import WalletRecovery from "@/views/app/wallet/Recovery.vue";
 
-// Bridge
-import BridgeIndex from "@/views/app/bridge/Index.vue";
 import { store } from "@/store";
 import account from "@/class/account";
 
@@ -42,9 +40,12 @@ const routes: Array<RouteRecordRaw> = [
     component: Token,
   },
   {
-    path: "/security",
-    name: "Security",
-    component: Security,
+    path: "/platform",
+    name: "Platform",
+    component: Platform,
+    meta: {
+      title: "Platform",
+    },
   },
 
   // App nested routes
@@ -136,21 +137,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: "Wallet Recovery",
           authRequired: true,
-        },
-      },
-    ],
-  },
-
-  // Bridge nested routes
-  {
-    path: "/bridge",
-    component: RouterView,
-    children: [
-      {
-        path: "",
-        component: BridgeIndex,
-        meta: {
-          title: "Bridge",
         },
       },
     ],

@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { onBeforeMount, onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import ethWallet from "@/class/wallets/eth-wallet";
@@ -53,12 +53,12 @@ export default {
     const tokens = CoinFactory.getCoins();
 
     // Navigate to specific wallet
-    const wallet = (ticker) => {
+    const wallet = (ticker: string) => {
       router.push("/app/wallet/" + ticker);
     };
 
-    // Check for wallet before showing page
     onBeforeMount(async () => {
+      // Check for wallet before showing page
       try {
         const res = await walletService.GetWallet();
         if (res.data == null) {
@@ -68,9 +68,7 @@ export default {
       } catch (e) {
         console.log("[Wallet]: " + e.response.data.error);
       }
-    });
 
-    onMounted(async () => {
       // Fetch and decrypt wallet
       let wallet: EncryptedWallet;
       try {

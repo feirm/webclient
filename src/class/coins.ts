@@ -17,15 +17,6 @@ class Feirm implements Coin {
   contract = "0x3de70dd9f65a860140f69f286a483f46e9be875a";
 }
 
-// USDT (Ethereum)
-class Tether implements Coin {
-  name = "Tether (ERC-20)";
-  ticker = "usdt";
-  logo = require("@/assets/img/tether.png");
-  network = "ethereum";
-  contract = "0xdac17f958d2ee523a2206206994597c13d831ec7";
-}
-
 // Binance coin
 class Binance implements Coin {
   name = "Binance Smart Chain (BEP-20)";
@@ -42,11 +33,50 @@ class Ethereum implements Coin {
   network = "ethereum";
 }
 
+// DAI (Ethereum)
+class DAI implements Coin {
+  name = "DAI Stablecoin (ERC-20)";
+  ticker = "dai";
+  logo = require("@/assets/img/dai.png");
+  network = "ethereum";
+  contract = "0x6b175474e89094c44da98b954eedeac495271d0f";
+}
+
+// USDT (Ethereum)
+class Tether implements Coin {
+  name = "Tether (ERC-20)";
+  ticker = "usdt";
+  logo = require("@/assets/img/tether.png");
+  network = "ethereum";
+  contract = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+}
+
+// BAT (Ethereum)
+class BasicAttentionToken implements Coin {
+  name = "Basic Attention Token (ERC-20)";
+  ticker = "bat";
+  logo = require("@/assets/img/basicattentiontoken.webp");
+  network = "ethereum";
+  contract = "0x0d8775f648430679a709e98d2b0cb6250d2887ef";
+}
+
+// BUSD (Ethereum)
+class BinanceUSD implements Coin {
+  name = "Binance USD (ERC-20)";
+  ticker = "busd";
+  logo = require("@/assets/img/binanceusd.png");
+  network = "ethereum";
+  contract = "0x4Fabb145d64652a948d72533023f6E7A623C7C53";
+}
+
 // Coin factory
 export class CoinFactory {
   static coins: { [ticker: string]: Coin } = {
     xfe: new Feirm(),
+    bat: new BasicAttentionToken(),
     bnb: new Binance(),
+    busd: new BinanceUSD(),
+    dai: new DAI(),
     eth: new Ethereum(),
     usdt: new Tether(),
   };
@@ -54,7 +84,10 @@ export class CoinFactory {
   // Full coins list
   static coinsList: Coin[] = [
     CoinFactory.coins.xfe,
+    CoinFactory.coins.bat,
     CoinFactory.coins.bnb,
+    CoinFactory.coins.busd,
+    CoinFactory.coins.dai,
     CoinFactory.coins.eth,
     CoinFactory.coins.usdt,
   ];

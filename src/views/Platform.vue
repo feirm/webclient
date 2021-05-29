@@ -44,6 +44,49 @@
     </div>
   </div>
 
+  <!-- Token showcase -->
+  <div class="p-12 bg-white">
+    <div class="max-w-xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8 space-y-3">
+      <h2 class="text-2xl font-medium">
+        Support for your favourite digital assets.
+      </h2>
+
+      <div class="overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Asset
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="token in tokens" :key="token.ticker">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-9 rounded-full" :src="token.logo" alt="" />
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ token.name }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      {{ token.ticker.toUpperCase() }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- Create account banner -->
   <div class="bg-grey-500">
     <div
@@ -70,7 +113,8 @@
 </template>
 
 <script lang="ts">
-import { CloudIcon, LockClosedIcon, ScaleIcon } from "@heroicons/vue/outline";
+import { CloudIcon, LockClosedIcon } from "@heroicons/vue/outline";
+import { CoinFactory } from "@/class/coins";
 
 const features = [
   {
@@ -80,12 +124,6 @@ const features = [
     icon: CloudIcon,
   },
   {
-    name: "Lorem ipsum",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.",
-    icon: ScaleIcon,
-  },
-  {
     name: "Encryption",
     description:
       "Feirm accounts have been designed to always remain encrypted throughout the platform. We never come into contact with your password.",
@@ -93,10 +131,13 @@ const features = [
   },
 ];
 
+const tokens = CoinFactory.getCoins();
+
 export default {
   setup() {
     return {
       features,
+      tokens,
     };
   },
 };

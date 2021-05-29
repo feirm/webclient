@@ -10,7 +10,7 @@ export interface Coin {
 
 // Feirm token
 class Feirm implements Coin {
-  name = "Feirm";
+  name = "Feirm (BEP-20)";
   ticker = "xfe";
   logo = require("@/assets/img/logo.webp");
   network = "binance";
@@ -19,7 +19,7 @@ class Feirm implements Coin {
 
 // USDT (Ethereum)
 class Tether implements Coin {
-  name = "Tether";
+  name = "Tether (ERC-20)";
   ticker = "usdt";
   logo = require("@/assets/img/tether.png");
   network = "ethereum";
@@ -28,7 +28,7 @@ class Tether implements Coin {
 
 // Binance coin
 class Binance implements Coin {
-  name = "Binance";
+  name = "Binance Smart Chain (BEP-20)";
   ticker = "bnb";
   logo = require("@/assets/img/binance.png");
   network = "binance";
@@ -48,7 +48,7 @@ export class CoinFactory {
     xfe: new Feirm(),
     bnb: new Binance(),
     eth: new Ethereum(),
-    usdt: new Tether()
+    usdt: new Tether(),
   };
 
   // Full coins list
@@ -56,7 +56,7 @@ export class CoinFactory {
     CoinFactory.coins.xfe,
     CoinFactory.coins.bnb,
     CoinFactory.coins.eth,
-    CoinFactory.coins.usdt
+    CoinFactory.coins.usdt,
   ];
 
   // Fetch coin by its ticker

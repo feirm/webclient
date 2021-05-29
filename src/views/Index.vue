@@ -200,7 +200,7 @@ import {
   UsersIcon,
   ShoppingBagIcon,
   DatabaseIcon,
-  ChatAlt2Icon
+  ChatAlt2Icon,
 } from "@heroicons/vue/outline";
 import axios from "axios";
 
@@ -209,26 +209,26 @@ const features = [
     name: "Ultimate security",
     description:
       "Feirm accounts are protected with mandatory two-factor authentication and heavy zero-knowledge encryption. Your data is safe with us.",
-    icon: FingerPrintIcon
+    icon: FingerPrintIcon,
   },
   {
     name: "Web wallet",
     description:
       "Feirm provides a non-custodial wallet featuring support for many cryptocurrencies and tokens. The private keys remain in your browser whilst we link an encrypted version of your wallet to your Feirm account.",
-    icon: CurrencyPoundIcon
+    icon: CurrencyPoundIcon,
   },
   {
     name: "Open source",
     description:
       "Trust is important when it comes to dealing with cryptography, but it isn't enough. The Feirm web-client is open source for everyone to see.",
-    icon: HeartIcon
+    icon: HeartIcon,
   },
   {
     name: "Available for everyone",
     description:
       "Privacy should be accessible for everyone. Your Feirm account can be accessed on any device with a web browser - no need for more smartphone apps!",
-    icon: GlobeIcon
-  }
+    icon: GlobeIcon,
+  },
 ];
 
 const ecosystem = [
@@ -236,45 +236,45 @@ const ecosystem = [
     name: "Feirm token",
     description:
       "Feirm has its own utility token called XFE currently operating on the Binance Smart Chain. It is the backbone of the Feirm ecosystem.",
-    icon: CollectionIcon
+    icon: CollectionIcon,
   },
   {
     name: "Bridge",
     description:
       "Stuck on the old Feirm blockchain? Migrate your old native XFE coins to the new token using our bridge. The migration process is instant and automated!",
-    icon: SwitchHorizontalIcon
+    icon: SwitchHorizontalIcon,
   },
   {
     name: "Social media rewards",
     description:
       "Coming soon, you'll be able to earn additional XFE tokens by completing small tasks on social media. You'll be spreading awareness of the Feirm project and earning at the same time!",
-    icon: UsersIcon
+    icon: UsersIcon,
   },
   {
     name: "Marketplace",
     description:
       "All users should be able to transact without limits. Soon you will be able to buy/sell digital assets leveraging some of the best decentralised technologies.",
-    icon: ShoppingBagIcon
+    icon: ShoppingBagIcon,
   },
   {
     name: "Interest",
     description:
-      "Earn more on top of your investment with compounding interest. You stay in complete control of your funds as they never leave your wallet. There are no lock-in periods either.",
-    icon: DatabaseIcon
+      "Soon, you can earn more on top of your investment with compound interest just by keeping them in your Platform wallet. No transfers or lock-in required. Your funds only belong to you.",
+    icon: DatabaseIcon,
   },
   {
     name: "Community",
     description:
       "Whether you are a beginner in the cryptocurrency world, or simply need some support, the Feirm community and support channels have you covered.",
-    icon: ChatAlt2Icon
-  }
+    icon: ChatAlt2Icon,
+  },
 ];
 
 export default defineComponent({
   name: "Index",
   data() {
     return {
-      articles: []
+      articles: [],
     };
   },
   async mounted() {
@@ -288,8 +288,8 @@ export default defineComponent({
   setup() {
     return {
       features,
-      ecosystem
+      ecosystem,
     };
-  }
+  },
 });
 </script>

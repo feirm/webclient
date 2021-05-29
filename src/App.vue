@@ -7,7 +7,7 @@
   <div
     v-if="isRefresh"
     @click="update"
-    class="fixed bottom-0 right-0 m-8 w-5/8 md:w-full max-w-sm"
+    class="fixed bottom-0 right-0 m-8 p-4 mb-0 w-full md:w-1/5 mx-auto"
   >
     <div
       class="cursor-pointer w-full p-3 bg-green-200 rounded shadow-lg text-white"
@@ -21,7 +21,7 @@
       </p>
       <span v-if="refreshing">
         <svg
-          class="animate-spin h-12 w-12 text-gray-900 mx-auto"
+          class="animate-spin h-12 w-12 text-gray-700 mx-auto"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -47,13 +47,13 @@ import hexToBytes from "./helpers/hexToBytes";
 export default defineComponent({
   components: {
     Navigation,
-    Footer
+    Footer,
   },
   data() {
     return {
       registration: null,
       isRefresh: false,
-      refreshing: false
+      refreshing: false,
     };
   },
   methods: {
@@ -67,7 +67,7 @@ export default defineComponent({
       if (this.registration || this.registration.waiting) {
         this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
       }
-    }
+    },
   },
   created() {
     // Check if there is a root key already saved to this device
@@ -78,7 +78,7 @@ export default defineComponent({
 
     // Event listener for service worker
     document.addEventListener("serviceWorkerUpdateEvent", this.updateUI, {
-      once: true
+      once: true,
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
@@ -89,6 +89,6 @@ export default defineComponent({
       this.refreshing = true;
       window.location.reload();
     });
-  }
+  },
 });
 </script>

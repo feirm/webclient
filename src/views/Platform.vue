@@ -1,14 +1,14 @@
 <template>
   <!-- Hero -->
-  <div class="bg-white">
+  <div class="bg-grey-500">
     <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
       <div class="text-left space-y-3">
         <p
-          class="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl"
+          class="mt-1 text-4xl font-extrabold text-orange sm:text-5xl sm:tracking-tight lg:text-6xl"
         >
           Platform
         </p>
-        <p class="max-w-xl text-xl">
+        <p class="max-w-xl text-xl text-grey-100">
           Feirm is a
           <b class="text-orange">non-custodial</b> platform. Using cryptography,
           you are able to remain in complete control of your funds.
@@ -46,8 +46,8 @@
 
   <!-- Token showcase -->
   <div class="p-12 bg-white">
-    <div class="max-w-xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8 space-y-3">
-      <h2 class="text-2xl font-medium">
+    <div class="max-w-xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8 space-y-6">
+      <h2 class="text-2xl font-medium text-center">
         Support for your favourite digital assets.
       </h2>
 
@@ -113,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { CloudIcon, LockClosedIcon } from "@heroicons/vue/outline";
+import { CloudIcon, LockClosedIcon, EyeOffIcon } from "@heroicons/vue/outline";
 import { CoinFactory } from "@/class/coins";
 
 const features = [
@@ -121,14 +121,20 @@ const features = [
     name: "Non-custodial web wallet",
     description:
       "Generated and encrypted in the browser, your wallet is untouchable by us, but available to every device you log in with your Feirm account.",
-    icon: CloudIcon
+    icon: CloudIcon,
   },
   {
     name: "Encryption",
     description:
       "Feirm accounts have been designed to always remain encrypted throughout the platform. We never come into contact with your password.",
-    icon: LockClosedIcon
-  }
+    icon: LockClosedIcon,
+  },
+  {
+    name: "Privacy",
+    description:
+      "All you need to get started is a username and strong password. Providing an email address is optional. We want to know as little as possible about you!",
+    icon: EyeOffIcon,
+  },
 ];
 
 const tokens = CoinFactory.getCoins();
@@ -137,8 +143,8 @@ export default {
   setup() {
     return {
       features,
-      tokens
+      tokens,
     };
-  }
+  },
 };
 </script>

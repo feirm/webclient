@@ -48,7 +48,7 @@ import walletService from "@/service/api/walletService";
 export default defineComponent({
   data() {
     return {
-      mnemonic: "",
+      mnemonic: ""
     };
   },
   methods: {
@@ -72,14 +72,14 @@ export default defineComponent({
       }
 
       this.router.push("/app/wallet");
-    },
+    }
   },
   setup() {
     const router = useRouter();
 
     return {
-      router,
+      router
     };
-  },
+  }
 });
 </script>

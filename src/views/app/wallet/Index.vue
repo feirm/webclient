@@ -115,8 +115,8 @@ export default {
       address,
       open,
       tokens,
-      wallet,
+      wallet
     };
-  },
+  }
 };
 </script>

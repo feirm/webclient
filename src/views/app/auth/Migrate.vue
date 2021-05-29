@@ -305,11 +305,11 @@ export default defineComponent({
       totpSecretQr: "",
       totp: {
         secret: "",
-        token: "",
+        token: ""
       },
 
       submitted: false,
-      step: 0,
+      step: 0
     };
   },
   methods: {
@@ -324,7 +324,7 @@ export default defineComponent({
       try {
         await tatsuyaService
           .fetchEncryptedAccount(this.username, this.pin)
-          .then((res) => {
+          .then(res => {
             oldAccount = res.data;
             this.submitted = false;
           });
@@ -340,7 +340,7 @@ export default defineComponent({
           pass: this.password,
           salt: hexToBytes(oldAccount.rootPasswordSalt),
           type: ArgonType.Argon2id,
-          hashLen: 32,
+          hashLen: 32
         });
 
         encryptionKey = secretKey.hash;
@@ -449,9 +449,9 @@ export default defineComponent({
         encrypted_key: encryptedKey,
         token: {
           id: token.data.id,
-          signature: signature,
+          signature: signature
         },
-        totp: this.totp,
+        totp: this.totp
       };
 
       // Submit account object to API
@@ -482,7 +482,7 @@ export default defineComponent({
 
       // Fetch and set username in Vuex
       try {
-        await authService.GetAccount().then((res) => {
+        await authService.GetAccount().then(res => {
           const username = res.data.username;
           this.store.dispatch("setUsername", username);
         });
@@ -494,7 +494,7 @@ export default defineComponent({
       // Direct to app home
       this.submitted = false;
       this.router.push("/app/");
-    },
+    }
   },
   setup() {
     const router = useRouter();
@@ -502,8 +502,8 @@ export default defineComponent({
 
     return {
       router,
-      store,
+      store
     };
-  },
+  }
 });
 </script>

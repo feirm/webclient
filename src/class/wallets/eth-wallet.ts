@@ -14,42 +14,42 @@ const erc20Abi: AbiItem[] = [
     inputs: [
       {
         name: "_to",
-        type: "address",
+        type: "address"
       },
       {
         name: "_value",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "transfer",
     outputs: [
       {
         name: "success",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     payable: false,
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     constant: true,
     inputs: [
       {
         name: "_owner",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     name: "balanceOf",
     outputs: [
       {
         name: "balance",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     payable: false,
-    type: "function",
-  },
+    type: "function"
+  }
 ];
 
 /**
@@ -94,7 +94,7 @@ class ETHWallet extends AbstractWallet {
         {
           name: "Binance",
           networkId: 56,
-          chainId: 56,
+          chainId: 56
         },
         "petersburg"
       );
@@ -107,7 +107,7 @@ class ETHWallet extends AbstractWallet {
         {
           name: "Binance",
           networkId: 97,
-          chainId: 97,
+          chainId: 97
         },
         "petersburg"
       );
@@ -212,7 +212,7 @@ class ETHWallet extends AbstractWallet {
         value: Web3.utils.toHex(value),
         gasPrice: Web3.utils.toHex(gasPriceWei),
         gasLimit: Web3.utils.toHex(gasLimit),
-        nonce: Web3.utils.toHex(nonce),
+        nonce: Web3.utils.toHex(nonce)
       },
       { common }
     );
@@ -259,7 +259,7 @@ class ETHWallet extends AbstractWallet {
         gasPrice: Web3.utils.toHex(gasPriceWei),
         gasLimit: Web3.utils.toHex(gasLimit),
         nonce: Web3.utils.toHex(nonce),
-        data: data,
+        data: data
       },
       { common }
     );

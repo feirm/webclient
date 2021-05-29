@@ -121,14 +121,14 @@ const features = [
     name: "Non-custodial web wallet",
     description:
       "Generated and encrypted in the browser, your wallet is untouchable by us, but available to every device you log in with your Feirm account.",
-    icon: CloudIcon,
+    icon: CloudIcon
   },
   {
     name: "Encryption",
     description:
       "Feirm accounts have been designed to always remain encrypted throughout the platform. We never come into contact with your password.",
-    icon: LockClosedIcon,
-  },
+    icon: LockClosedIcon
+  }
 ];
 
 const tokens = CoinFactory.getCoins();
@@ -137,8 +137,8 @@ export default {
   setup() {
     return {
       features,
-      tokens,
+      tokens
     };
-  },
+  }
 };
 </script>

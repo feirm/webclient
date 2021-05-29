@@ -210,7 +210,7 @@ import {
   GlobeAltIcon,
   ChartBarIcon,
   SwitchHorizontalIcon,
-  TerminalIcon,
+  TerminalIcon
 } from "@heroicons/vue/outline";
 
 const features = [
@@ -218,26 +218,26 @@ const features = [
     name: "Accessibility",
     description:
       "Operating on the Binance Smart Chain, the XFE token is easily accessible through the platform or an external wallet such as Metamask.",
-    icon: GlobeAltIcon,
+    icon: GlobeAltIcon
   },
   {
     name: "Programmable",
     description:
       "Through the use of smart contracts, the XFE token can be programmed to meet a variety of use cases, such as a marketplace or instant exchange service.",
-    icon: TerminalIcon,
+    icon: TerminalIcon
   },
   {
     name: "Limited supply",
     description:
       "There can only be a maximum of 40 million XFE tokens in supply, making it a scarce asset.",
-    icon: ChartBarIcon,
+    icon: ChartBarIcon
   },
   {
     name: "Interchangable",
     description:
       "The XFE token can easily be exchanged with other tokens or currencies through PancakeSwap - a decentralised exchange.",
-    icon: SwitchHorizontalIcon,
-  },
+    icon: SwitchHorizontalIcon
+  }
 ];
 
 const addresses = [
@@ -248,7 +248,7 @@ const addresses = [
     type: "Cold storage",
     description: "Token deployment wallet",
     address: "0x2de02dd1da1883a36c70b452b335a0af21281cd5",
-    amount: 0,
+    amount: 0
   },
   {
     asset: "Feirm (XFE)",
@@ -257,7 +257,7 @@ const addresses = [
     type: "Hot wallet",
     description: "Migration bridge wallet",
     address: "0xfa88d2f56e8265ac935fadae4a8b70c7547e3ce4",
-    amount: 0,
+    amount: 0
   },
   {
     asset: "Feirm (XFE)",
@@ -266,7 +266,7 @@ const addresses = [
     type: "Cold storage",
     description: "Team funds",
     address: "0x5dd03a2de5e1e16cf24e604437d629f10567472b",
-    amount: 0,
+    amount: 0
   },
   {
     asset: "Feirm (XFE)",
@@ -275,8 +275,8 @@ const addresses = [
     type: "Cold storage",
     description: "Platform funds",
     address: "0x7b351bafd338ede7f876f894df863ca3df21ade8",
-    amount: 0,
-  },
+    amount: 0
+  }
 ];
 
 export default defineComponent({
@@ -286,8 +286,8 @@ export default defineComponent({
     return {
       address,
       features,
-      addresses,
+      addresses
     };
-  },
+  }
 });
 </script>

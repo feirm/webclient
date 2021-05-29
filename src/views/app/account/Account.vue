@@ -313,23 +313,23 @@ export default defineComponent({
 
       changeTwoFactor: {
         step: 0,
-        selected: "",
+        selected: ""
       },
 
       totp: {
         qrCode: "",
         secret: "",
-        token: "",
+        token: ""
       },
 
-      recoveryCodes: [],
+      recoveryCodes: []
     };
   },
   components: {
-    ConfirmModal,
+    ConfirmModal
   },
   computed: {
-    ...mapGetters(["getUsername"]),
+    ...mapGetters(["getUsername"])
   },
   async mounted() {
     // Check LocalStorage for Root Key
@@ -339,7 +339,7 @@ export default defineComponent({
     }
 
     // Fetch account data
-    await authService.GetAccount().then((res) => {
+    await authService.GetAccount().then(res => {
       this.profile = res.data;
     });
   },
@@ -396,7 +396,7 @@ export default defineComponent({
         }
 
         // Fetch updated profile data and close modal
-        await authService.GetAccount().then((res) => {
+        await authService.GetAccount().then(res => {
           this.profile = res.data;
         });
 
@@ -439,7 +439,7 @@ export default defineComponent({
 
     // User has confirmed they've written down their recovery codes, so fetch and update profile data
     async confirmRecovery() {
-      await authService.GetAccount().then((res) => {
+      await authService.GetAccount().then(res => {
         this.profile = res.data;
       });
 
@@ -472,14 +472,14 @@ export default defineComponent({
     deleteRootKey() {
       localStorage.removeItem("rootKey");
       this.hasRootKey = false;
-    },
+    }
   },
   setup() {
     const router = useRouter();
 
     return {
-      router,
+      router
     };
-  },
+  }
 });
 </script>

@@ -152,11 +152,11 @@ export default defineComponent({
       gasprice: "",
       gaslimit: 21000,
       submitted: false,
-      showConfirmTransactionModal: false,
+      showConfirmTransactionModal: false
     };
   },
   components: {
-    ConfirmModal,
+    ConfirmModal
   },
   async mounted() {
     // Fetch recommended gas price
@@ -243,7 +243,7 @@ export default defineComponent({
         // Convert Wei balance to Ether
         this.balance = Web3.utils.fromWei(weiBalance, "ether");
       }
-    },
+    }
   },
   setup() {
     const route = useRoute();
@@ -306,8 +306,8 @@ export default defineComponent({
       ticker,
       address,
       addressQr,
-      balance,
+      balance
     };
-  },
+  }
 });
 </script>

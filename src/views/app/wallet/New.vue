@@ -69,7 +69,7 @@ export default defineComponent({
   data() {
     return {
       mnemonic: "",
-      confirmMnemonic: "",
+      confirmMnemonic: ""
     };
   },
   methods: {
@@ -94,7 +94,7 @@ export default defineComponent({
       }
 
       this.router.push("/app/wallet");
-    },
+    }
   },
   async mounted() {
     // Generate and set mnemonic
@@ -105,8 +105,8 @@ export default defineComponent({
     const router = useRouter();
 
     return {
-      router,
+      router
     };
-  },
+  }
 });
 </script>

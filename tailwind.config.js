@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Jost", "sans-serif"]
+        sans: ["Jost", "sans-serif"],
       },
       colors: {
         orange: {
@@ -17,7 +17,7 @@ module.exports = {
           "600": "#e5780a",
           "700": "#ab5908",
           "800": "#6b3805",
-          "900": "#311a02"
+          "900": "#311a02",
         },
 
         grey: {
@@ -30,18 +30,19 @@ module.exports = {
           "600": "#141414",
           "700": "#171717",
           "800": "#171717",
-          "900": "#1a1a1a"
-        }
+          "900": "#1a1a1a",
+        },
       },
       textColor: {
-        orange: "#f69738"
-      }
-    }
+        orange: "#f69738",
+      },
+    },
   },
   variants: {
     extend: {
-      opacity: ["disabled"]
-    }
+      opacity: ["disabled"],
+      cursor: ["disabled"],
+    },
   },
-  plugins: [require("@tailwindcss/forms")]
+  plugins: [require("@tailwindcss/forms")],
 };

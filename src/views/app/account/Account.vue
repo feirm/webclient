@@ -44,6 +44,34 @@
         </button>
       </div>
 
+      <!-- Wallet -->
+      <div class="p-6 shadow bg-white rounded space-y-3">
+        <h2 class="text-xl font-light">Wallet</h2>
+
+        <p>
+          Your wallet is securely linked to your Feirm account using
+          zero-knowledge encryption. This means that Feirm cannot access your
+          private keys, allowing you to remain in complete control of your
+          funds. If you wish, you can delete this wallet and start over.
+        </p>
+
+        <button
+          @click="showDeleteWalletModal = !showDeleteWalletModal"
+          :disabled="!hasWallet"
+          class="block px-5 py-2 rounded text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed text-white bg-red-500 hover:bg-red-400"
+        >
+          Delete wallet
+        </button>
+      </div>
+
+      <confirm-modal
+        v-if="showDeleteWalletModal"
+        heading="Delete your wallet?"
+        message="This is a permanent and irreversible action. Unless you have a backup of your mnemonic, your funds are irrecoverable."
+        @confirmEvent="deleteWallet"
+        @close="showDeleteWalletModal = false"
+      ></confirm-modal>
+
       <!-- Device security -->
       <div class="p-6 shadow bg-white rounded space-y-3">
         <h2 class="text-xl font-light">Device security</h2>
@@ -300,6 +328,7 @@ import account from "@/class/account";
 import bufferToHex from "@/helpers/bufferToHex";
 
 import ConfirmModal from "@/components/ConfirmModal.vue";
+import walletService from "@/service/api/walletService";
 
 export default defineComponent({
   data() {
@@ -307,29 +336,31 @@ export default defineComponent({
       showModal: false,
       showDeviceSecurityModal: false,
       showDeleteAccountModal: false,
+      showDeleteWalletModal: false,
 
       hasRootKey: false,
+      hasWallet: false,
       profile: {},
 
       changeTwoFactor: {
         step: 0,
-        selected: ""
+        selected: "",
       },
 
       totp: {
         qrCode: "",
         secret: "",
-        token: ""
+        token: "",
       },
 
-      recoveryCodes: []
+      recoveryCodes: [],
     };
   },
   components: {
-    ConfirmModal
+    ConfirmModal,
   },
   computed: {
-    ...mapGetters(["getUsername"])
+    ...mapGetters(["getUsername"]),
   },
   async mounted() {
     // Check LocalStorage for Root Key
@@ -339,9 +370,17 @@ export default defineComponent({
     }
 
     // Fetch account data
-    await authService.GetAccount().then(res => {
+    await authService.GetAccount().then((res) => {
       this.profile = res.data;
     });
+
+    // Determine is account has a wallet
+    const wallet = await walletService.GetWallet();
+    if (wallet.data == null) {
+      this.hasWallet = false;
+    } else {
+      this.hasWallet = true;
+    }
   },
   methods: {
     ...mapActions(["logout"]),
@@ -396,7 +435,7 @@ export default defineComponent({
         }
 
         // Fetch updated profile data and close modal
-        await authService.GetAccount().then(res => {
+        await authService.GetAccount().then((res) => {
           this.profile = res.data;
         });
 
@@ -439,7 +478,7 @@ export default defineComponent({
 
     // User has confirmed they've written down their recovery codes, so fetch and update profile data
     async confirmRecovery() {
-      await authService.GetAccount().then(res => {
+      await authService.GetAccount().then((res) => {
         this.profile = res.data;
       });
 
@@ -461,6 +500,16 @@ export default defineComponent({
       this.router.push("/");
     },
 
+    async deleteWallet() {
+      try {
+        await walletService.RemoveWallet();
+        this.showDeleteWalletModal = false;
+        this.hasWallet = false;
+      } catch (e) {
+        return this.$toast.error(e.respose.data.error);
+      }
+    },
+
     saveRootKey() {
       const rootKey = account.getRootKey();
       localStorage.setItem("rootKey", bufferToHex(rootKey));
@@ -472,14 +521,14 @@ export default defineComponent({
     deleteRootKey() {
       localStorage.removeItem("rootKey");
       this.hasRootKey = false;
-    }
+    },
   },
   setup() {
     const router = useRouter();
 
     return {
-      router
+      router,
     };
-  }
+  },
 });
 </script>

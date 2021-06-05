@@ -1,9 +1,11 @@
 import bufferToHex from "@/helpers/bufferToHex";
-import { EncryptedWallet } from "@/models/wallet";
+import { EncryptedWallet, EncryptedWalletV2, Coins } from "@/models/wallet";
 import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
 
 import account from "../account";
+import { CoinFactory } from "../coins";
+import ethWallet from "./eth-wallet";
 
 export abstract class AbstractWallet {
   private id: string; // Random UUID
@@ -108,5 +110,47 @@ export abstract class AbstractWallet {
     // Convert from buffer to utf-8 readable
     const mnemonic = new TextDecoder().decode(decryptWallet);
     return mnemonic;
+  }
+
+  // Methods to handle wallet version updates
+  public async updateWallet(
+    rootKey: Uint8Array,
+    wallet: EncryptedWallet | EncryptedWalletV2
+  ): Promise<any> {
+    // Depending on the version, there needs to be an upgrade made
+    switch (wallet.version) {
+      case 1: {
+        // If the wallet is version 1, we need to upgrade it to v2 which contains a token property
+        console.log("[Wallet] Has a V1 wallet, need to upgrade it...");
+        //const mnemonic = await this.decryptWallet(rootKey, wallet);
+
+        // We are only supporting the XFE token in this version
+        const address = ethWallet.getWallet().getAddressString();
+        const token = CoinFactory.getCoin("xfe");
+
+        const coin: Coins = {
+          address: address,
+          ticker: token.ticker,
+        };
+
+        const walletV2: EncryptedWalletV2 = {
+          id: wallet.id,
+          coins: [coin],
+          ciphertext: wallet.ciphertext,
+          iv: wallet.iv,
+          signature: wallet.signature,
+          version: 2,
+        };
+
+        //console.log(walletV2);
+        // TODO: Send V2 wallet to API
+
+        break;
+      }
+      default: {
+        console.log("[Wallet] Version not supported in this client...");
+        break;
+      }
+    }
   }
 }

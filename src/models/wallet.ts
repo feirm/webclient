@@ -9,7 +9,7 @@ interface EncryptedWallet {
 }
 
 // V2
-interface EncryptedWallet {
+interface EncryptedWalletV2 {
   id: string;
   uid?: string;
   coins: Coins[];
@@ -24,4 +24,4 @@ interface Coins {
   address: string;
 }
 
-export { EncryptedWallet };
+export { EncryptedWallet, EncryptedWalletV2 };

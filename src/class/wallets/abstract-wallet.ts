@@ -4,9 +4,8 @@ import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
 
 import account from "../account";
-import { DB } from "../db";
 
-export abstract class AbstractWallet extends DB {
+export abstract class AbstractWallet {
   private id: string; // Random UUID
   private mnemonic: string; // BIP39 mnemonic
 
@@ -65,7 +64,7 @@ export abstract class AbstractWallet extends DB {
     // Construct encrypted wallet payload
     const wallet = {
       id: this.getId(),
-      iv: bufferToHex(iv)
+      iv: bufferToHex(iv),
     } as EncryptedWallet;
 
     // Encrypt the mnemonic with AES-256-CBC
@@ -109,20 +108,5 @@ export abstract class AbstractWallet extends DB {
     // Convert from buffer to utf-8 readable
     const mnemonic = new TextDecoder().decode(decryptWallet);
     return mnemonic;
-  }
-
-  // Save encrypted wallet to IndexedDB
-  public async saveToDisk(wallet: EncryptedWallet) {
-    // Remove existing wallets before adding the new one
-    await this.wallets.clear();
-    await this.wallets.add(wallet, wallet.id);
-  }
-
-  // Fetch an encrypted wallet from IndexedDB
-  public async getFromDisk() {
-    const collection = this.wallets.toCollection();
-    const wallet = await collection.first();
-
-    return wallet as EncryptedWallet;
   }
 }

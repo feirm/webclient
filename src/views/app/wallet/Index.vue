@@ -38,7 +38,7 @@ import { useRouter } from "vue-router";
 import ethWallet from "@/class/wallets/eth-wallet";
 import account from "@/class/account";
 
-import { EncryptedWallet } from "@/models/wallet";
+import { EncryptedWallet, EncryptedWalletV2 } from "@/models/wallet";
 
 import { CoinFactory } from "@/class/coins";
 import Web3 from "web3";
@@ -58,6 +58,8 @@ export default {
     };
 
     onBeforeMount(async () => {
+      const rootKey = account.getRootKey();
+
       // Check for wallet before showing page
       try {
         const res = await walletService.GetWallet();
@@ -70,7 +72,7 @@ export default {
       }
 
       // Fetch and decrypt wallet
-      let wallet: EncryptedWallet;
+      let wallet: EncryptedWallet | EncryptedWalletV2;
       try {
         const res = await walletService.GetWallet();
         wallet = res.data;
@@ -79,13 +81,15 @@ export default {
       }
 
       // Decrypt wallet and set mnemonic
-      const rootKey = account.getRootKey();
       const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
       ethWallet.setMnemonic(mnemonic);
 
       // Get address from wallet
       const w = ethWallet.getWallet();
       const address = w.getAddressString();
+
+      // Handle wallet version updates (if any)
+      await ethWallet.updateWallet(rootKey, wallet);
 
       // Iterate over all the tokens, establish Web3 connections and set balances
       for (let i = 0; i < tokens.length; i++) {
@@ -115,8 +119,8 @@ export default {
       address,
       open,
       tokens,
-      wallet
+      wallet,
     };
-  }
+  },
 };
 </script>

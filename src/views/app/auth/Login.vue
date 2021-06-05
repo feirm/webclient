@@ -71,9 +71,8 @@
                   <div class="mt-1">
                     <input
                       name="totp"
-                      type="text"
+                      type="number"
                       v-model="totp"
-                      autocomplete="current-password"
                       required
                       class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
                     />
@@ -148,7 +147,7 @@ import { TransitionRoot } from "@headlessui/vue";
 export default defineComponent({
   name: "Login",
   components: {
-    TransitionRoot
+    TransitionRoot,
   },
   data() {
     return {
@@ -159,7 +158,7 @@ export default defineComponent({
       totpEnabled: false,
 
       checkEmail: false,
-      submitted: false
+      submitted: false,
     };
   },
   methods: {
@@ -294,7 +293,7 @@ export default defineComponent({
                 encryptedAccount.token?.id as string,
                 signature
               )
-              .catch(e => {
+              .catch((e) => {
                 this.submitted = false;
                 this.checkEmail = false;
 
@@ -318,14 +317,14 @@ export default defineComponent({
           }
         }, 4000);
       }
-    }
+    },
   },
   setup() {
     const router = useRouter();
 
     return {
-      router
+      router,
     };
-  }
+  },
 });
 </script>

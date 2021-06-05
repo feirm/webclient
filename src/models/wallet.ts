@@ -6,6 +6,7 @@ interface EncryptedWallet {
   ciphertext: string;
   iv: string;
   signature: string;
+  version: number;
 }
 
 export { EncryptedWallet };

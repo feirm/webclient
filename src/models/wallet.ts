@@ -24,4 +24,4 @@ interface Coins {
   address: string;
 }
 
-export { EncryptedWallet, EncryptedWalletV2 };
+export { EncryptedWallet, EncryptedWalletV2, Coins };

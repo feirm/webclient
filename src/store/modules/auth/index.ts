@@ -5,8 +5,8 @@ export const auth = {
   state: {
     auth: {
       username: localStorage.getItem("username") || "",
-      accessToken: localStorage.getItem("accessToken") || ""
-    }
+      accessToken: localStorage.getItem("accessToken") || "",
+    },
   },
 
   // Mutations
@@ -27,7 +27,7 @@ export const auth = {
       localStorage.removeItem("username");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("rootKey");
-    }
+    },
   },
 
   // Actions
@@ -42,32 +42,27 @@ export const auth = {
 
     logout({ commit }) {
       commit("logout");
-    }
+    },
   },
 
   // Getters
   getters: {
-    getUsername: state => state.auth.username,
-    getAccessToken: state => state.auth.accessToken,
+    getUsername: (state) => state.auth.username,
+    getAccessToken: (state) => state.auth.accessToken,
 
-    isLoggedIn: state => {
+    isLoggedIn: (state) => {
       // If there is no access token, user is not logged in
       const token = state.auth.accessToken;
       if (!token) {
         return false;
       }
 
-      // If a root key is not present, the user is not logged in
       const rootKey = account.getRootKey();
-      if (!rootKey) {
-        return false;
-      }
-
-      if (!token || !rootKey) {
+      if (rootKey.length === 0) {
         return false;
       }
 
       return true;
-    }
-  }
+    },
+  },
 };

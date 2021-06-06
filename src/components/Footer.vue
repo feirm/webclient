@@ -96,10 +96,11 @@
           </div>
         </div>
       </div>
-      <div class="mt-12 border-t border-gray-200 pt-8">
+      <div class="mt-12 border-t border-gray-200 pt-8 space-y-2">
         <p class="text-base text-gray-400 xl:text-center">
           &copy; 2021 Feirm. All rights reserved.
         </p>
+        <p class="text-sm xl:text-center text-gray-400">v{{ version }}</p>
       </div>
     </div>
   </footer>
@@ -107,6 +108,7 @@
 
 <script>
 import { defineComponent, h } from "vue";
+import { version } from "@../../../package.json";
 
 const navigation = {
   feirm: [
@@ -190,6 +192,7 @@ export default {
   setup() {
     return {
       navigation,
+      version,
     };
   },
 };

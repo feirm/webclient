@@ -1,5 +1,4 @@
 import { Network } from "bitcoinjs-lib";
-import bitcoin from "bitcoinjs-lib/types/networks";
 
 // Representation of a coin
 export interface Coin {
@@ -41,7 +40,17 @@ class Bitcoin implements Coin {
   network = "bitcoin";
   blockbook = "https://btc2.trezor.io";
   segwit = true;
-  bitcoin;
+  network_data: Network = {
+    messagePrefix: "\u0018Bitcoin Signed Message:\n",
+    bech32: "bc",
+    bip32: {
+      public: 78792518,
+      private: 78791436,
+    },
+    pubKeyHash: 0,
+    scriptHash: 5,
+    wif: 128,
+  };
 }
 
 // Ethereum

@@ -67,7 +67,23 @@ class BTCP2WPKHWallet extends AbstractWallet {
     return address;
   }
 
-  // TODO: Get private key
+  // Get private key (WIF)
+  getPrivateKey(ticker: string, chainIndex, addressIndex: number): string {
+    // Get coin
+    const coin = CoinFactory.getCoin(ticker);
+
+    const mnemonic = this.getMnemonic();
+    const seed = mnemonicToSeedSync(mnemonic);
+    const root = fromSeed(seed, coin.network_data);
+
+    const master = root.derivePath("m/84'/" + 0 + "'/0'");
+    const wif = master
+      .derive(chainIndex)
+      .derive(addressIndex)
+      .toWIF();
+
+    return wif;
+  }
 }
 
 export default new BTCP2WPKHWallet();

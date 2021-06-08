@@ -53,7 +53,7 @@
             </div>
           </div>
 
-          <div>
+          <div v-show="isEth">
             <label for="amount" class="block text-sm font-medium text-gray-700"
               >Gas Price</label
             >
@@ -68,7 +68,7 @@
             </div>
           </div>
 
-          <div>
+          <div v-show="isEth">
             <label for="amount" class="block text-sm font-medium text-gray-700"
               >Gas Limit</label
             >
@@ -142,6 +142,7 @@ import walletService from "@/service/api/walletService";
 import account from "@/class/account";
 
 import ConfirmModal from "@/components/ConfirmModal.vue";
+import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
 
 export default defineComponent({
   name: "Wallet",
@@ -149,27 +150,35 @@ export default defineComponent({
     return {
       recipientAddress: "",
       amount: "",
+
+      // ETH/BSC related stuff
+      isEth: false,
       gasprice: "",
       gaslimit: 21000,
+
       submitted: false,
-      showConfirmTransactionModal: false
+      showConfirmTransactionModal: false,
     };
   },
   components: {
-    ConfirmModal
+    ConfirmModal,
   },
   async mounted() {
-    // Fetch recommended gas price
-    const web3 = ethWallet.getWeb3(this.token.network);
-    const gasPrice = await web3.eth.getGasPrice();
+    if (this.coin.network === "ethereum" || this.coin.network === "binance") {
+      this.isEth = true;
 
-    // Convert into gwei
-    const gwei = Web3.utils.fromWei(gasPrice, "gwei");
-    this.gasprice = gwei;
+      // Fetch recommended gas price
+      const web3 = ethWallet.getWeb3(this.coin.network);
+      const gasPrice = await web3.eth.getGasPrice();
 
-    // If we are interacting with a contract (likely ERC20 or BEP20 token), then we need to fetch a higher gas limit
-    if (this.token.contract) {
-      this.gaslimit = 100000;
+      // Convert into gwei
+      const gwei = Web3.utils.fromWei(gasPrice, "gwei");
+      this.gasprice = gwei;
+
+      // If we are interacting with a contract (likely ERC20 or BEP20 token), then we need to fetch a higher gas limit
+      if (this.token.contract) {
+        this.gaslimit = 100000;
+      }
     }
   },
   methods: {
@@ -243,19 +252,19 @@ export default defineComponent({
         // Convert Wei balance to Ether
         this.balance = Web3.utils.fromWei(weiBalance, "ether");
       }
-    }
+    },
   },
   setup() {
     const route = useRoute();
     const ticker = route.params.ticker;
 
-    const token = ref({} as Coin);
+    const coin = ref({} as Coin);
     const address = ref();
     const addressQr = ref();
     const balance = ref();
 
     onMounted(async () => {
-      token.value = CoinFactory.getCoin(ticker as string);
+      coin.value = CoinFactory.getCoin(ticker as string);
 
       // Fetch encrypted wallet and decrypt it
       let wallet: EncryptedWallet;
@@ -270,20 +279,28 @@ export default defineComponent({
       const rootKey = account.getRootKey();
       const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
       ethWallet.setMnemonic(mnemonic);
+      btcP2wpkhWallet.setMnemonic(mnemonic);
 
-      // Set the address
-      const eth = ethWallet.getWallet();
-      address.value = eth.getAddressString();
+      // Set the address depending on the network (Binance, Ethereum or Bitcoin)
+      if (
+        coin.value.network === "ethereum" ||
+        coin.value.network === "binance"
+      ) {
+        const eth = ethWallet.getWallet();
+        address.value = eth.getAddressString();
+      } else if (coin.value.network === "bitcoin") {
+        address.value = btcP2wpkhWallet.getAddress(0, 0);
+      }
 
       // Generate a QR of receiving address
       addressQr.value = await qrcode.toDataURL(address.value);
 
       // Need to fetch token balance. If token has a contract,
       // get balance from the contract
-      if (token.value.contract) {
+      if (coin.value.contract) {
         const contract = ethWallet.getContract(
-          token.value.contract,
-          token.value.network
+          coin.value.contract,
+          coin.value.network
         );
         const weiBalance = await contract.methods
           .balanceOf(address.value)
@@ -293,7 +310,7 @@ export default defineComponent({
         balance.value = Web3.utils.fromWei(weiBalance, "ether");
       } else {
         // Otherwise fetch balance for address
-        const web3 = ethWallet.getWeb3(token.value.network);
+        const web3 = ethWallet.getWeb3(coin.value.network);
         const weiBalance = await web3.eth.getBalance(address.value);
 
         // Convert Wei balance to Ether
@@ -302,12 +319,12 @@ export default defineComponent({
     });
 
     return {
-      token,
+      coin,
       ticker,
       address,
       addressQr,
-      balance
+      balance,
     };
-  }
+  },
 });
 </script>

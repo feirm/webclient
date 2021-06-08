@@ -176,7 +176,7 @@ export default defineComponent({
       this.gasprice = gwei;
 
       // If we are interacting with a contract (likely ERC20 or BEP20 token), then we need to fetch a higher gas limit
-      if (this.token.contract) {
+      if (this.coin.contract) {
         this.gaslimit = 100000;
       }
     }
@@ -194,17 +194,16 @@ export default defineComponent({
 
       // Need to handle normal send and token transfers differently,
       // so check if token has a contract associated to it
-      // TODO: FIX GAS LIMIT FOR TOKEN TRANSFER
-      if (this.token.contract) {
+      if (this.coin.contract) {
         // Initialise a token transfer
         try {
           const hash = await ethWallet.sendTokens(
             this.recipientAddress,
             this.amount,
-            this.token.contract,
+            this.coin.contract,
             this.gasprice,
             this.gaslimit,
-            this.token.network
+            this.coin.network
           );
 
           this.submitted = false;
@@ -216,8 +215,8 @@ export default defineComponent({
 
         // Balance update
         const contract = ethWallet.getContract(
-          this.token.contract,
-          this.token.network
+          this.coin.contract,
+          this.coin.network
         );
         const weiBalance = await contract.methods
           .balanceOf(this.address)
@@ -228,14 +227,14 @@ export default defineComponent({
       }
 
       // Otherwise it's likely a normal transfer
-      if (!this.token.contract) {
+      if (!this.coin.contract) {
         try {
           const hash = await ethWallet.sendCoin(
             this.recipientAddress,
             this.amount,
             this.gasprice,
             this.gaslimit,
-            this.token.network
+            this.coin.network
           );
 
           this.submitted = false;
@@ -246,7 +245,7 @@ export default defineComponent({
         }
 
         // Balance update
-        const web3 = ethWallet.getWeb3(this.token.network);
+        const web3 = ethWallet.getWeb3(this.coin.network);
         const weiBalance = await web3.eth.getBalance(this.address);
 
         // Convert Wei balance to Ether

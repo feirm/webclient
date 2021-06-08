@@ -1,3 +1,6 @@
+import { Network } from "bitcoinjs-lib";
+import bitcoin from "bitcoinjs-lib/types/networks";
+
 // Representation of a coin
 export interface Coin {
   name: string;
@@ -6,6 +9,11 @@ export interface Coin {
   logo: NodeRequire;
   network: string;
   contract?: string;
+
+  // BTC-base fork settings
+  blockbook?: string;
+  segwit?: boolean;
+  network_data?: Network;
 }
 
 // Feirm token
@@ -23,6 +31,17 @@ class Binance implements Coin {
   ticker = "bnb";
   logo = require("@/assets/img/binance.png");
   network = "binance";
+}
+
+// Bitcoin
+class Bitcoin implements Coin {
+  name = "Bitcoin";
+  ticker = "btc";
+  logo = require("@/assets/img/bitcoin.png");
+  network = "bitcoin";
+  blockbook = "https://btc2.trezor.io";
+  segwit = true;
+  bitcoin;
 }
 
 // Ethereum
@@ -74,6 +93,7 @@ export class CoinFactory {
   static coins: { [ticker: string]: Coin } = {
     xfe: new Feirm(),
     bat: new BasicAttentionToken(),
+    btc: new Bitcoin(),
     bnb: new Binance(),
     busd: new BinanceUSD(),
     dai: new DAI(),
@@ -85,6 +105,7 @@ export class CoinFactory {
   static coinsList: Coin[] = [
     CoinFactory.coins.xfe,
     CoinFactory.coins.bat,
+    CoinFactory.coins.btc,
     CoinFactory.coins.bnb,
     CoinFactory.coins.busd,
     CoinFactory.coins.dai,

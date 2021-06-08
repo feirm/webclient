@@ -1,20 +1,27 @@
 import { fromBase58, fromSeed } from "bip32";
 import { mnemonicToSeedSync } from "bip39";
-import { payments } from "bitcoinjs-lib";
+import { address, payments } from "bitcoinjs-lib";
 import { CoinFactory } from "../coins";
 import { AbstractWallet } from "./abstract-wallet";
 import b58 from "bs58check";
 
 class BTCP2WPKHWallet extends AbstractWallet {
+  private xpub: string;
+  private zpub: string;
+
+  setXpub(xpub: string) {
+    this.xpub = xpub;
+  }
+
+  setZpub(zpub: string) {
+    this.zpub = zpub;
+  }
+
   getZpub(ticker: string) {
     // Find coin
     const coin = CoinFactory.getCoin(ticker);
 
     const mnemonic = this.getMnemonic();
-    if (!mnemonic) {
-      throw new Error("Mnemonic not loaded!");
-    }
-
     const seed = mnemonicToSeedSync(mnemonic);
     const root = fromSeed(seed, coin.network_data); // Always going to be 1st network
 
@@ -48,6 +55,19 @@ class BTCP2WPKHWallet extends AbstractWallet {
     const xpub = b58.encode(buffer);
     return xpub;
   }
+
+  // Get address from XPUB
+  getAddress(chainIndex, addressIndex: number): string {
+    const xpub = fromBase58(this.xpub);
+
+    const address = payments.p2wpkh({
+      pubkey: xpub.derive(chainIndex).derive(addressIndex).publicKey,
+    }).address;
+
+    return address;
+  }
+
+  // TODO: Get private key
 }
 
 export default new BTCP2WPKHWallet();

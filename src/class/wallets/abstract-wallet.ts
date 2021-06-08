@@ -51,6 +51,10 @@ export abstract class AbstractWallet {
 
   // Return the 24-word mnemonic if we have it
   public getMnemonic(): string {
+    if (!this.mnemonic) {
+      throw new Error("Mnemonic not loaded!");
+    }
+
     return this.mnemonic;
   }
 

@@ -12,6 +12,7 @@ export interface Coin {
   // BTC-base fork settings
   blockbook?: string;
   segwit?: boolean;
+  testnet?: boolean;
   network_data?: Network;
 }
 
@@ -44,12 +45,34 @@ class Bitcoin implements Coin {
     messagePrefix: "\u0018Bitcoin Signed Message:\n",
     bech32: "bc",
     bip32: {
-      public: 78792518,
-      private: 78791436,
+      public: 0x0488b21e,
+      private: 0x0488ade4,
     },
     pubKeyHash: 0,
     scriptHash: 5,
     wif: 128,
+  };
+}
+
+// Bitcoin Testnet
+class TBitcoin implements Coin {
+  name = "Bitcoin Testnet";
+  ticker = "tbtc";
+  logo = require("@/assets/img/bitcoin.png");
+  network = "bitcoin";
+  blockbook = "https://tbtc2.trezor.io";
+  segwit = true;
+  testnet = true;
+  network_data: Network = {
+    messagePrefix: "\u0018Bitcoin Signed Message:\n",
+    bech32: "tb",
+    bip32: {
+      public: 0x043587cf,
+      private: 0x04358394,
+    },
+    pubKeyHash: 111,
+    scriptHash: 196,
+    wif: 239,
   };
 }
 
@@ -103,6 +126,7 @@ export class CoinFactory {
     xfe: new Feirm(),
     bat: new BasicAttentionToken(),
     btc: new Bitcoin(),
+    tbtc: new TBitcoin(),
     bnb: new Binance(),
     busd: new BinanceUSD(),
     dai: new DAI(),
@@ -115,6 +139,7 @@ export class CoinFactory {
     CoinFactory.coins.xfe,
     CoinFactory.coins.bat,
     CoinFactory.coins.btc,
+    CoinFactory.coins.tbtc,
     CoinFactory.coins.bnb,
     CoinFactory.coins.busd,
     CoinFactory.coins.dai,

@@ -288,7 +288,7 @@ export default defineComponent({
         const eth = ethWallet.getWallet();
         address.value = eth.getAddressString();
       } else if (coin.value.network === "bitcoin") {
-        address.value = btcP2wpkhWallet.getAddress(0, 0);
+        address.value = btcP2wpkhWallet.getAddress(coin.value.ticker, 0, 0);
       }
 
       // Generate a QR of receiving address

@@ -100,13 +100,13 @@ export default {
         // Check if Bitcoin
         if (coin.network === "bitcoin") {
           const zpub = btcP2wpkhWallet.getZpub(coin.ticker);
-          const xpub = btcP2wpkhWallet.getXpub(zpub);
+          const xpub = btcP2wpkhWallet.getXpub(coin.ticker, zpub);
 
           btcP2wpkhWallet.setZpub(zpub);
           btcP2wpkhWallet.setXpub(xpub);
 
-          const address = btcP2wpkhWallet.getAddress(0, 0);
-          const changeAddress = btcP2wpkhWallet.getAddress(1, 0);
+          const address = btcP2wpkhWallet.getAddress(coin.ticker, 0, 0);
+          const changeAddress = btcP2wpkhWallet.getAddress(coin.ticker, 1, 0);
           console.log("First main:", address);
           console.log("First change:", changeAddress);
 

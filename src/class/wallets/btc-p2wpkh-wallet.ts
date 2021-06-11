@@ -38,7 +38,7 @@ class BTCP2WPKHWallet extends AbstractWallet {
   }
 
   // BitcoinJS doesn't like ZPUBs, so convert one into an XPUB
-  getXpub(zpub: string): string {
+  getXpub(ticker, zpub: string): string {
     // Cache hit
     if (this.xpub) {
       return this.xpub;
@@ -47,6 +47,10 @@ class BTCP2WPKHWallet extends AbstractWallet {
     if (!zpub) {
       throw new Error("Need to provide ZPUB!");
     }
+
+    const coin = CoinFactory.getCoin(ticker);
+
+    // TODO: Handle testnet different to mainnet
 
     let buffer = b58.decode(zpub);
     buffer = buffer.slice(4);
@@ -57,11 +61,13 @@ class BTCP2WPKHWallet extends AbstractWallet {
   }
 
   // Get address from XPUB
-  getAddress(chainIndex, addressIndex: number): string {
+  getAddress(ticker: string, chainIndex, addressIndex: number): string {
+    const coin = CoinFactory.getCoin(ticker);
     const xpub = fromBase58(this.xpub);
 
     const address = payments.p2wpkh({
       pubkey: xpub.derive(chainIndex).derive(addressIndex).publicKey,
+      network: coin.network_data,
     }).address;
 
     return address;

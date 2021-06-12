@@ -18,11 +18,6 @@ class BTCP2WPKHWallet extends BTCWallet {
   }
 
   getZpub(ticker: string) {
-    // Cache hit
-    if (this.zpub) {
-      return this.zpub;
-    }
-
     // Find coin
     const coin = CoinFactory.getCoin(ticker);
 
@@ -37,7 +32,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     return zpub;
   }
 
-  // BitcoinJS doesn't like ZPUBs, so convert one into an XPUB
+  // BitcoinJS doesn't like ZPUBs, YPUBs or VPUBs, so convert one into an XPUB
   getXpub(ticker, zpub: string): string {
     // Cache hit
     if (this.xpub) {
@@ -50,11 +45,15 @@ class BTCP2WPKHWallet extends BTCWallet {
 
     const coin = CoinFactory.getCoin(ticker);
 
-    // TODO: Handle testnet different to mainnet
-
     let buffer = b58.decode(zpub);
     buffer = buffer.slice(4);
-    buffer = Buffer.concat([Buffer.from("0488b21e", "hex"), buffer]);
+
+    // Handle testnet different to mainnet
+    if (coin.testnet) {
+      buffer = Buffer.concat([Buffer.from("045f1cf6", "hex"), buffer]);
+    } else {
+      buffer = Buffer.concat([Buffer.from("0488b21e", "hex"), buffer]);
+    }
 
     const xpub = b58.encode(buffer);
     return xpub;

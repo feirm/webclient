@@ -67,8 +67,8 @@ class TBitcoin implements Coin {
     messagePrefix: "\u0018Bitcoin Signed Message:\n",
     bech32: "tb",
     bip32: {
-      public: 0x043587cf,
-      private: 0x04358394,
+      public: 0x045f1cf6,
+      private: 0x045f18bc,
     },
     pubKeyHash: 111,
     scriptHash: 196,

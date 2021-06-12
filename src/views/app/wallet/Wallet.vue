@@ -180,6 +180,12 @@ export default defineComponent({
         this.gaslimit = 100000;
       }
     }
+
+    if (this.coin.network === "bitcoin") {
+      // Get xpub data
+      const zpub = btcP2wpkhWallet.getZpub(this.coin.ticker);
+      await btcP2wpkhWallet.getXpubInfo(zpub, this.coin.ticker);
+    }
   },
   methods: {
     async send() {

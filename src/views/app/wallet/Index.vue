@@ -104,14 +104,6 @@ export default {
 
           btcP2wpkhWallet.setZpub(zpub);
           btcP2wpkhWallet.setXpub(xpub);
-
-          const address = btcP2wpkhWallet.getAddress(coin.ticker, 0, 0);
-          const changeAddress = btcP2wpkhWallet.getAddress(coin.ticker, 1, 0);
-          console.log("First main:", address);
-          console.log("First change:", changeAddress);
-
-          const wif = btcP2wpkhWallet.getPrivateKey(coin.ticker, 0, 0);
-          console.log(wif);
         }
 
         // If token has a contract, fetch balance from contract

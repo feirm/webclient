@@ -1,4 +1,3 @@
-import axios, { AxiosInstance } from "axios";
 import { CoinFactory } from "../coins";
 import { AbstractWallet } from "./abstract-wallet";
 import { Blockbook } from "blockbook-client";

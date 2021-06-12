@@ -1,11 +1,11 @@
 import { fromBase58, fromSeed } from "bip32";
 import { mnemonicToSeedSync } from "bip39";
-import { address, payments } from "bitcoinjs-lib";
+import { payments } from "bitcoinjs-lib";
 import { CoinFactory } from "../coins";
-import { AbstractWallet } from "./abstract-wallet";
 import b58 from "bs58check";
+import { BTCWallet } from "./btc-abstract-wallet";
 
-class BTCP2WPKHWallet extends AbstractWallet {
+class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
   private zpub: string;
 

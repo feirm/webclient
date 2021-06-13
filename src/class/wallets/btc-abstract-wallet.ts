@@ -22,9 +22,7 @@ abstract class BTCWallet extends AbstractWallet {
     const blockbook = this.createBlockbookClient(ticker);
 
     try {
-      await blockbook.getXpubDetails(xpub).then((data) => {
-        console.log(data);
-      });
+      return await blockbook.getXpubDetails(xpub);
     } catch (e) {
       throw new Error(e);
     }

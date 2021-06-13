@@ -74,7 +74,7 @@
                     </div>
                     <button
                       @click="copyToClipboard(addressData.string)"
-                      class="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50"
+                      class="-ml-px w-28 relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50"
                       :class="copied ? 'bg-green-400' : ''"
                     >
                       <ClipboardCopyIcon class="h-5 w-5" aria-hidden="true" />

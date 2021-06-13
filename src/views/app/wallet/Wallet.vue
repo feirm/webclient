@@ -3,23 +3,37 @@
     <div class="grid grid-cols-2 gap-4 sm:grid-cols-2">
       <div class="p-6 border-r border-gray-300 space-y-6">
         <!-- Balance -->
-        <div class="space-y-0">
+        <div v-if="!isLoading" class="space-y-0">
           <h1 class="font-light text-2xl">Balance</h1>
           <h2 class="font-medium text-2xl">
             {{ wallet.balance }} {{ ticker.toUpperCase() }}
           </h2>
         </div>
+        <div v-else class="animate-pulse flex space-x-4">
+          <div class="flex-1 space-y-4 py-1">
+            <div class="h-8 bg-gray-300 rounded w-24"></div>
+            <div class="space-y-2">
+              <div class="h-10 bg-gray-300 rounded w-56"></div>
+            </div>
+          </div>
+        </div>
 
         <hr class="m-3" />
 
         <!-- Send actions -->
-        <h1 class="font-light text-xl">Send {{ ticker.toUpperCase() }}</h1>
+        <h1 v-if="!isLoading" class="font-light text-xl">
+          Send {{ ticker.toUpperCase() }}
+        </h1>
+        <div v-else class="animate-pulse">
+          <div class="h-8 bg-gray-300 rounded w-24"></div>
+        </div>
 
         <form
           @submit.prevent="
             showConfirmTransactionModal = !showConfirmTransactionModal
           "
           class="space-y-6"
+          v-if="!isLoading"
         >
           <div>
             <label
@@ -107,15 +121,54 @@
             </router-link>
           </div>
         </form>
+
+        <div v-else class="space-y-4">
+          <div class="animate-pulse space-y-2">
+            <div class="h-4 bg-gray-300 rounded w-24"></div>
+            <div class="h-10 bg-gray-300 rounded"></div>
+          </div>
+
+          <div class="animate-pulse space-y-2">
+            <div class="h-4 bg-gray-300 rounded w-24"></div>
+            <div class="h-10 bg-gray-300 rounded"></div>
+          </div>
+
+          <div class="animate-pulse space-y-2">
+            <div class="h-4 bg-gray-300 rounded w-24"></div>
+            <div class="h-10 bg-gray-300 rounded"></div>
+          </div>
+
+          <div class="animate-pulse space-y-2">
+            <div class="h-4 bg-gray-300 rounded w-24"></div>
+            <div class="h-10 bg-gray-300 rounded"></div>
+          </div>
+
+          <div class="animate-pulse space-y-2">
+            <div class="h-10 bg-gray-300 rounded"></div>
+          </div>
+
+          <div class="animate-pulse space-y-2">
+            <div class="h-4 bg-gray-300 rounded w-36 mx-auto"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="p-3 bg-white">
+      <div v-if="!isLoading" class="p-3 bg-white">
         <h1 class="font-light text-2xl">Receiving address</h1>
         <code>
           {{ wallet.address }}
         </code>
 
         <img :src="wallet.addressQr" alt="Address QR" />
+      </div>
+      <div v-else class="animate-pulse flex space-x-4">
+        <div class="flex-1 space-y-4 py-1">
+          <div class="h-6 bg-gray-300 rounded w-24"></div>
+          <div class="space-y-2">
+            <div class="h-6 bg-gray-300 rounded"></div>
+            <div class="h-36 bg-gray-300 rounded w-36"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -258,6 +311,7 @@ export default defineComponent({
     const route = useRoute();
     const ticker = route.params.ticker;
     const coin = ref({} as Coin);
+    const isLoading = ref(true);
 
     const wallet = ref({
       address: "",
@@ -329,12 +383,15 @@ export default defineComponent({
           wallet.value.balance = Web3.utils.fromWei(weiBalance, "ether");
         }
       }
+
+      isLoading.value = false;
     });
 
     return {
       coin,
       ticker,
       wallet,
+      isLoading,
     };
   },
 });

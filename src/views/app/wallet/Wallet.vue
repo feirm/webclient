@@ -6,7 +6,7 @@
         <div class="space-y-0">
           <h1 class="font-light text-2xl">Balance</h1>
           <h2 class="font-medium text-2xl">
-            {{ balance }} {{ ticker.toUpperCase() }}
+            {{ wallet.balance }} {{ ticker.toUpperCase() }}
           </h2>
         </div>
 
@@ -112,10 +112,10 @@
       <div class="p-3 bg-white">
         <h1 class="font-light text-2xl">Receiving address</h1>
         <code>
-          {{ address }}
+          {{ wallet.address }}
         </code>
 
-        <img :src="addressQr" alt="Address QR" />
+        <img :src="wallet.addressQr" alt="Address QR" />
       </div>
     </div>
   </div>
@@ -140,6 +140,7 @@ import Web3 from "web3";
 import { EncryptedWallet } from "@/models/wallet";
 import walletService from "@/service/api/walletService";
 import account from "@/class/account";
+import sb from "satoshi-bitcoin";
 
 import ConfirmModal from "@/components/ConfirmModal.vue";
 import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
@@ -179,12 +180,6 @@ export default defineComponent({
       if (this.coin.contract) {
         this.gaslimit = 100000;
       }
-    }
-
-    if (this.coin.network === "bitcoin") {
-      // Get xpub data
-      const zpub = btcP2wpkhWallet.getZpub(this.coin.ticker);
-      await btcP2wpkhWallet.getXpubInfo(zpub, this.coin.ticker);
     }
   },
   methods: {
@@ -262,27 +257,29 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const ticker = route.params.ticker;
-
     const coin = ref({} as Coin);
-    const address = ref();
-    const addressQr = ref();
-    const balance = ref();
+
+    const wallet = ref({
+      address: "",
+      addressQr: "",
+      balance: "",
+    });
 
     onMounted(async () => {
       coin.value = CoinFactory.getCoin(ticker as string);
 
       // Fetch encrypted wallet and decrypt it
-      let wallet: EncryptedWallet;
+      let encryptedWallet: EncryptedWallet;
       try {
         const res = await walletService.GetWallet();
-        wallet = res.data;
+        encryptedWallet = res.data;
       } catch (e) {
         console.log("[Wallet]: " + e.response.data.error);
       }
 
       // Decrypt wallet and set mnemonic
       const rootKey = account.getRootKey();
-      const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
+      const mnemonic = await ethWallet.decryptWallet(rootKey, encryptedWallet);
       ethWallet.setMnemonic(mnemonic);
       btcP2wpkhWallet.setMnemonic(mnemonic);
 
@@ -292,43 +289,52 @@ export default defineComponent({
         coin.value.network === "binance"
       ) {
         const eth = ethWallet.getWallet();
-        address.value = eth.getAddressString();
+        wallet.value.address = eth.getAddressString();
       } else if (coin.value.network === "bitcoin") {
-        address.value = btcP2wpkhWallet.getAddress(coin.value.ticker, 0, 0);
+        wallet.value.address = btcP2wpkhWallet.getAddress(
+          coin.value.ticker,
+          0,
+          0
+        );
+
+        // Get xpub data
+        const zpub = btcP2wpkhWallet.getZpub(coin.value.ticker);
+        const data = await btcP2wpkhWallet.getXpubInfo(zpub, coin.value.ticker);
+
+        const balance = sb.toBitcoin(data.balance);
+        wallet.value.balance = balance;
       }
 
       // Generate a QR of receiving address
-      addressQr.value = await qrcode.toDataURL(address.value);
+      wallet.value.addressQr = await qrcode.toDataURL(wallet.value.address);
+      const address = wallet.value.address;
 
-      // Need to fetch token balance. If token has a contract,
-      // get balance from the contract
-      if (coin.value.contract) {
-        const contract = ethWallet.getContract(
-          coin.value.contract,
-          coin.value.network
-        );
-        const weiBalance = await contract.methods
-          .balanceOf(address.value)
-          .call();
-
-        // Convert Wei balance to Ether
-        balance.value = Web3.utils.fromWei(weiBalance, "ether");
-      } else {
-        // Otherwise fetch balance for address
-        const web3 = ethWallet.getWeb3(coin.value.network);
-        const weiBalance = await web3.eth.getBalance(address.value);
-
-        // Convert Wei balance to Ether
-        balance.value = Web3.utils.fromWei(weiBalance, "ether");
+      // If the network is Ethereum/Binance, we need to fetch the address balance.
+      // If its a token, get the token balance from the contract.
+      if (
+        coin.value.network === "ethereum" ||
+        coin.value.network === "binance"
+      ) {
+        if (coin.value.contract) {
+          const contract = ethWallet.getContract(
+            coin.value.contract,
+            coin.value.network
+          );
+          const bal = await contract.methods.balanceOf(address).call();
+          wallet.value.balance = Web3.utils.fromWei(bal, "ether");
+        } else {
+          // Normal coin (ETH or BNB)
+          const web3 = ethWallet.getWeb3(coin.value.network);
+          const weiBalance = await web3.eth.getBalance(address);
+          wallet.value.balance = Web3.utils.fromWei(weiBalance, "ether");
+        }
       }
     });
 
     return {
       coin,
       ticker,
-      address,
-      addressQr,
-      balance,
+      wallet,
     };
   },
 });

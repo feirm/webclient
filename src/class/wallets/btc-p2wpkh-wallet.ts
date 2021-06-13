@@ -1,9 +1,10 @@
 import { fromBase58, fromSeed } from "bip32";
 import { mnemonicToSeedSync } from "bip39";
-import { payments } from "bitcoinjs-lib";
+import { payments, Psbt } from "bitcoinjs-lib";
 import { CoinFactory } from "../coins";
 import b58 from "bs58check";
 import { BTCWallet } from "./btc-abstract-wallet";
+import { sb } from "satoshi-bitcoin";
 
 class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
@@ -88,6 +89,35 @@ class BTCP2WPKHWallet extends BTCWallet {
       .toWIF();
 
     return wif;
+  }
+
+  // Create signed transaction
+  // Expect the fee to to be in sats/byte, pulled from: https://bitcoinfees.earn.com/api/v1/fees/recommended
+  async createSignedTransaction(ticker, address, amount: string, fee: number) {
+    const coin = CoinFactory.getCoin(ticker);
+
+    // Get mnemonic and derive the root key to create a BIP32 signer
+    const mnemonic = this.getMnemonic();
+    const seed = mnemonicToSeedSync(mnemonic);
+    const root = fromSeed(seed, coin.network_data);
+
+    // Fetch UTXOs for the extended public key
+    const blockbook = this.createBlockbookClient(ticker);
+    const xpub = this.getZpub(ticker);
+    const utxos = await blockbook.getUtxosForXpub(xpub);
+
+    for (let i = 0; i < utxos.length; i++) {
+      console.log(utxos[i].path);
+    }
+
+    const psbt = new Psbt({ network: coin.network_data });
+    psbt.setVersion(1);
+
+    // Create outputs - one for the recipient and then another as a change address
+    psbt.addOutput({
+      address: address,
+      value: sb.toBitcoin(amount),
+    });
   }
 }
 

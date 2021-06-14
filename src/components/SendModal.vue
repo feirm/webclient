@@ -43,33 +43,76 @@
             class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
           >
             <div>
-              <div
-                class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"
-              >
-                <CheckIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
-              </div>
-              <div class="mt-3 text-center sm:mt-5">
+              <div class="text-center space-y-3 mb-3">
                 <DialogTitle
                   as="h3"
                   class="text-lg leading-6 font-medium text-gray-900"
                 >
-                  Payment successful
+                  Send {{ props.ticker.toUpperCase() }}
                 </DialogTitle>
-                <div class="mt-2">
-                  <p class="text-sm text-gray-500">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequatur amet labore.
-                  </p>
+
+                <div class="text-left space-y-2">
+                  <!-- Recipient -->
+                  <label
+                    for="address"
+                    class="block text-sm font-medium text-gray-700"
+                    >Recipient Address</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      type="text"
+                      class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  <!-- Amount -->
+                  <label
+                    for="amount"
+                    class="block text-sm font-medium text-gray-700"
+                    >Amount ({{ props.ticker.toUpperCase() }})</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      type="number"
+                      class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
+                    />
+                  </div>
+
+                  <!-- Transaction fee -->
+                  <label
+                    for="address"
+                    class="block text-sm font-medium text-gray-700"
+                    >Transaction Fee</label
+                  >
+                  <div class="flex mt-1 space-x-3 justify-center">
+                    <button
+                      v-for="i in ['Fast', 'Average', 'Slow']"
+                      :key="i"
+                      class="block w-full p-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:border-orange-500"
+                    >
+                      {{ i }}
+                      <br />
+                      <span class="text-sm">100 sats/b</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="mt-5 sm:mt-6">
+            <div class="space-y-2">
               <button
                 type="button"
-                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm"
                 @click="open = false"
               >
-                Go back to dashboard
+                Send
+              </button>
+
+              <button
+                type="button"
+                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-400 sm:text-sm"
+                @click="closeEvent"
+              >
+                Cancel
               </button>
             </div>
           </div>

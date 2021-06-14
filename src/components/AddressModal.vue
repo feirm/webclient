@@ -77,7 +77,16 @@
                       class="-ml-px w-28 relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50"
                       :class="copied ? 'bg-green-200' : ''"
                     >
-                      <ClipboardCopyIcon class="h-5 w-5" aria-hidden="true" />
+                      <ClipboardIcon
+                        v-if="!copied"
+                        class="h-5 w-5"
+                        aria-hidden="true"
+                      />
+                      <ClipboardCopyIcon
+                        v-else
+                        class="h-5 w-5"
+                        aria-hidden="true"
+                      />
                       <span>{{ copied ? "Copied" : "Copy" }}</span>
                     </button>
                   </div>
@@ -116,7 +125,7 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import { ClipboardCopyIcon } from "@heroicons/vue/outline";
+import { ClipboardCopyIcon, ClipboardIcon } from "@heroicons/vue/outline";
 import qrcode from "qrcode";
 
 /*
@@ -136,6 +145,7 @@ export default {
     TransitionRoot,
 
     ClipboardCopyIcon,
+    ClipboardIcon,
   },
   setup(props, { emit }) {
     const open = ref(true);

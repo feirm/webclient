@@ -81,7 +81,7 @@ export default defineComponent({
     const address = ref();
 
     const showAddressModal = ref(false);
-    const showSendModal = ref(true);
+    const showSendModal = ref(false);
 
     onMounted(async () => {
       coin.value = CoinFactory.getCoin(ticker);

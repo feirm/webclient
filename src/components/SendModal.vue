@@ -55,7 +55,7 @@
             <div>
               <div class="text-center space-y-3 mb-3">
                 <div v-if="!isLoaded" class="animate-pulse">
-                  <div class="rounded-full bg-gray-300 h-14 w-14 mx-auto"></div>
+                  <div class="rounded-full bg-gray-300 h-12 w-12 mx-auto"></div>
                 </div>
                 <img
                   v-else

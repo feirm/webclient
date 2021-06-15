@@ -44,6 +44,7 @@
           >
             <div v-if="isLoaded">
               <div class="text-center space-y-3 mb-3">
+                <img :src="coin.logo" class="w-12 mx-auto" :alt="coin.ticker" />
                 <DialogTitle
                   as="h3"
                   class="text-lg leading-6 font-medium text-gray-900"

@@ -42,7 +42,7 @@
           <div
             class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
           >
-            <div>
+            <div v-if="isLoaded">
               <div class="text-center space-y-3 mb-3">
                 <DialogTitle
                   as="h3"
@@ -78,6 +78,22 @@
                     />
                   </div>
 
+                  <!-- Gas Limit -->
+                  <div v-if="isEth">
+                    <label
+                      for="gaslimit"
+                      class="block text-sm font-medium text-gray-700"
+                      >Gas Limit</label
+                    >
+                    <div class="mt-1">
+                      <input
+                        type="number"
+                        class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
+                        :value="coin.contract ? 100000 : 21000"
+                      />
+                    </div>
+                  </div>
+
                   <!-- Transaction fee -->
                   <label
                     for="address"
@@ -86,13 +102,15 @@
                   >
                   <div class="flex mt-1 space-x-3 justify-center">
                     <button
-                      v-for="i in ['Fast', 'Average', 'Slow']"
-                      :key="i"
+                      v-for="fee in fees"
+                      :key="fee"
                       class="block w-full p-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:border-orange-500"
                     >
-                      {{ i }}
+                      {{ fee.speed }}
                       <br />
-                      <span class="text-sm">100 sats/b</span>
+                      <span class="text-sm"
+                        >{{ fee.amount }} {{ fee.format }}</span
+                      >
                     </button>
                   </div>
                 </div>
@@ -130,6 +148,10 @@ import {
   DialogTitle,
   TransitionRoot,
 } from "@headlessui/vue";
+import { Coin, CoinFactory } from "@/class/coins";
+import axios from "axios";
+import ethWallet from "@/class/wallets/eth-wallet";
+import Web3 from "web3";
 
 /*
 This component should take in an address for a prop and showcase it, a QR code, and copy to clipboard button
@@ -148,10 +170,65 @@ export default {
   },
   setup(props, { emit }) {
     const open = ref(true);
+    const isEth = ref(false);
+    const coin = ref({} as Coin);
+
+    const isLoaded = ref(false);
+
+    interface Fee {
+      speed: string;
+      amount: string | number;
+      format: string;
+    }
+
+    const fees: Fee[] = [];
 
     onMounted(async () => {
-      console.log("Send component mounted!");
-      console.log(props.ticker);
+      coin.value = CoinFactory.getCoin(props.ticker);
+      if (
+        coin.value.network === "ethereum" ||
+        coin.value.network === "binance"
+      ) {
+        isEth.value = true;
+      }
+
+      // Determine fees for network
+      // BTC satoshis per byte gets fetched from https://bitcoinfees.earn.com/api/v1/fees/recommended
+      // ETH/BSC can be fetched from Metamask
+      if (isEth.value) {
+        const web3 = ethWallet.getWeb3(coin.value.network);
+        const recommendedFee = await web3.eth.getGasPrice();
+
+        fees.push({
+          speed: "Average",
+          amount: Web3.utils.fromWei(recommendedFee, "gwei"),
+          format: "Gwei",
+        });
+      } else {
+        const fee = await axios.get(
+          "https://bitcoinfees.earn.com/api/v1/fees/recommended"
+        );
+
+        fees.push(
+          {
+            speed: "Fast",
+            amount: fee.data.fastestFee,
+            format: "Sats/b",
+          },
+          {
+            speed: "Average",
+            amount: fee.data.halfHourFee,
+            format: "Sats/b",
+          },
+          {
+            speed: "Slow",
+            amount: fee.data.hourFee,
+            format: "Sats/b",
+          }
+        );
+      }
+
+      isLoaded.value = true;
     });
 
     // Handle close
@@ -162,7 +239,10 @@ export default {
     return {
       open,
       props,
-
+      coin,
+      isEth,
+      fees,
+      isLoaded,
       closeEvent,
     };
   },

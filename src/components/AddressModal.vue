@@ -44,11 +44,12 @@
           >
             <div class="sm:flex sm:items-start">
               <div class="mt-3 sm:mt-0 sm:text-left space-y-4">
+                <img :src="coin.logo" class="w-12 mx-auto" :alt="coin.ticker" />
                 <DialogTitle
                   as="h3"
                   class="text-lg text-center leading-6 font-medium text-gray-900"
                 >
-                  Your cryptocurrency address
+                  Your {{ coin.ticker.toUpperCase() }} address
                 </DialogTitle>
 
                 <!-- QR Code -->
@@ -127,6 +128,7 @@ import {
 } from "@headlessui/vue";
 import { ClipboardCopyIcon, ClipboardIcon } from "@heroicons/vue/outline";
 import qrcode from "qrcode";
+import { CoinFactory } from "@/class/coins";
 
 /*
 This component should take in an address for a prop and showcase it, a QR code, and copy to clipboard button
@@ -135,6 +137,7 @@ This component should take in an address for a prop and showcase it, a QR code, 
 export default {
   props: {
     address: String,
+    ticker: String,
   },
   emits: ["close"],
   components: {
@@ -150,6 +153,8 @@ export default {
   setup(props, { emit }) {
     const open = ref(true);
     const copied = ref(false);
+
+    const coin = CoinFactory.getCoin(props.ticker);
 
     const addressData = reactive({
       string: "",
@@ -196,6 +201,7 @@ export default {
       open,
       addressData,
       copied,
+      coin,
 
       copyToClipboard,
       closeEvent,

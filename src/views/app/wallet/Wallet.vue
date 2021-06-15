@@ -36,6 +36,7 @@
   <address-modal
     v-if="showAddressModal"
     :address="address"
+    :ticker="ticker"
     @close="toggleReceivingAddressModal"
   />
 

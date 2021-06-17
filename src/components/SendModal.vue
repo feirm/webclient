@@ -46,7 +46,7 @@
               <button
                 type="button"
                 class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
-                @click="open = false"
+                @click="closeEvent"
               >
                 <span class="sr-only">Close</span>
                 <XIcon class="h-6 w-6" aria-hidden="true" />

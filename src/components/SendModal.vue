@@ -300,7 +300,7 @@ export default {
       const tx = await btcP2wpkhWallet.createSignedTransaction(
         props.ticker,
         address,
-        "0.01",
+        1000000, // 0.01 BTC
         100
       );
     };

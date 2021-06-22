@@ -90,6 +90,7 @@
                     <div class="mt-1">
                       <input
                         type="text"
+                        v-model="address"
                         class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
@@ -177,7 +178,7 @@
               <button
                 type="button"
                 class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm"
-                @click="createTx"
+                @click="createTx(address)"
               >
                 Send
               </button>
@@ -227,6 +228,11 @@ export default {
     DialogTitle,
     TransitionRoot,
     XIcon,
+  },
+  data() {
+    return {
+      address: "",
+    };
   },
   setup(props, { emit }) {
     const open = ref(true);
@@ -290,8 +296,13 @@ export default {
     });
 
     // Create a signed transaction
-    const createTx = () => {
-      //const tx = await btcP2wpkhWallet.createSignedTransaction(props.ticker,)
+    const createTx = async (address: string) => {
+      const tx = await btcP2wpkhWallet.createSignedTransaction(
+        props.ticker,
+        address,
+        "0.01",
+        100
+      );
     };
 
     // Handle close
@@ -306,6 +317,8 @@ export default {
       isEth,
       fees,
       isLoaded,
+
+      createTx,
       closeEvent,
     };
   },

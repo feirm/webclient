@@ -177,7 +177,7 @@
               <button
                 type="button"
                 class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm"
-                @click="open = false"
+                @click="createTx"
               >
                 Send
               </button>
@@ -210,6 +210,7 @@ import axios from "axios";
 import ethWallet from "@/class/wallets/eth-wallet";
 import Web3 from "web3";
 import { XIcon } from "@heroicons/vue/outline";
+import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
 
 /*
 This component should take in an address for a prop and showcase it, a QR code, and copy to clipboard button
@@ -252,7 +253,7 @@ export default {
       }
 
       // Determine fees for network
-      // BTC satoshis per byte gets fetched from https://bitcoinfees.earn.com/api/v1/fees/recommended
+      // BTC satoshis per byte gets fetched from https://api.blockchain.info/mempool/fees
       // ETH/BSC can be fetched from Metamask
       if (isEth.value) {
         const web3 = ethWallet.getWeb3(coin.value.network);
@@ -264,24 +265,22 @@ export default {
           format: "Gwei",
         });
       } else {
-        const fee = await axios.get(
-          "https://bitcoinfees.earn.com/api/v1/fees/recommended"
-        );
+        const fee = await axios.get("https://api.blockchain.info/mempool/fees");
 
         fees.push(
           {
             speed: "Fast",
-            amount: fee.data.fastestFee,
+            amount: fee.data.priority,
             format: "Sats/b",
           },
           {
             speed: "Average",
-            amount: fee.data.halfHourFee,
+            amount: fee.data.regular,
             format: "Sats/b",
           },
           {
             speed: "Slow",
-            amount: fee.data.hourFee,
+            amount: fee.data.limits.min,
             format: "Sats/b",
           }
         );
@@ -289,6 +288,11 @@ export default {
 
       isLoaded.value = true;
     });
+
+    // Create a signed transaction
+    const createTx = () => {
+      //const tx = await btcP2wpkhWallet.createSignedTransaction(props.ticker,)
+    };
 
     // Handle close
     const closeEvent = () => {

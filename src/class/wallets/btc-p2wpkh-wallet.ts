@@ -5,6 +5,7 @@ import { CoinFactory } from "../coins";
 import b58 from "bs58check";
 import { BTCWallet } from "./btc-abstract-wallet";
 import sb from "satoshi-bitcoin";
+import { Big } from "big.js";
 
 class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
@@ -94,8 +95,16 @@ class BTCP2WPKHWallet extends BTCWallet {
   // Create signed transaction
   // Expect the fee to to be in sats/byte, pulled from: https://bitcoinfees.earn.com/api/v1/fees/recommended
   // Handle everything in satoshis
-  async createSignedTransaction(ticker, address, amount: number, fee: number) {
+  async createSignedTransaction(
+    ticker,
+    address: string,
+    amount: number,
+    fee: number
+  ) {
     const coin = CoinFactory.getCoin(ticker);
+
+    // Trim off any whitespace on the address
+    address = address.trim();
 
     // Get mnemonic and derive the root key to create a BIP32 signer
     const mnemonic = this.getMnemonic();
@@ -105,55 +114,51 @@ class BTCP2WPKHWallet extends BTCWallet {
     // Roughly estimate the TX size (1 input, 2 outputs = 250B)
     const feeEstimate = fee * 250;
 
-    // Fetch UTXOs for the extended public key
+    // Fetch UTXOs (inputs) for our extended public key
     const blockbook = this.createBlockbookClient(ticker);
     const xpub = this.getZpub(ticker);
-    const utxos = await blockbook.getUtxosForXpub(xpub);
+
+    const inputs = await blockbook.getUtxosForXpub(xpub);
+    let totalSatsInputAmount = 0;
 
     const psbt = new Psbt({ network: coin.network_data });
 
-    let totalSatsUtxoAmount: number;
-    for (let i = 0; i < utxos.length; i++) {
-      const utxo = utxos[i];
-
-      // Check if we have satisfied the amount we want to send
-      if (totalSatsUtxoAmount > amount) {
-        console.log("UTXO balance:", totalSatsUtxoAmount);
+    inputs.forEach((input) => {
+      // Don't continue if we have enough inputs
+      if (totalSatsInputAmount > amount) {
         return;
       }
 
-      // Derive the keypair needed for the transaction
-      const keyPair = ECPair.fromWIF(
-        root.derivePath(utxo.path).toWIF(),
-        coin.network_data
-      );
-      const publicKey = keyPair.publicKey;
+      totalSatsInputAmount += new Big(amount).toNumber();
+
+      // Derive keypair for signing
+      const wif = root.derivePath(input.path).toWIF();
+      const keyPair = ECPair.fromWIF(wif, coin.network_data);
+
+      const pubkey = keyPair.publicKey;
       const p2wpkh = payments.p2wpkh({
-        pubkey: publicKey,
+        pubkey: pubkey,
         network: coin.network_data,
       });
 
-      const sats = parseFloat(utxos[i].value);
-      totalSatsUtxoAmount = totalSatsUtxoAmount + sats;
+      console.log(input);
 
       psbt.addInput({
-        hash: utxo.txid,
-        index: utxo.vout,
+        hash: input.txid,
+        index: input.vout,
         witnessUtxo: {
           script: p2wpkh.output,
-          value: parseInt(utxo.value),
+          value: new Big(input.value).toNumber(),
         },
-        /*
         bip32Derivation: [
           {
             masterFingerprint: root.fingerprint,
-            path: utxo.path,
-            pubkey: root.derivePath(utxo.path).publicKey,
+            path: input.path,
+            pubkey: root.derivePath(input.path).publicKey,
           },
         ],
-        */
       });
-    }
+    });
 
     // Create outputs - one for the recipient and then another as a change address
     psbt.addOutput({
@@ -161,16 +166,19 @@ class BTCP2WPKHWallet extends BTCWallet {
       value: amount,
     });
 
-    // Iterate over all the inputs and sign them
-    psbt.txInputs.forEach(input);
+    // TODO: Properly determine change amount
+    psbt.addOutput({
+      address: this.getAddress(coin.ticker, 1, 0),
+      value: feeEstimate,
+    });
 
     // Sign, validate and finalise all inputs
     psbt.signAllInputsHD(root);
     psbt.validateSignaturesOfAllInputs();
     psbt.finalizeAllInputs();
 
-    console.log(psbt);
-    console.log(psbt.toHex());
+    const tx = psbt.extractTransaction(true);
+    console.log(tx.toHex());
   }
 }
 

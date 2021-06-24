@@ -4,8 +4,6 @@ import { ECPair, payments, Psbt } from "bitcoinjs-lib";
 import { CoinFactory } from "../coins";
 import b58 from "bs58check";
 import { BTCWallet } from "./btc-abstract-wallet";
-import sb from "satoshi-bitcoin";
-import { Big } from "big.js";
 
 class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
@@ -28,7 +26,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     const root = fromSeed(seed, coin.network_data); // Always going to be 1st network
 
     // Only supporting Bitcoin BIP-84 (native segwit)
-    const master = root.derivePath("m/84'/" + 0 + "'/0'");
+    const master = root.derivePath("m/84'/" + coin.bip_coin_type + "'/0'");
     const zpub = master.neutered().toBase58();
 
     return zpub;
@@ -63,6 +61,10 @@ class BTCP2WPKHWallet extends BTCWallet {
 
   // Get address from XPUB
   getAddress(ticker: string, chainIndex, addressIndex: number): string {
+    if (!this.xpub) {
+      throw new Error("No XPUB present!");
+    }
+
     const coin = CoinFactory.getCoin(ticker);
     const xpub = fromBase58(this.xpub);
 
@@ -83,7 +85,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     const seed = mnemonicToSeedSync(mnemonic);
     const root = fromSeed(seed, coin.network_data);
 
-    const master = root.derivePath("m/84'/" + 0 + "'/0'");
+    const master = root.derivePath("m/84'/" + coin.bip_coin_type + "'/0'");
     const wif = master
       .derive(chainIndex)
       .derive(addressIndex)
@@ -129,26 +131,23 @@ class BTCP2WPKHWallet extends BTCWallet {
         return;
       }
 
-      totalSatsInputAmount += new Big(amount).toNumber();
+      totalSatsInputAmount += amount;
 
-      // Derive keypair for signing
+      // Derive keypair from WIF
       const wif = root.derivePath(input.path).toWIF();
       const keyPair = ECPair.fromWIF(wif, coin.network_data);
 
-      const pubkey = keyPair.publicKey;
       const p2wpkh = payments.p2wpkh({
-        pubkey: pubkey,
+        pubkey: keyPair.publicKey,
         network: coin.network_data,
       });
-
-      console.log(input);
 
       psbt.addInput({
         hash: input.txid,
         index: input.vout,
         witnessUtxo: {
           script: p2wpkh.output,
-          value: new Big(input.value).toNumber(),
+          value: parseInt(input.value),
         },
         bip32Derivation: [
           {
@@ -169,16 +168,20 @@ class BTCP2WPKHWallet extends BTCWallet {
     // TODO: Properly determine change amount
     psbt.addOutput({
       address: this.getAddress(coin.ticker, 1, 0),
-      value: feeEstimate,
+      value: amount - feeEstimate,
     });
 
     // Sign, validate and finalise all inputs
     psbt.signAllInputsHD(root);
-    psbt.validateSignaturesOfAllInputs();
+
+    if (!psbt.validateSignaturesOfAllInputs()) {
+      throw new Error("Signature validation failed!");
+    }
+
     psbt.finalizeAllInputs();
 
-    const tx = psbt.extractTransaction(true);
-    console.log(tx.toHex());
+    const txHash = psbt.extractTransaction(true).toHex();
+    console.log(txHash);
   }
 }
 

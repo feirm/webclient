@@ -158,6 +158,7 @@
                         v-for="fee in fees"
                         :key="fee"
                         class="block w-full p-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:border-orange-500"
+                        @click="setBTCFee(fee.amount)"
                       >
                         {{ fee.speed }}
                         <br />
@@ -213,6 +214,7 @@ import ethWallet from "@/class/wallets/eth-wallet";
 import Web3 from "web3";
 import { XIcon } from "@heroicons/vue/outline";
 import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
+import sb from "satoshi-bitcoin";
 
 /*
 This component should take in an address for a prop and showcase it, a QR code, and copy to clipboard button
@@ -240,6 +242,8 @@ export default {
     const open = ref(true);
     const isEth = ref(false);
     const coin = ref({} as Coin);
+
+    const selectedFee = ref(0);
 
     const isLoaded = ref(false);
 
@@ -301,12 +305,14 @@ export default {
     const createTx = async (address: string, amount: number) => {
       // If the coin is BTC-based, validate the address and convert the amount into Satoshis
       if (coin.value.network === "bitcoin") {
+        const newAmount = sb.toSatoshi(amount);
+
         try {
           await btcP2wpkhWallet.createSignedTransaction(
             props.ticker,
             address,
-            amount,
-            100
+            newAmount,
+            selectedFee.value
           );
         } catch (e) {
           console.log(e);
@@ -315,6 +321,11 @@ export default {
         // Otherwise assume its Gwei
         console.log("TODO: Unit conversion");
       }
+    };
+
+    // Set a fee (BTC)
+    const setBTCFee = (fee: number) => {
+      selectedFee.value = fee;
     };
 
     // Handle close
@@ -331,6 +342,7 @@ export default {
       isLoaded,
 
       createTx,
+      setBTCFee,
       closeEvent,
     };
   },

@@ -101,7 +101,7 @@ export default defineComponent({
 
       // Derive and set our receiving address depending on the coin/token
       if (coin.value.network === "bitcoin") {
-        address.value = btcP2wpkhWallet.getAddress(coin.value.ticker, 0, 0);
+        address.value = btcP2wpkhWallet.getAddress(ticker, 0, 0);
       } else if (
         coin.value.network === "ethereum" ||
         coin.value.network === "binance"

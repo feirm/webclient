@@ -66,7 +66,8 @@ class BTCP2WPKHWallet extends BTCWallet {
     }
 
     const coin = CoinFactory.getCoin(ticker);
-    const xpub = fromBase58(this.xpub);
+    const zpub = this.getZpub(coin.ticker);
+    const xpub = fromBase58(zpub, coin.network_data);
 
     const address = payments.p2wpkh({
       pubkey: xpub.derive(chainIndex).derive(addressIndex).publicKey,

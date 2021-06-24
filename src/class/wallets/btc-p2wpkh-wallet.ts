@@ -166,9 +166,27 @@ class BTCP2WPKHWallet extends BTCWallet {
       value: amount,
     });
 
+    // TODO Properly determine unused change address
+    let lowestChangeIndex = 0;
+    const xpubData = await blockbook.getXpubDetails(xpub);
+
+    xpubData.tokens.forEach((token) => {
+      const path = token.path;
+
+      // Split up the path to extract account index
+      const split = path.split("/");
+      const node = parseInt(split[4]);
+      const index = parseInt(split[5]);
+
+      // We have a change address so increment the lowest change amount
+      if (node === 1) {
+        lowestChangeIndex = index + 1;
+      }
+    });
+
     // TODO: Properly determine change amount
     psbt.addOutput({
-      address: this.getAddress(coin.ticker, 1, 0),
+      address: this.getAddress(coin.ticker, 1, lowestChangeIndex),
       value: totalSatsInputAmount - amount - feeEstimate,
     });
 

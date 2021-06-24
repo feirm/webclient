@@ -169,7 +169,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     // TODO: Properly determine change amount
     psbt.addOutput({
       address: this.getAddress(coin.ticker, 1, 0),
-      value: amount - feeEstimate,
+      value: totalSatsInputAmount - amount - feeEstimate,
     });
 
     // Sign, validate and finalise all inputs
@@ -181,7 +181,7 @@ class BTCP2WPKHWallet extends BTCWallet {
 
     psbt.finalizeAllInputs();
 
-    const txHash = psbt.extractTransaction(true).toHex();
+    const txHash = psbt.extractTransaction().toHex();
     console.log(txHash);
   }
 }

@@ -111,6 +111,7 @@
                       <input
                         type="number"
                         class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
+                        v-model="amount"
                       />
                     </div>
                   </div>
@@ -178,7 +179,7 @@
               <button
                 type="button"
                 class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm"
-                @click="createTx(address)"
+                @click="createTx(address, amount)"
               >
                 Send
               </button>
@@ -232,6 +233,7 @@ export default {
   data() {
     return {
       address: "",
+      amount: "0",
     };
   },
   setup(props, { emit }) {
@@ -296,13 +298,23 @@ export default {
     });
 
     // Create a signed transaction
-    const createTx = async (address: string) => {
-      const tx = await btcP2wpkhWallet.createSignedTransaction(
-        props.ticker,
-        address,
-        1000000, // 0.01 BTC
-        100
-      );
+    const createTx = async (address: string, amount: number) => {
+      // If the coin is BTC-based, validate the address and convert the amount into Satoshis
+      if (coin.value.network === "bitcoin") {
+        try {
+          await btcP2wpkhWallet.createSignedTransaction(
+            props.ticker,
+            address,
+            amount,
+            100
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        // Otherwise assume its Gwei
+        console.log("TODO: Unit conversion");
+      }
     };
 
     // Handle close

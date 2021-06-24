@@ -42,7 +42,7 @@ class Bitcoin implements Coin {
   blockbook = "https://btc2.trezor.io";
   segwit = true;
   network_data: Network = {
-    messagePrefix: "\u0018Bitcoin Signed Message:\n",
+    messagePrefix: "\x18Bitcoin Signed Message:\n",
     bech32: "bc",
     bip32: {
       public: 0x0488b21e,
@@ -64,7 +64,7 @@ class TBitcoin implements Coin {
   segwit = true;
   testnet = true;
   network_data: Network = {
-    messagePrefix: "\u0018Bitcoin Signed Message:\n",
+    messagePrefix: "\x18Bitcoin Signed Message:\n",
     bech32: "tb",
     bip32: {
       public: 0x045f1cf6,

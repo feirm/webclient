@@ -115,7 +115,9 @@ export default defineComponent({
         const zpub = btcP2wpkhWallet.getZpub(coin.value.ticker);
         const data = await btcP2wpkhWallet.getXpubInfo(zpub, coin.value.ticker);
 
-        balance.value = sb.toBitcoin(data.balance);
+        balance.value = sb.toBitcoin(
+          parseInt(data.balance) + parseInt(data.unconfirmedBalance)
+        );
       } else if (
         coin.value.network === "ethereum" ||
         coin.value.network === "binance"

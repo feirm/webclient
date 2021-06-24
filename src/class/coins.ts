@@ -13,6 +13,7 @@ export interface Coin {
   blockbook?: string;
   segwit?: boolean;
   testnet?: boolean;
+  bip_coin_type?: number;
   network_data?: Network;
 }
 
@@ -41,6 +42,7 @@ class Bitcoin implements Coin {
   network = "bitcoin";
   blockbook = "https://btc2.trezor.io";
   segwit = true;
+  bip_coin_type = 0;
   network_data: Network = {
     messagePrefix: "\x18Bitcoin Signed Message:\n",
     bech32: "bc",
@@ -63,6 +65,7 @@ class TBitcoin implements Coin {
   blockbook = "https://tbtc2.trezor.io";
   segwit = true;
   testnet = true;
+  bip_coin_type = 1;
   network_data: Network = {
     messagePrefix: "\x18Bitcoin Signed Message:\n",
     bech32: "tb",

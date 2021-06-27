@@ -79,6 +79,29 @@ class TBitcoin implements Coin {
   };
 }
 
+// Litecoin
+class Litecoin implements Coin {
+  name = "Litecoin";
+  ticker = "ltc";
+  logo = require("@/assets/img/litecoin.svg");
+  network = "bitcoin";
+  blockbook = "https://ltc1.trezor.io";
+  segwit = true;
+  testnet = true;
+  bip_coin_type = 2;
+  network_data: Network = {
+    messagePrefix: "\x19Litecoin Signed Message:\n",
+    bech32: "ltc",
+    bip32: {
+      public: 0x01b26ef6,
+      private: 0x01b26792,
+    },
+    pubKeyHash: 0x6f,
+    scriptHash: 0xc4,
+    wif: 0xef,
+  };
+}
+
 // Ethereum
 class Ethereum implements Coin {
   name = "Ethereum";
@@ -135,6 +158,7 @@ export class CoinFactory {
     dai: new DAI(),
     eth: new Ethereum(),
     usdt: new Tether(),
+    ltc: new Litecoin(),
   };
 
   // Full coins list
@@ -148,6 +172,7 @@ export class CoinFactory {
     CoinFactory.coins.dai,
     CoinFactory.coins.eth,
     CoinFactory.coins.usdt,
+    //CoinFactory.coins.ltc,
   ];
 
   // Fetch coin by its ticker

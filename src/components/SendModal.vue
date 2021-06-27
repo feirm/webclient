@@ -155,10 +155,11 @@
                     >
                     <div class="flex mt-1 space-x-3 justify-center">
                       <button
-                        v-for="fee in fees"
+                        v-for="(fee, i) in fees"
                         :key="fee"
-                        class="block w-full p-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:border-orange-500"
-                        @click="setBTCFee(fee.amount)"
+                        class="block w-full p-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                        :class="selectedButton === i ? 'border-orange-500' : ''"
+                        @click="setBTCFee(i, fee.amount)"
                       >
                         {{ fee.speed }}
                         <br />
@@ -244,6 +245,7 @@ export default {
     const coin = ref({} as Coin);
 
     const selectedFee = ref(0);
+    const selectedButton = ref(1); // 1 is the 'middle' button (average fee)
 
     const isLoaded = ref(false);
 
@@ -324,8 +326,9 @@ export default {
     };
 
     // Set a fee (BTC)
-    const setBTCFee = (fee: number) => {
+    const setBTCFee = (button, fee: number) => {
       selectedFee.value = fee;
+      selectedButton.value = button;
     };
 
     // Handle close
@@ -340,6 +343,7 @@ export default {
       isEth,
       fees,
       isLoaded,
+      selectedButton,
 
       createTx,
       setBTCFee,

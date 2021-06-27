@@ -34,6 +34,11 @@ abstract class BTCWallet extends AbstractWallet {
     let lastIndex = 0;
 
     const data = await blockbook.getXpubDetails(xpub, { tokens: "used" });
+
+    if (!data.tokens) {
+      return 0;
+    }
+
     data.tokens.forEach((token) => {
       const path = token.path;
 

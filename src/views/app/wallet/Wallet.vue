@@ -2,35 +2,52 @@
   <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
     <div class="md:flex md:items-center md:justify-between">
       <div class="flex-1 min-w-0">
-        <h2
-          class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
-        >
-          My {{ coin.name }} Wallet
-        </h2>
+        <div v-if="!isLoaded" class="animate-pulse space-y-2">
+          <div class="bg-gray-300 w-5/12 h-10 rounded"></div>
+        </div>
+        <div v-else>
+          <h2
+            class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
+          >
+            My {{ coin.name }} Wallet
+          </h2>
+        </div>
       </div>
       <div class="mt-4 flex md:mt-0 md:ml-4 space-x-3">
-        <button
-          @click="toggleReceivingAddressModal"
-          type="button"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-gray-700 bg-white border-gray-300 hover:bg-gray-100"
-        >
-          <QrcodeIcon class="-ml-1 mr-3 h-5 w-5" aria-hidden="true" />
-          Receive
-        </button>
+        <div v-if="!isLoaded" class="animate-pulse flex space-x-4">
+          <div class="w-24 h-10 rounded bg-gray-300"></div>
+          <div class="w-24 h-10 rounded bg-gray-300"></div>
+        </div>
+        <div class="space-x-4" v-else>
+          <button
+            @click="toggleReceivingAddressModal"
+            type="button"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-gray-700 bg-white border-gray-300 hover:bg-gray-100"
+          >
+            <QrcodeIcon class="-ml-1 mr-3 h-5 w-5" aria-hidden="true" />
+            Receive
+          </button>
 
-        <button
-          @click="toggleSendModal"
-          type="button"
-          class="inline-flex items-center px-4 py-2 shadow-sm text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400"
-        >
-          <ArrowCircleRightIcon class="-ml-1 mr-3 h-5 w-5" aria-hidden="true" />
-          Send
-        </button>
+          <button
+            @click="toggleSendModal"
+            type="button"
+            class="inline-flex items-center px-4 py-2 shadow-sm text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400"
+          >
+            <ArrowCircleRightIcon
+              class="-ml-1 mr-3 h-5 w-5"
+              aria-hidden="true"
+            />
+            Send
+          </button>
+        </div>
       </div>
     </div>
     <hr />
 
-    <h1 class="text-3xl">{{ balance }} {{ ticker.toUpperCase() }}</h1>
+    <div v-if="!isLoaded" class="animate-pulse">
+      <div class="h-12 w-24 bg-gray-300 rounded"></div>
+    </div>
+    <h1 v-else class="text-3xl">{{ balance }} {{ ticker.toUpperCase() }}</h1>
   </div>
 
   <address-modal
@@ -83,6 +100,8 @@ export default defineComponent({
 
     const showAddressModal = ref(false);
     const showSendModal = ref(false);
+
+    const isLoaded = ref(false);
 
     onMounted(async () => {
       coin.value = CoinFactory.getCoin(ticker);
@@ -146,6 +165,8 @@ export default defineComponent({
           balance.value = Web3.utils.fromWei(weiBalance, "ether");
         }
       }
+
+      isLoaded.value = true;
     });
 
     // Open receiving address modal
@@ -166,6 +187,8 @@ export default defineComponent({
 
       showAddressModal,
       showSendModal,
+
+      isLoaded,
 
       toggleReceivingAddressModal,
       toggleSendModal,

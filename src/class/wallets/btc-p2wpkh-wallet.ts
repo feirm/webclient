@@ -61,10 +61,6 @@ class BTCP2WPKHWallet extends BTCWallet {
 
   // Get address from XPUB
   getAddress(ticker: string, chainIndex, addressIndex: number): string {
-    if (!this.xpub) {
-      throw new Error("No XPUB present!");
-    }
-
     const coin = CoinFactory.getCoin(ticker);
     const zpub = this.getZpub(coin.ticker);
     const xpub = fromBase58(zpub, coin.network_data);
@@ -128,7 +124,7 @@ class BTCP2WPKHWallet extends BTCWallet {
 
     inputs.forEach((input) => {
       // Don't continue if we have enough inputs
-      if (totalSatsInputAmount > amount) {
+      if (totalSatsInputAmount >= amount) {
         return;
       }
 
@@ -166,27 +162,13 @@ class BTCP2WPKHWallet extends BTCWallet {
       value: amount,
     });
 
-    // TODO Properly determine unused change address
-    let lowestChangeIndex = 0;
-    const xpubData = await blockbook.getXpubDetails(xpub);
+    // Determine next unused change address
+    const lastChangeIndex = await this.getLastIndex(coin.ticker, xpub, true);
 
-    xpubData.tokens.forEach((token) => {
-      const path = token.path;
-
-      // Split up the path to extract account index
-      const split = path.split("/");
-      const node = parseInt(split[4]);
-      const index = parseInt(split[5]);
-
-      // We have a change address so increment the lowest change amount
-      if (node === 1) {
-        lowestChangeIndex = index + 1;
-      }
-    });
-
-    // TODO: Properly determine change amount
+    // Calculate change output
+    const changeAddress = this.getAddress(coin.ticker, 1, lastChangeIndex);
     psbt.addOutput({
-      address: this.getAddress(coin.ticker, 1, lowestChangeIndex),
+      address: changeAddress,
       value: totalSatsInputAmount - amount - feeEstimate,
     });
 
@@ -199,8 +181,9 @@ class BTCP2WPKHWallet extends BTCWallet {
 
     psbt.finalizeAllInputs();
 
-    const txHash = psbt.extractTransaction().toHex();
-    console.log(txHash);
+    const finalTx = psbt.extractTransaction(true);
+    console.log(finalTx.virtualSize());
+    console.log(finalTx.toHex());
   }
 }
 

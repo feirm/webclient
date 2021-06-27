@@ -27,6 +27,36 @@ abstract class BTCWallet extends AbstractWallet {
       throw new Error(e);
     }
   }
+
+  // Fetch the latest address index for an extended public key
+  async getLastIndex(ticker, xpub: string, change: boolean) {
+    const blockbook = this.createBlockbookClient(ticker);
+    let lastIndex = 0;
+
+    const data = await blockbook.getXpubDetails(xpub, { tokens: "used" });
+    data.tokens.forEach((token) => {
+      const path = token.path;
+
+      // Split up the path to extract account index
+      const split = path.split("/");
+      const node = parseInt(split[4]);
+      const index = parseInt(split[5]);
+
+      // Handle standard address
+      if (!change && node === 0) {
+        lastIndex = index + 1;
+      }
+
+      // We have a change address so increment the lowest change amount
+      if (change && node === 1) {
+        lastIndex = index + 1;
+      }
+
+      return lastIndex;
+    });
+
+    return 0;
+  }
 }
 
 export { BTCWallet };

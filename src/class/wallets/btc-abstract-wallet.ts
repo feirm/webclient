@@ -10,7 +10,7 @@ abstract class BTCWallet extends AbstractWallet {
 
     if (blockbookUrl) {
       const blockbookClient = new Blockbook({
-        nodes: [`https://cors-anywhere.herokuapp.com/${blockbookUrl}`],
+        nodes: [`https://cors-anywhere.feirm.com/${blockbookUrl}`],
       });
 
       return blockbookClient;

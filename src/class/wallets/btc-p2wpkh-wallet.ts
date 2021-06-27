@@ -48,12 +48,10 @@ class BTCP2WPKHWallet extends BTCWallet {
     let buffer = b58.decode(zpub);
     buffer = buffer.slice(4);
 
-    // Handle testnet different to mainnet
-    if (coin.testnet) {
-      buffer = Buffer.concat([Buffer.from("045f1cf6", "hex"), buffer]);
-    } else {
-      buffer = Buffer.concat([Buffer.from("0488b21e", "hex"), buffer]);
-    }
+    buffer = Buffer.concat([
+      Buffer.from(coin.network_data.bip32.public.toString(16)),
+      buffer,
+    ]);
 
     const xpub = b58.encode(buffer);
     return xpub;
@@ -98,7 +96,8 @@ class BTCP2WPKHWallet extends BTCWallet {
     ticker,
     address: string,
     amount: number,
-    fee: number
+    fee: number,
+    sendMax: boolean
   ) {
     const coin = CoinFactory.getCoin(ticker);
 
@@ -120,8 +119,9 @@ class BTCP2WPKHWallet extends BTCWallet {
 
     let totalSatsInputAmount = 0;
     rawInputs.forEach((input) => {
-      // Don't continue if we have enough inputs
-      if (totalSatsInputAmount > amount) {
+      // If we have enough inputs and chose not to send max balance
+      // then stop preparing inputs
+      if (totalSatsInputAmount > amount && !sendMax) {
         return;
       }
 
@@ -180,22 +180,31 @@ class BTCP2WPKHWallet extends BTCWallet {
     const tx = new Psbt({ network: coin.network_data });
     tx.addInputs(inputs);
 
-    // Determine next unused change address and create the outputs
-    const lastChangeIndex = await this.getLastIndex(coin.ticker, xpub, true);
-    const changeAddress = this.getAddress(coin.ticker, 1, lastChangeIndex);
+    // If sendMax isn't true, then we need to add a recipient output, as was as a change output
+    if (!sendMax) {
+      // Determine next unused change address and create the outputs
+      const lastChangeIndex = await this.getLastIndex(coin.ticker, xpub, true);
+      const changeAddress = this.getAddress(coin.ticker, 1, lastChangeIndex);
 
-    // Recipient output
-    tx.addOutput({
-      address: address,
-      value: amount,
-    });
+      tx.addOutput({
+        address: address,
+        value: amount,
+      });
 
-    // Change output
-    const changeAmount = totalSatsInputAmount - amount - txFee;
-    tx.addOutput({
-      address: changeAddress,
-      value: changeAmount,
-    });
+      const changeAmount = totalSatsInputAmount - amount - txFee;
+      tx.addOutput({
+        address: changeAddress,
+        value: changeAmount,
+      });
+    }
+
+    // If sendMax is true, then create an output leaving just enough to cover the TX fee
+    if (sendMax) {
+      tx.addOutput({
+        address: address,
+        value: totalSatsInputAmount - txFee,
+      });
+    }
 
     // Sign and finalise the test transaction to extract its size
     tx.signAllInputsHD(root);

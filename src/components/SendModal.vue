@@ -107,12 +107,23 @@
                       class="block text-sm font-medium text-gray-700"
                       >Amount ({{ props.ticker.toUpperCase() }})</label
                     >
-                    <div class="mt-1">
-                      <input
-                        type="number"
-                        class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
-                        v-model="amount"
-                      />
+                    <div class="flex mt-1 rounded-md shadow-sm">
+                      <div class="relative flex items-stretch flex-grow">
+                        <input
+                          type="number"
+                          name="amount"
+                          class="block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
+                          v-model="amount"
+                          :disabled="sendMax"
+                        />
+                      </div>
+                      <button
+                        class="-ml-px w-16 inline-flex items-center px-4 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 focus:outline-none"
+                        :class="sendMax ? 'bg-green-200' : ''"
+                        @click="toggleSendMax"
+                      >
+                        Max
+                      </button>
                     </div>
                   </div>
 
@@ -181,7 +192,7 @@
               <button
                 type="button"
                 class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm"
-                @click="createTx(address, amount)"
+                @click="createTx(address, amount, sendMax)"
               >
                 Send
               </button>
@@ -248,6 +259,7 @@ export default {
     const selectedButton = ref(1); // 1 is the 'middle' button (average fee)
 
     const isLoaded = ref(false);
+    const sendMax = ref(false);
 
     interface Fee {
       speed: string;
@@ -304,7 +316,11 @@ export default {
     });
 
     // Create a signed transaction
-    const createTx = async (address: string, amount: number) => {
+    const createTx = async (
+      address: string,
+      amount: number,
+      sendMax: boolean
+    ) => {
       // If the coin is BTC-based, validate the address and convert the amount into Satoshis
       if (coin.value.network === "bitcoin") {
         const newAmount = sb.toSatoshi(amount);
@@ -314,7 +330,8 @@ export default {
             props.ticker,
             address,
             newAmount,
-            selectedFee.value
+            selectedFee.value,
+            sendMax
           );
         } catch (e) {
           console.log(e);
@@ -331,6 +348,11 @@ export default {
       selectedButton.value = button;
     };
 
+    // Toggle to send max amount
+    const toggleSendMax = () => {
+      sendMax.value = !sendMax.value;
+    };
+
     // Handle close
     const closeEvent = () => {
       emit("close");
@@ -344,6 +366,9 @@ export default {
       fees,
       isLoaded,
       selectedButton,
+
+      sendMax,
+      toggleSendMax,
 
       createTx,
       setBTCFee,

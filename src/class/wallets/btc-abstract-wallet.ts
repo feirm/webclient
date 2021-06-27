@@ -51,11 +51,9 @@ abstract class BTCWallet extends AbstractWallet {
       if (change && node === 1) {
         lastIndex = index + 1;
       }
-
-      return lastIndex;
     });
 
-    return 0;
+    return lastIndex;
   }
 }
 

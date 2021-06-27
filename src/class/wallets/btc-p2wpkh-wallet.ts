@@ -110,25 +110,22 @@ class BTCP2WPKHWallet extends BTCWallet {
     const seed = mnemonicToSeedSync(mnemonic);
     const root = fromSeed(seed, coin.network_data);
 
-    // Roughly estimate the TX size (1 input, 2 outputs = 250B)
-    const feeEstimate = fee * 250;
-
     // Fetch UTXOs (inputs) for our extended public key
     const blockbook = this.createBlockbookClient(ticker);
     const xpub = this.getZpub(ticker);
 
-    const inputs = await blockbook.getUtxosForXpub(xpub);
+    // Prepare an array of inputs to be used in our transaction(s)
+    const rawInputs = await blockbook.getUtxosForXpub(xpub);
+    const inputs = [];
+
     let totalSatsInputAmount = 0;
-
-    const psbt = new Psbt({ network: coin.network_data });
-
-    inputs.forEach((input) => {
+    rawInputs.forEach((input) => {
       // Don't continue if we have enough inputs
-      if (totalSatsInputAmount >= amount) {
+      if (totalSatsInputAmount > amount) {
         return;
       }
 
-      totalSatsInputAmount += amount;
+      totalSatsInputAmount += parseInt(input.value);
 
       // Derive keypair from WIF
       const wif = root.derivePath(input.path).toWIF();
@@ -139,7 +136,8 @@ class BTCP2WPKHWallet extends BTCWallet {
         network: coin.network_data,
       });
 
-      psbt.addInput({
+      // Prepare an input
+      const preparedInput = {
         hash: input.txid,
         index: input.vout,
         witnessUtxo: {
@@ -153,36 +151,57 @@ class BTCP2WPKHWallet extends BTCWallet {
             pubkey: root.derivePath(input.path).publicKey,
           },
         ],
-      });
+      };
+
+      inputs.push(preparedInput);
     });
 
-    // Create outputs - one for the recipient and then another as a change address
-    psbt.addOutput({
+    // Create a test transaction to determine the TX fee we need
+    const testTx = new Psbt({ network: coin.network_data });
+    testTx.addInputs(inputs);
+
+    testTx.addOutput({
+      address: address,
+      value: totalSatsInputAmount - amount,
+    });
+
+    // Sign and finalise the test transaction to extract its size
+    testTx.signAllInputsHD(root);
+    testTx.finalizeAllInputs();
+
+    const finalTestTx = testTx.extractTransaction(true);
+    const txSize = finalTestTx.virtualSize();
+
+    // Now we have the test TX size, we can add an extra byte for each input just to be safe
+    let txFee = fee * txSize;
+    txFee += inputs.length;
+
+    // We can begin to construct the proper transaction which will be broadcast to the network
+    const tx = new Psbt({ network: coin.network_data });
+    tx.addInputs(inputs);
+
+    // Determine next unused change address and create the outputs
+    const lastChangeIndex = await this.getLastIndex(coin.ticker, xpub, true);
+    const changeAddress = this.getAddress(coin.ticker, 1, lastChangeIndex);
+
+    // Recipient output
+    tx.addOutput({
       address: address,
       value: amount,
     });
 
-    // Determine next unused change address
-    const lastChangeIndex = await this.getLastIndex(coin.ticker, xpub, true);
-
-    // Calculate change output
-    const changeAddress = this.getAddress(coin.ticker, 1, lastChangeIndex);
-    psbt.addOutput({
+    // Change output
+    const changeAmount = totalSatsInputAmount - amount - txFee;
+    tx.addOutput({
       address: changeAddress,
-      value: totalSatsInputAmount - amount - feeEstimate,
+      value: changeAmount,
     });
 
-    // Sign, validate and finalise all inputs
-    psbt.signAllInputsHD(root);
+    // Sign and finalise the test transaction to extract its size
+    tx.signAllInputsHD(root);
+    tx.finalizeAllInputs();
 
-    if (!psbt.validateSignaturesOfAllInputs()) {
-      throw new Error("Signature validation failed!");
-    }
-
-    psbt.finalizeAllInputs();
-
-    const finalTx = psbt.extractTransaction(true);
-    console.log(finalTx.virtualSize());
+    const finalTx = tx.extractTransaction(true);
     console.log(finalTx.toHex());
   }
 }

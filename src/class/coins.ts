@@ -87,7 +87,7 @@ class Litecoin implements Coin {
   network = "bitcoin";
   blockbook = "https://ltc1.trezor.io";
   segwit = true;
-  testnet = true;
+  testnet = false;
   bip_coin_type = 2;
   network_data: Network = {
     messagePrefix: "\x19Litecoin Signed Message:\n",

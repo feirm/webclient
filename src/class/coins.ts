@@ -34,6 +34,15 @@ class Binance implements Coin {
   network = "binance";
 }
 
+// Polis token
+class Polis implements Coin {
+  name = "Polis (BEP-20)";
+  ticker = "polis";
+  logo = require("@/assets/img/polis.jpg");
+  network = "binance";
+  contract = "0xb5bea8a26d587cf665f2d78f077cca3c7f6341bd";
+}
+
 // Bitcoin
 class Bitcoin implements Coin {
   name = "Bitcoin";
@@ -157,6 +166,7 @@ export class CoinFactory {
     busd: new BinanceUSD(),
     dai: new DAI(),
     eth: new Ethereum(),
+    polis: new Polis(),
     usdt: new Tether(),
     ltc: new Litecoin(),
   };
@@ -171,6 +181,7 @@ export class CoinFactory {
     CoinFactory.coins.busd,
     CoinFactory.coins.dai,
     CoinFactory.coins.eth,
+    CoinFactory.coins.polis,
     CoinFactory.coins.usdt,
     //CoinFactory.coins.ltc,
   ];

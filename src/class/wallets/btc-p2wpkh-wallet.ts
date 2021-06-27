@@ -201,7 +201,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     tx.signAllInputsHD(root);
     tx.finalizeAllInputs();
 
-    const finalTx = tx.extractTransaction(true);
+    const finalTx = tx.extractTransaction();
     console.log(finalTx.toHex());
   }
 }

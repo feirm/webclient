@@ -143,7 +143,7 @@
                         <input
                           type="number"
                           class="shadow-sm block w-full sm:text-sm border-gray-300 rounded-md"
-                          :value="coin.contract ? 100000 : 21000"
+                          :value="gasLimit"
                         />
                       </div>
                     </div>
@@ -196,7 +196,7 @@
               <button
                 type="button"
                 class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm disabled:opacity-50"
-                @click="createTx(props.ticker, address, amount, sendMax)"
+                @click="createTx(address, amount, sendMax)"
                 :disabled="!userSelectedButton"
               >
                 Send
@@ -260,6 +260,9 @@ export default {
     const isEth = ref(false);
     const coin = ref({} as Coin);
 
+    // ETH/BSC stuff
+    const gasLimit = ref(21000); // 21k gas for standard transaction
+
     const selectedFee = ref(0);
     const selectedButton = ref(0);
     const userSelectedButton = ref(false);
@@ -282,6 +285,11 @@ export default {
         coin.value.network === "binance"
       ) {
         isEth.value = true;
+
+        // Going to be dealing with tokens, so set a higher gas limit
+        if (coin.value.contract) {
+          gasLimit.value = 100000;
+        }
       }
 
       // Determine fees for network
@@ -323,7 +331,6 @@ export default {
 
     // Create a signed transaction
     const createTx = async (
-      ticker: string,
       address: string,
       amount: number,
       sendMax: boolean
@@ -343,9 +350,34 @@ export default {
         } catch (e) {
           console.log(e);
         }
-      } else {
-        // Otherwise assume its Gwei
-        console.log("TODO: Unit conversion");
+      }
+
+      // If the network is Ethereum or Binance
+      if (
+        coin.value.network === "ethereum" ||
+        coin.value.network === "binance"
+      ) {
+        // Handle if the token has a contract (token)
+        if (coin.value.contract) {
+          await ethWallet.sendTokens(
+            address,
+            amount,
+            coin.value.contract,
+            selectedFee.value,
+            gasLimit.value,
+            coin.value.network
+          );
+        }
+        // Otherwise its just a normal transfer
+        else {
+          await ethWallet.sendCoin(
+            address,
+            amount,
+            selectedFee.value,
+            gasLimit.value,
+            coin.value.network
+          );
+        }
       }
     };
 
@@ -375,6 +407,8 @@ export default {
       isLoaded,
       selectedButton,
       userSelectedButton,
+
+      gasLimit,
 
       sendMax,
       toggleSendMax,

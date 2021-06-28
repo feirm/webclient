@@ -174,7 +174,7 @@
                             ? 'border-orange-500'
                             : ''
                         "
-                        @click="setBTCFee(i, fee.amount)"
+                        @click="setTxFee(i, fee.amount)"
                       >
                         {{ fee.speed }}
                         <br />
@@ -196,7 +196,7 @@
               <button
                 type="button"
                 class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm disabled:opacity-50"
-                @click="createTx(address, amount, sendMax)"
+                @click="createTx(props.ticker, address, amount, sendMax)"
                 :disabled="!userSelectedButton"
               >
                 Send
@@ -323,6 +323,7 @@ export default {
 
     // Create a signed transaction
     const createTx = async (
+      ticker: string,
       address: string,
       amount: number,
       sendMax: boolean
@@ -348,8 +349,8 @@ export default {
       }
     };
 
-    // Set a fee (BTC)
-    const setBTCFee = (button, fee: number) => {
+    // Set a fee (Satoshis for BTC, or Gwei for ETH)
+    const setTxFee = (button, fee: number) => {
       selectedFee.value = fee;
       selectedButton.value = button;
       userSelectedButton.value = true;
@@ -379,7 +380,7 @@ export default {
       toggleSendMax,
 
       createTx,
-      setBTCFee,
+      setTxFee,
       closeEvent,
     };
   },

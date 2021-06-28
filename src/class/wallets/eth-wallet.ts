@@ -187,15 +187,15 @@ class ETHWallet extends AbstractWallet {
   // Normal transfer
   public async sendCoin(
     recipient: string,
-    amount: string,
-    gasPrice: string,
-    gasLimit: string,
+    amount: number,
+    gasPrice: number,
+    gasLimit: number,
     network: string
   ): Promise<string> {
     // Fetch Web3 connection for network
     const web3 = this.getWeb3(network);
 
-    const value = Web3.utils.toWei(amount, "ether");
+    const value = Web3.utils.toWei(amount.toString(), "ether");
     const common = this.determineChainParameters(network, false);
     const address = this.wallet.getAddressString();
 
@@ -203,7 +203,7 @@ class ETHWallet extends AbstractWallet {
     const nonce = await web3.eth.getTransactionCount(address);
 
     // Convert the gas price from gwei to wei
-    const gasPriceWei = Web3.utils.toWei(gasPrice, "Gwei");
+    const gasPriceWei = Web3.utils.toWei(gasPrice.toString(), "Gwei");
 
     // Construct the transaction
     const tx = new Transaction(

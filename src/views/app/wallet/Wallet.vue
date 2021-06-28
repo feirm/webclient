@@ -6,10 +6,8 @@
           <div class="bg-gray-300 w-5/12 h-10 rounded"></div>
         </div>
         <div v-else>
-          <h2
-            class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate"
-          >
-            My {{ coin.name }} Wallet
+          <h2 class="text-2xl leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            {{ coin.name }} ({{ coin.ticker.toUpperCase() }})
           </h2>
         </div>
       </div>
@@ -45,7 +43,7 @@
     <hr />
 
     <div v-if="!isLoaded" class="animate-pulse">
-      <div class="h-12 w-24 bg-gray-300 rounded"></div>
+      <div class="h-12 w-2/6 bg-gray-300 rounded"></div>
     </div>
     <h1 v-else class="text-3xl">{{ balance }} {{ ticker.toUpperCase() }}</h1>
   </div>

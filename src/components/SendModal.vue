@@ -169,7 +169,11 @@
                         v-for="(fee, i) in fees"
                         :key="fee"
                         class="block w-full p-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
-                        :class="selectedButton === i ? 'border-orange-500' : ''"
+                        :class="
+                          selectedButton === i && userSelectedButton
+                            ? 'border-orange-500'
+                            : ''
+                        "
                         @click="setBTCFee(i, fee.amount)"
                       >
                         {{ fee.speed }}
@@ -191,8 +195,9 @@
             <div v-else class="space-y-2">
               <button
                 type="button"
-                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm"
+                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 sm:text-sm disabled:opacity-50"
                 @click="createTx(address, amount, sendMax)"
+                :disabled="!userSelectedButton"
               >
                 Send
               </button>
@@ -256,7 +261,8 @@ export default {
     const coin = ref({} as Coin);
 
     const selectedFee = ref(0);
-    const selectedButton = ref(1); // 1 is the 'middle' button (average fee)
+    const selectedButton = ref(0);
+    const userSelectedButton = ref(false);
 
     const isLoaded = ref(false);
     const sendMax = ref(false);
@@ -346,6 +352,7 @@ export default {
     const setBTCFee = (button, fee: number) => {
       selectedFee.value = fee;
       selectedButton.value = button;
+      userSelectedButton.value = true;
     };
 
     // Toggle to send max amount
@@ -366,6 +373,7 @@ export default {
       fees,
       isLoaded,
       selectedButton,
+      userSelectedButton,
 
       sendMax,
       toggleSendMax,

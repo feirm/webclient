@@ -7,6 +7,15 @@ import account from "../account";
 import { CoinFactory } from "../coins";
 import ethWallet from "./eth-wallet";
 
+// Standardised interface for a transaction result
+export interface TransactionResult {
+  hash: string;
+  hex: string;
+  recipient: string;
+  amount: number;
+  fee: number;
+}
+
 export abstract class AbstractWallet {
   private id: string; // Random UUID
   private mnemonic: string; // BIP39 mnemonic

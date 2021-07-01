@@ -4,13 +4,7 @@ import { ECPair, payments, Psbt } from "bitcoinjs-lib";
 import { CoinFactory } from "../coins";
 import b58 from "bs58check";
 import { BTCWallet } from "./btc-abstract-wallet";
-
-interface TransactionResult {
-  hex: string;
-  recipient: string;
-  amount: number;
-  fee: number;
-}
+import { TransactionResult } from "./abstract-wallet";
 
 class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
@@ -220,6 +214,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     const finalTx = tx.extractTransaction();
 
     const result: TransactionResult = {
+      hash: finalTx.getHash().toString("hex"),
       hex: finalTx.toHex(),
       recipient: address,
       amount: amount,

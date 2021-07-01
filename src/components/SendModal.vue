@@ -118,6 +118,7 @@
                         />
                       </div>
                       <button
+                        v-if="!isEth"
                         class="-ml-px w-16 inline-flex items-center px-4 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 focus:outline-none"
                         :class="sendMax ? 'bg-green-200' : ''"
                         @click="toggleSendMax"
@@ -210,6 +211,7 @@
                 Cancel
               </button>
             </div>
+            <p>{{ tx.hex }}</p>
           </div>
         </TransitionChild>
       </div>
@@ -230,7 +232,9 @@ import axios from "axios";
 import ethWallet from "@/class/wallets/eth-wallet";
 import Web3 from "web3";
 import { XIcon } from "@heroicons/vue/outline";
-import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
+import btcP2wpkhWallet, {
+  TransactionResult,
+} from "@/class/wallets/btc-p2wpkh-wallet";
 import sb from "satoshi-bitcoin";
 
 /*
@@ -269,6 +273,8 @@ export default {
 
     const isLoaded = ref(false);
     const sendMax = ref(false);
+
+    const tx = ref({} as TransactionResult);
 
     interface Fee {
       speed: string;
@@ -340,13 +346,15 @@ export default {
         const newAmount = sb.toSatoshi(amount);
 
         try {
-          await btcP2wpkhWallet.createSignedTransaction(
+          const signedTx = await btcP2wpkhWallet.createSignedTransaction(
             props.ticker,
             address,
             newAmount,
             selectedFee.value,
             sendMax
           );
+
+          tx.value = signedTx;
         } catch (e) {
           console.log(e);
         }
@@ -379,6 +387,8 @@ export default {
           );
         }
       }
+
+      // TODO: Show a confirmation prompt and success popup
     };
 
     // Set a fee (Satoshis for BTC, or Gwei for ETH)
@@ -412,6 +422,8 @@ export default {
 
       sendMax,
       toggleSendMax,
+
+      tx,
 
       createTx,
       setTxFee,

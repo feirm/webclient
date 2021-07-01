@@ -40,6 +40,7 @@
           leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
           <div
+            v-if="!tx.hex"
             class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
           >
             <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
@@ -200,7 +201,12 @@
                 @click="createTx(address, amount, sendMax)"
                 :disabled="!userSelectedButton"
               >
-                Send
+                <span v-if="!isSubmitted">Send</span>
+                <img
+                  v-else
+                  class="mx-auto w-5"
+                  src="@/assets/loading_spinner.svg"
+                />
               </button>
 
               <button
@@ -212,6 +218,114 @@
               </button>
             </div>
             <p>{{ tx.hex }}</p>
+          </div>
+
+          <div
+            v-if="tx.hex && !isBroadcast"
+            class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
+          >
+            <div class="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+              <button
+                type="button"
+                class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                @click="closeEvent"
+              >
+                <span class="sr-only">Close</span>
+                <XIcon class="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div class="text-center space-y-3 mb-3">
+              <div v-if="!isLoaded" class="animate-pulse">
+                <div class="rounded-full bg-gray-300 h-12 w-12 mx-auto"></div>
+              </div>
+              <img
+                v-else
+                :src="coin.logo"
+                class="w-12 mx-auto"
+                :alt="coin.ticker"
+              />
+
+              <DialogTitle
+                as="h3"
+                class="text-lg leading-6 text-center font-medium text-gray-900"
+              >
+                Confirm {{ ticker.toUpperCase() }} transaction
+              </DialogTitle>
+              <p class="text-sm">
+                Are you sure you want to make this transaction?
+              </p>
+            </div>
+
+            <div class="bg-gray-200 p-2 mb-3 rounded space-y-2">
+              <p class="text-sm">
+                Amount: {{ tx.amount }} {{ ticker.toUpperCase() }}
+              </p>
+              <p class="text-sm">
+                Miner Fee: {{ tx.fee }} {{ ticker.toUpperCase() }}
+              </p>
+            </div>
+
+            <div class="flex space-x-3 justify-center">
+              <button
+                @click="closeEvent"
+                class="block w-full p-3 shadow-sm text-base font-medium rounded-md text-white bg-red-400 hover:bg-red-300 focus:outline-none"
+              >
+                <XIcon class="w-6 h-6 mx-auto" aria-hidden="true" />
+              </button>
+
+              <button
+                @click="broadcastTx(ticker, tx.hex)"
+                class="block w-full p-3 shadow-sm text-base font-medium rounded-md text-white bg-green-400 hover:bg-green-300 focus:outline-none"
+              >
+                <CheckIcon
+                  v-if="!isSending"
+                  class="w-6 h-6 mx-auto"
+                  aria-hidden="true"
+                />
+                <img
+                  v-else
+                  class="mx-auto w-6"
+                  src="@/assets/loading_spinner.svg"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div
+            v-if="isBroadcast"
+            class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
+          >
+            <div class="text-center space-y-3 mb-3">
+              <div
+                class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"
+              >
+                <CheckIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
+              </div>
+
+              <DialogTitle
+                as="h3"
+                class="text-lg mb-3 leading-6 text-center font-medium text-gray-900"
+              >
+                Transaction was successful!
+              </DialogTitle>
+
+              <button
+                type="button"
+                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-yellow-900 hover:bg-orange-400 sm:text-sm"
+                @click="viewTx(ticker, tx.hash)"
+              >
+                View Transaction
+              </button>
+
+              <button
+                type="button"
+                class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-900 hover:bg-gray-300 sm:text-sm"
+                @click="closeEvent"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </TransitionChild>
       </div>
@@ -231,11 +345,10 @@ import { Coin, CoinFactory } from "@/class/coins";
 import axios from "axios";
 import ethWallet from "@/class/wallets/eth-wallet";
 import Web3 from "web3";
-import { XIcon } from "@heroicons/vue/outline";
-import btcP2wpkhWallet, {
-  TransactionResult,
-} from "@/class/wallets/btc-p2wpkh-wallet";
+import { XIcon, CheckIcon } from "@heroicons/vue/outline";
+import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
 import sb from "satoshi-bitcoin";
+import { TransactionResult } from "@/class/wallets/abstract-wallet";
 
 /*
 This component should take in an address for a prop and showcase it, a QR code, and copy to clipboard button
@@ -251,7 +364,9 @@ export default {
     DialogOverlay,
     DialogTitle,
     TransitionRoot,
+
     XIcon,
+    CheckIcon,
   },
   data() {
     return {
@@ -273,6 +388,10 @@ export default {
 
     const isLoaded = ref(false);
     const sendMax = ref(false);
+
+    const isSubmitted = ref(false);
+    const isSending = ref(false);
+    const isBroadcast = ref(false);
 
     const tx = ref({} as TransactionResult);
 
@@ -341,6 +460,8 @@ export default {
       amount: number,
       sendMax: boolean
     ) => {
+      isSubmitted.value = true;
+
       // If the coin is BTC-based, validate the address and convert the amount into Satoshis
       if (coin.value.network === "bitcoin") {
         const newAmount = sb.toSatoshi(amount);
@@ -355,7 +476,9 @@ export default {
           );
 
           tx.value = signedTx;
+          isSubmitted.value = false;
         } catch (e) {
+          isSubmitted.value = false;
           console.log(e);
         }
       }
@@ -387,8 +510,56 @@ export default {
           );
         }
       }
+    };
 
-      // TODO: Show a confirmation prompt and success popup
+    // Open TXID in new tab
+    const viewTx = (ticker, txid: string) => {
+      const coin = CoinFactory.getCoin(ticker);
+      window.open(`${coin.blockbook}/tx/${txid}`, "_blank");
+    };
+
+    // Broadcast the raw transaction to correct network
+    const broadcastTx = async (ticker, hex: string) => {
+      const coin = CoinFactory.getCoin(ticker); // Fetch coin data
+      isSending.value = true;
+
+      switch (coin.network) {
+        // Broadcast to chain via Blockbook
+        case "bitcoin": {
+          const blockbook = btcP2wpkhWallet.createBlockbookClient(ticker);
+
+          try {
+            await blockbook.sendTx(hex);
+          } catch (e) {
+            console.error("[Error sending BTC-based TX]:", e);
+            isSending.value = false;
+          }
+
+          isBroadcast.value = true;
+
+          break;
+        }
+
+        // TODO: Tidy this up in future release
+        // Broadcast to Ethereum or Binance Smart Chain via Web3
+        case "ethereum" || "binance": {
+          const web3 = ethWallet.getWeb3(coin.network);
+
+          try {
+            await web3.eth.sendSignedTransaction(hex);
+          } catch (e) {
+            console.error("[Error sending ETH TX]:", e);
+            isSending.value = false;
+          }
+
+          isBroadcast.value = true;
+
+          break;
+        }
+
+        default:
+          break;
+      }
     };
 
     // Set a fee (Satoshis for BTC, or Gwei for ETH)
@@ -415,6 +586,7 @@ export default {
       isEth,
       fees,
       isLoaded,
+      isSubmitted,
       selectedButton,
       userSelectedButton,
 
@@ -424,8 +596,12 @@ export default {
       toggleSendMax,
 
       tx,
+      isSending,
+      isBroadcast,
 
       createTx,
+      broadcastTx,
+      viewTx,
       setTxFee,
       closeEvent,
     };

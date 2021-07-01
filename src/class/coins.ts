@@ -56,8 +56,8 @@ class Bitcoin implements Coin {
     messagePrefix: "\x18Bitcoin Signed Message:\n",
     bech32: "bc",
     bip32: {
-      public: 0x0488b21e,
-      private: 0x0488ade4,
+      public: 0x04b24746,
+      private: 0x04b2430c,
     },
     pubKeyHash: 0,
     scriptHash: 5,

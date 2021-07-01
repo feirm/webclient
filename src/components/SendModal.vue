@@ -490,7 +490,7 @@ export default {
       ) {
         // Handle if the token has a contract (token)
         if (coin.value.contract) {
-          await ethWallet.sendTokens(
+          const signedTx = await ethWallet.sendTokens(
             address,
             amount,
             coin.value.contract,
@@ -498,16 +498,20 @@ export default {
             gasLimit.value,
             coin.value.network
           );
+
+          tx.value = signedTx;
         }
         // Otherwise its just a normal transfer
         else {
-          await ethWallet.sendCoin(
+          const signedTx = await ethWallet.sendCoin(
             address,
             amount,
             selectedFee.value,
             gasLimit.value,
             coin.value.network
           );
+
+          tx.value = signedTx;
         }
       }
     };
@@ -546,7 +550,8 @@ export default {
           const web3 = ethWallet.getWeb3(coin.network);
 
           try {
-            await web3.eth.sendSignedTransaction(hex);
+            const res = await web3.eth.sendSignedTransaction(hex);
+            console.log(res.transactionHash);
           } catch (e) {
             console.error("[Error sending ETH TX]:", e);
             isSending.value = false;

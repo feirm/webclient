@@ -5,6 +5,13 @@ import { CoinFactory } from "../coins";
 import b58 from "bs58check";
 import { BTCWallet } from "./btc-abstract-wallet";
 
+interface TransactionResult {
+  hex: string;
+  recipient: string;
+  amount: number;
+  fee: number;
+}
+
 class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
   private zpub: string;
@@ -98,7 +105,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     amount: number,
     fee: number,
     sendMax: boolean
-  ) {
+  ): Promise<TransactionResult> {
     const coin = CoinFactory.getCoin(ticker);
 
     // Trim off any whitespace on the address
@@ -180,7 +187,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     const tx = new Psbt({ network: coin.network_data });
     tx.addInputs(inputs);
 
-    // If sendMax isn't true, then we need to add a recipient output, as was as a change output
+    // If sendMax isn't true, then we need to add a recipient output, as well as a change output
     if (!sendMax) {
       // Determine next unused change address and create the outputs
       const lastChangeIndex = await this.getLastIndex(coin.ticker, xpub, true);
@@ -206,12 +213,19 @@ class BTCP2WPKHWallet extends BTCWallet {
       });
     }
 
-    // Sign and finalise the test transaction to extract its size
+    // Sign and finalise the test transaction
     tx.signAllInputsHD(root);
     tx.finalizeAllInputs();
 
     const finalTx = tx.extractTransaction();
-    console.log(finalTx.toHex());
+
+    const result: TransactionResult = {
+      hex: finalTx.toHex(),
+      recipient: address,
+      amount: amount,
+      fee: txFee,
+    };
+    return result;
   }
 }
 

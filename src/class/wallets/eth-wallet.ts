@@ -221,9 +221,9 @@ class ETHWallet extends AbstractWallet {
     const rawTx = signedTx.serialize().toString("hex");
 
     const result: TransactionResult = {
-      hash: signedTx.hash.toString(),
+      hash: signedTx.hash().toString("hex"),
       hex: "0x" + rawTx,
-      recipient: address,
+      recipient: recipient,
       amount: amount,
       fee: gasPrice,
     };
@@ -276,9 +276,9 @@ class ETHWallet extends AbstractWallet {
     const rawTx = signedTx.serialize().toString("hex");
 
     const result: TransactionResult = {
-      hash: signedTx.hash.toString(),
+      hash: signedTx.hash().toString("hex"),
       hex: "0x" + rawTx,
-      recipient: address,
+      recipient: recipient,
       amount: amount,
       fee: gasPrice,
     };

@@ -1,4 +1,4 @@
-import { AbstractWallet } from "./abstract-wallet";
+import { AbstractWallet, TransactionResult } from "./abstract-wallet";
 import Web3 from "web3";
 
 import Common from "@ethereumjs/common";
@@ -191,7 +191,7 @@ class ETHWallet extends AbstractWallet {
     gasPrice: number,
     gasLimit: number,
     network: string
-  ): Promise<string> {
+  ): Promise<TransactionResult> {
     // Fetch Web3 connection for network
     const web3 = this.getWeb3(network);
 
@@ -220,8 +220,15 @@ class ETHWallet extends AbstractWallet {
     const signedTx = tx.sign(this.wallet.getPrivateKey());
     const rawTx = signedTx.serialize().toString("hex");
 
-    const receipt = await web3.eth.sendSignedTransaction("0x" + rawTx);
-    return receipt.transactionHash;
+    const result: TransactionResult = {
+      hash: signedTx.hash.toString(),
+      hex: "0x" + rawTx,
+      recipient: address,
+      amount: amount,
+      fee: gasPrice,
+    };
+
+    return result;
   }
 
   // Token transfer
@@ -233,7 +240,7 @@ class ETHWallet extends AbstractWallet {
     gasPrice: number,
     gasLimit: number,
     network: string
-  ): Promise<string> {
+  ): Promise<TransactionResult> {
     // Get Web3 connection
     const web3 = this.getWeb3(network);
 
@@ -266,11 +273,17 @@ class ETHWallet extends AbstractWallet {
 
     // Sign the transaction and serialise it for broadcasting
     const signedTx = tx.sign(this.wallet.getPrivateKey());
-    const rawTx = "0x" + signedTx.serialize().toString("hex");
-    console.log(rawTx);
+    const rawTx = signedTx.serialize().toString("hex");
 
-    const receipt = await web3.eth.sendSignedTransaction(rawTx);
-    return receipt.transactionHash;
+    const result: TransactionResult = {
+      hash: signedTx.hash.toString(),
+      hex: "0x" + rawTx,
+      recipient: address,
+      amount: amount,
+      fee: gasPrice,
+    };
+
+    return result;
   }
 }
 

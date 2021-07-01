@@ -201,6 +201,8 @@ class BTCP2WPKHWallet extends BTCWallet {
 
     // If sendMax is true, then create an output leaving just enough to cover the TX fee
     if (sendMax) {
+      amount = totalSatsInputAmount - txFee;
+
       tx.addOutput({
         address: address,
         value: totalSatsInputAmount - txFee,

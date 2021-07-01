@@ -216,7 +216,7 @@ class BTCP2WPKHWallet extends BTCWallet {
     const finalTx = tx.extractTransaction();
 
     const result: TransactionResult = {
-      hash: finalTx.getHash().toString("hex"),
+      hash: finalTx.getId(),
       hex: finalTx.toHex(),
       recipient: address,
       amount: amount,

@@ -546,11 +546,27 @@ export default {
 
         // TODO: Tidy this up in future release
         // Broadcast to Ethereum or Binance Smart Chain via Web3
-        case "ethereum" || "binance": {
+        case "ethereum": {
           const web3 = ethWallet.getWeb3(coin.network);
 
           try {
-            const res = await web3.eth.sendSignedTransaction(hex);
+            const res = await web3.eth.sendSignedTransaction(tx.value.hex);
+            console.log(res.transactionHash);
+          } catch (e) {
+            console.error("[Error sending ETH TX]:", e);
+            isSending.value = false;
+          }
+
+          isBroadcast.value = true;
+
+          break;
+        }
+
+        case "binance": {
+          const web3 = ethWallet.getWeb3(coin.network);
+
+          try {
+            const res = await web3.eth.sendSignedTransaction(tx.value.hex);
             console.log(res.transactionHash);
           } catch (e) {
             console.error("[Error sending ETH TX]:", e);

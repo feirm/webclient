@@ -258,6 +258,7 @@
             </div>
 
             <div class="bg-gray-200 p-2 mb-3 rounded space-y-2">
+              <p class="text-sm">Address: {{ tx.recipient }}</p>
               <p class="text-sm">
                 Amount: {{ tx.amount }} {{ ticker.toUpperCase() }}
               </p>
@@ -349,6 +350,7 @@ import { XIcon, CheckIcon } from "@heroicons/vue/outline";
 import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
 import sb from "satoshi-bitcoin";
 import { TransactionResult } from "@/class/wallets/abstract-wallet";
+import { toOutputScript } from "bitcoinjs-lib/src/address";
 
 /*
 This component should take in an address for a prop and showcase it, a QR code, and copy to clipboard button
@@ -460,10 +462,23 @@ export default {
       amount: number,
       sendMax: boolean
     ) => {
+      // Don't allow zero balance
+      if (amount == 0 && !sendMax) {
+        return alert("Cannot send zero amount!");
+      }
+
       isSubmitted.value = true;
 
       // If the coin is BTC-based, validate the address and convert the amount into Satoshis
       if (coin.value.network === "bitcoin") {
+        // Check that address is valid
+        try {
+          toOutputScript(address, coin.value.network_data);
+        } catch (e) {
+          isSubmitted.value = false;
+          return alert("Address is not valid!");
+        }
+
         const newAmount = sb.toSatoshi(amount);
 
         try {

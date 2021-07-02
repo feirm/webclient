@@ -566,8 +566,7 @@ export default {
           const web3 = ethWallet.getWeb3(coin.network);
 
           try {
-            const res = await web3.eth.sendSignedTransaction(tx.value.hex);
-            console.log(res.transactionHash);
+            await web3.eth.sendSignedTransaction(tx.value.hex);
           } catch (e) {
             console.error("[Error sending ETH TX]:", e);
             isSending.value = false;
@@ -582,8 +581,7 @@ export default {
           const web3 = ethWallet.getWeb3(coin.network);
 
           try {
-            const res = await web3.eth.sendSignedTransaction(tx.value.hex);
-            console.log(res.transactionHash);
+            await web3.eth.sendSignedTransaction(tx.value.hex);
           } catch (e) {
             console.error("[Error sending ETH TX]:", e);
             isSending.value = false;

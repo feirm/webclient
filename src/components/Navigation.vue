@@ -190,7 +190,8 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/vue";
-import { MenuIcon, XIcon, UserCircleIcon } from "@heroicons/vue/outline";
+import { MenuIcon, XIcon } from "@heroicons/vue/outline";
+import { UserCircleIcon } from "@heroicons/vue/solid";
 import { mapGetters } from "vuex";
 
 export default {

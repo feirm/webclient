@@ -5,6 +5,7 @@ import { CoinFactory } from "../coins";
 import b58 from "bs58check";
 import { BTCWallet } from "./btc-abstract-wallet";
 import { TransactionResult } from "./abstract-wallet";
+import sb from "satoshi-bitcoin";
 
 class BTCP2WPKHWallet extends BTCWallet {
   private xpub: string;
@@ -219,8 +220,8 @@ class BTCP2WPKHWallet extends BTCWallet {
       hash: finalTx.getId(),
       hex: finalTx.toHex(),
       recipient: address,
-      amount: amount,
-      fee: txFee,
+      amount: sb.toBitcoin(amount),
+      fee: sb.toBitcoin(txFee),
     };
     return result;
   }

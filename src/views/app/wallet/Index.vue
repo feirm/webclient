@@ -7,22 +7,22 @@
   <div class="max-w-7xl mx-auto py-6 p-4 lg:px-8">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div
-        v-for="token in tokens"
-        :key="token.ticker"
+        v-for="coin in coins"
+        :key="coin.ticker"
         class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400"
-        @click="wallet(token.ticker)"
+        @click="wallet(coin.ticker)"
       >
         <div class="flex-shrink-0">
-          <img :src="token.logo" class="w-12" alt="Feirm" />
+          <img :src="coin.logo" class="w-12" alt="Feirm" />
         </div>
         <div class="flex-1 min-w-0">
           <a href="#" class="focus:outline-none">
             <span class="absolute inset-0" aria-hidden="true" />
             <p class="text-sm font-medium text-gray-900">
-              {{ token.name }}
+              {{ coin.name }}
             </p>
             <p class="text-sm text-gray-500 truncate">
-              {{ token.balance }} <b>{{ token.ticker.toUpperCase() }}</b>
+              {{ coin.balance }} <b>{{ coin.ticker.toUpperCase() }}</b>
             </p>
           </a>
         </div>
@@ -43,6 +43,7 @@ import { EncryptedWallet, EncryptedWalletV2 } from "@/models/wallet";
 import { CoinFactory } from "@/class/coins";
 import Web3 from "web3";
 import walletService from "@/service/api/walletService";
+import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
 
 export default {
   setup() {
@@ -50,7 +51,7 @@ export default {
     const open = ref(false);
     const address = ref();
 
-    const tokens = CoinFactory.getCoins();
+    const coins = CoinFactory.getCoins();
 
     // Navigate to specific wallet
     const wallet = (ticker: string) => {
@@ -83,6 +84,7 @@ export default {
       // Decrypt wallet and set mnemonic
       const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
       ethWallet.setMnemonic(mnemonic);
+      btcP2wpkhWallet.setMnemonic(mnemonic);
 
       // Get address from wallet
       const w = ethWallet.getWallet();
@@ -92,25 +94,36 @@ export default {
       await ethWallet.updateWallet(rootKey, wallet);
 
       // Iterate over all the tokens, establish Web3 connections and set balances
-      for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i];
+      for (let i = 0; i < coins.length; i++) {
+        const coin = coins[i];
+
+        // Check if Bitcoin
+        if (coin.network === "bitcoin") {
+          const zpub = btcP2wpkhWallet.getZpub(coin.ticker);
+          const xpub = btcP2wpkhWallet.getXpub(coin.ticker, zpub);
+
+          btcP2wpkhWallet.setZpub(zpub);
+          btcP2wpkhWallet.setXpub(xpub);
+        }
 
         // If token has a contract, fetch balance from contract
-        if (token.contract) {
-          const contract = ethWallet.getContract(token.contract, token.network);
-          const weiBalance = await contract.methods.balanceOf(address).call();
+        if (coin.network === "binance" || coin.network === "ethereum") {
+          if (coin.contract) {
+            const contract = ethWallet.getContract(coin.contract, coin.network);
+            const weiBalance = await contract.methods.balanceOf(address).call();
 
-          // Convert Wei balance to Ether
-          const balance = Web3.utils.fromWei(weiBalance, "ether");
-          tokens[i].balance = balance;
-        } else {
-          // Otherwise fetch balance for address
-          const web3 = ethWallet.getWeb3(token.network);
-          const weiBalance = await web3.eth.getBalance(address);
+            // Convert Wei balance to Ether
+            const balance = Web3.utils.fromWei(weiBalance, "ether");
+            coins[i].balance = balance;
+          } else {
+            // Otherwise fetch balance for address
+            const web3 = ethWallet.getWeb3(coin.network);
+            const weiBalance = await web3.eth.getBalance(address);
 
-          // Convert Wei balance to Ether
-          const balance = Web3.utils.fromWei(weiBalance, "ether");
-          tokens[i].balance = balance;
+            // Convert Wei balance to Ether
+            const balance = Web3.utils.fromWei(weiBalance, "ether");
+            coins[i].balance = balance;
+          }
         }
       }
     });
@@ -118,7 +131,7 @@ export default {
     return {
       address,
       open,
-      tokens,
+      coins,
       wallet,
     };
   },

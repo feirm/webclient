@@ -7,6 +7,15 @@ import account from "../account";
 import { CoinFactory } from "../coins";
 import ethWallet from "./eth-wallet";
 
+// Standardised interface for a transaction result
+export interface TransactionResult {
+  hash: string;
+  hex: string;
+  recipient: string;
+  amount: string | number;
+  fee: string | number;
+}
+
 export abstract class AbstractWallet {
   private id: string; // Random UUID
   private mnemonic: string; // BIP39 mnemonic
@@ -51,6 +60,10 @@ export abstract class AbstractWallet {
 
   // Return the 24-word mnemonic if we have it
   public getMnemonic(): string {
+    if (!this.mnemonic) {
+      throw new Error("Mnemonic not loaded!");
+    }
+
     return this.mnemonic;
   }
 

@@ -1,4 +1,4 @@
-import { AbstractWallet } from "./abstract-wallet";
+import { AbstractWallet, TransactionResult } from "./abstract-wallet";
 import Web3 from "web3";
 
 import Common from "@ethereumjs/common";
@@ -14,42 +14,42 @@ const erc20Abi: AbiItem[] = [
     inputs: [
       {
         name: "_to",
-        type: "address"
+        type: "address",
       },
       {
         name: "_value",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     name: "transfer",
     outputs: [
       {
         name: "success",
-        type: "bool"
-      }
+        type: "bool",
+      },
     ],
     payable: false,
     stateMutability: "nonpayable",
-    type: "function"
+    type: "function",
   },
   {
     constant: true,
     inputs: [
       {
         name: "_owner",
-        type: "address"
-      }
+        type: "address",
+      },
     ],
     name: "balanceOf",
     outputs: [
       {
         name: "balance",
-        type: "uint256"
-      }
+        type: "uint256",
+      },
     ],
     payable: false,
-    type: "function"
-  }
+    type: "function",
+  },
 ];
 
 /**
@@ -94,7 +94,7 @@ class ETHWallet extends AbstractWallet {
         {
           name: "Binance",
           networkId: 56,
-          chainId: 56
+          chainId: 56,
         },
         "petersburg"
       );
@@ -107,7 +107,7 @@ class ETHWallet extends AbstractWallet {
         {
           name: "Binance",
           networkId: 97,
-          chainId: 97
+          chainId: 97,
         },
         "petersburg"
       );
@@ -187,15 +187,15 @@ class ETHWallet extends AbstractWallet {
   // Normal transfer
   public async sendCoin(
     recipient: string,
-    amount: string,
-    gasPrice: string,
-    gasLimit: string,
+    amount: number,
+    gasPrice: number,
+    gasLimit: number,
     network: string
-  ): Promise<string> {
+  ): Promise<TransactionResult> {
     // Fetch Web3 connection for network
     const web3 = this.getWeb3(network);
 
-    const value = Web3.utils.toWei(amount, "ether");
+    const value = Web3.utils.toWei(amount.toString(), "ether");
     const common = this.determineChainParameters(network, false);
     const address = this.wallet.getAddressString();
 
@@ -203,7 +203,7 @@ class ETHWallet extends AbstractWallet {
     const nonce = await web3.eth.getTransactionCount(address);
 
     // Convert the gas price from gwei to wei
-    const gasPriceWei = Web3.utils.toWei(gasPrice, "Gwei");
+    const gasPriceWei = Web3.utils.toWei(gasPrice.toString(), "Gwei");
 
     // Construct the transaction
     const tx = new Transaction(
@@ -212,7 +212,7 @@ class ETHWallet extends AbstractWallet {
         value: Web3.utils.toHex(value),
         gasPrice: Web3.utils.toHex(gasPriceWei),
         gasLimit: Web3.utils.toHex(gasLimit),
-        nonce: Web3.utils.toHex(nonce)
+        nonce: Web3.utils.toHex(nonce),
       },
       { common }
     );
@@ -220,25 +220,32 @@ class ETHWallet extends AbstractWallet {
     const signedTx = tx.sign(this.wallet.getPrivateKey());
     const rawTx = signedTx.serialize().toString("hex");
 
-    const receipt = await web3.eth.sendSignedTransaction("0x" + rawTx);
-    return receipt.transactionHash;
+    const result: TransactionResult = {
+      hash: signedTx.hash().toString("hex"),
+      hex: "0x" + rawTx,
+      recipient: recipient,
+      amount: amount,
+      fee: Web3.utils.fromWei(signedTx.getBaseFee(), "Gwei"),
+    };
+
+    return result;
   }
 
   // Token transfer
   // Gas price is converted from gwei to gwei
   public async sendTokens(
     recipient: string,
-    amount: string,
+    amount: number,
     tokenContract: string,
-    gasPrice: string,
-    gasLimit: string,
+    gasPrice: number,
+    gasLimit: number,
     network: string
-  ): Promise<string> {
+  ): Promise<TransactionResult> {
     // Get Web3 connection
     const web3 = this.getWeb3(network);
 
     // Convert the amount from ether to Wei
-    const value = Web3.utils.toWei(amount, "ether");
+    const value = Web3.utils.toWei(amount.toString(), "ether");
 
     const common = this.determineChainParameters(network, false);
     const contract = new web3.eth.Contract(erc20Abi, tokenContract);
@@ -248,7 +255,7 @@ class ETHWallet extends AbstractWallet {
     const nonce = await web3.eth.getTransactionCount(address);
 
     // Convert the gas price from gwei to wei
-    const gasPriceWei = Web3.utils.toWei(gasPrice, "Gwei");
+    const gasPriceWei = Web3.utils.toWei(gasPrice.toString(), "Gwei");
 
     // Construct the transfer transaction
     const data = contract.methods.transfer(recipient, value).encodeABI();
@@ -259,7 +266,7 @@ class ETHWallet extends AbstractWallet {
         gasPrice: Web3.utils.toHex(gasPriceWei),
         gasLimit: Web3.utils.toHex(gasLimit),
         nonce: Web3.utils.toHex(nonce),
-        data: data
+        data: data,
       },
       { common }
     );
@@ -268,8 +275,15 @@ class ETHWallet extends AbstractWallet {
     const signedTx = tx.sign(this.wallet.getPrivateKey());
     const rawTx = signedTx.serialize().toString("hex");
 
-    const receipt = await web3.eth.sendSignedTransaction("0x" + rawTx);
-    return receipt.transactionHash;
+    const result: TransactionResult = {
+      hash: signedTx.hash().toString("hex"),
+      hex: "0x" + rawTx,
+      recipient: recipient,
+      amount: amount,
+      fee: Web3.utils.fromWei(signedTx.getBaseFee(), "Gwei"),
+    };
+
+    return result;
   }
 }
 

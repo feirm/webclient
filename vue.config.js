@@ -1,8 +1,13 @@
+const { GitRevisionPlugin } = require("git-revision-webpack-plugin");
+const webpack = require("webpack");
+
+const gitRevisionPlugin = new GitRevisionPlugin();
+
 module.exports = {
   pwa: {
     workboxOptions: {
-      exclude: [/_redirects/]
-    }
+      exclude: [/_redirects/],
+    },
   },
   configureWebpack: {
     module: {
@@ -11,9 +16,16 @@ module.exports = {
         {
           test: /\.wasm$/,
           loaders: ["base64-loader"],
-          type: "javascript/auto"
-        }
-      ]
-    }
-  }
+          type: "javascript/auto",
+        },
+      ],
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        "process.env": {
+          COMMIT_HASH: JSON.stringify(gitRevisionPlugin.commithash()),
+        },
+      }),
+    ],
+  },
 };

@@ -1,313 +1,196 @@
 <template>
-  <div class="max-w-7xl mx-auto py-6 p-4 lg:px-8">
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-2">
-      <div class="p-6 border-r border-gray-300 space-y-6">
-        <!-- Balance -->
-        <div class="space-y-0">
-          <h1 class="font-light text-2xl">Balance</h1>
-          <h2 class="font-medium text-2xl">
-            {{ balance }} {{ ticker.toUpperCase() }}
+  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-6">
+    <div class="md:flex md:items-center md:justify-between">
+      <div class="flex-1 min-w-0">
+        <div v-if="!isLoaded" class="animate-pulse space-y-2">
+          <div class="bg-gray-300 w-5/12 h-10 rounded"></div>
+        </div>
+        <div v-else>
+          <h2 class="text-2xl leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            {{ coin.name }} ({{ coin.ticker.toUpperCase() }})
           </h2>
         </div>
-
-        <hr class="m-3" />
-
-        <!-- Send actions -->
-        <h1 class="font-light text-xl">Send {{ ticker.toUpperCase() }}</h1>
-
-        <form
-          @submit.prevent="
-            showConfirmTransactionModal = !showConfirmTransactionModal
-          "
-          class="space-y-6"
-        >
-          <div>
-            <label
-              for="username"
-              class="block text-sm font-medium text-gray-700"
-              >Recipient address</label
-            >
-            <div class="mt-1">
-              <input
-                name="address"
-                v-model="recipientAddress"
-                type="text"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="amount" class="block text-sm font-medium text-gray-700"
-              >Amount</label
-            >
-            <div class="mt-1">
-              <input
-                name="amount"
-                v-model="amount"
-                type="text"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="amount" class="block text-sm font-medium text-gray-700"
-              >Gas Price</label
-            >
-            <div class="mt-1">
-              <input
-                name="amount"
-                v-model="gasprice"
-                type="text"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="amount" class="block text-sm font-medium text-gray-700"
-              >Gas Limit</label
-            >
-            <div class="mt-1">
-              <input
-                name="amount"
-                v-model="gaslimit"
-                type="text"
-                required
-                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              :disabled="submitted"
-              type="submit"
-              class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              <span v-if="!submitted">Send</span>
-              <img
-                v-else
-                class="mx-auto w-5"
-                src="@/assets/loading_spinner.svg"
-              />
-            </button>
-          </div>
-
-          <div class="text-sm text-center">
-            <router-link
-              to="/app"
-              class="font-medium text-gray-600 hover:text-gray-900"
-            >
-              View past transactions
-            </router-link>
-          </div>
-        </form>
       </div>
+      <div class="mt-4 flex md:mt-0 md:ml-4 space-x-3">
+        <div v-if="!isLoaded" class="animate-pulse flex space-x-4">
+          <div class="w-24 h-10 rounded bg-gray-300"></div>
+          <div class="w-24 h-10 rounded bg-gray-300"></div>
+        </div>
+        <div class="space-x-4" v-else>
+          <button
+            @click="toggleReceivingAddressModal"
+            type="button"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-gray-700 bg-white border-gray-300 hover:bg-gray-100"
+          >
+            <QrcodeIcon class="-ml-1 mr-3 h-5 w-5" aria-hidden="true" />
+            Receive
+          </button>
 
-      <div class="p-3 bg-white">
-        <h1 class="font-light text-2xl">Receiving address</h1>
-        <code>
-          {{ address }}
-        </code>
-
-        <img :src="addressQr" alt="Address QR" />
+          <button
+            @click="toggleSendModal"
+            type="button"
+            class="inline-flex items-center px-4 py-2 shadow-sm text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400"
+          >
+            <ArrowCircleRightIcon
+              class="-ml-1 mr-3 h-5 w-5"
+              aria-hidden="true"
+            />
+            Send
+          </button>
+        </div>
       </div>
     </div>
+    <hr />
+
+    <div v-if="!isLoaded" class="animate-pulse">
+      <div class="h-12 w-2/6 bg-gray-300 rounded"></div>
+    </div>
+    <h1 v-else class="text-3xl">{{ balance }} {{ ticker.toUpperCase() }}</h1>
   </div>
 
-  <confirm-modal
-    v-if="showConfirmTransactionModal"
-    heading="Send transaction?"
-    message="Are you sure you want to make this transaction?"
-    @confirmEvent="send(ticker)"
-    @close="showConfirmTransactionModal = false"
-  ></confirm-modal>
+  <address-modal
+    v-if="showAddressModal"
+    :address="address"
+    :ticker="ticker"
+    @close="toggleReceivingAddressModal"
+  />
+
+  <send-modal v-if="showSendModal" :ticker="ticker" @close="toggleSendModal" />
 </template>
 
 <script lang="ts">
-import ethWallet from "@/class/wallets/eth-wallet";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-
-import qrcode from "qrcode";
 import { Coin, CoinFactory } from "@/class/coins";
-import Web3 from "web3";
-import { EncryptedWallet } from "@/models/wallet";
+
+// Components
+import AddressModal from "@/components/AddressModal.vue";
+import SendModal from "@/components/SendModal.vue";
+
+// Other
 import walletService from "@/service/api/walletService";
 import account from "@/class/account";
+import ethWallet from "@/class/wallets/eth-wallet";
+import { EncryptedWallet } from "@/models/wallet";
+import btcP2wpkhWallet from "@/class/wallets/btc-p2wpkh-wallet";
+import sb from "satoshi-bitcoin";
+import Web3 from "web3";
 
-import ConfirmModal from "@/components/ConfirmModal.vue";
+import { QrcodeIcon, ArrowCircleRightIcon } from "@heroicons/vue/outline";
 
 export default defineComponent({
   name: "Wallet",
-  data() {
-    return {
-      recipientAddress: "",
-      amount: "",
-      gasprice: "",
-      gaslimit: 21000,
-      submitted: false,
-      showConfirmTransactionModal: false
-    };
-  },
   components: {
-    ConfirmModal
-  },
-  async mounted() {
-    // Fetch recommended gas price
-    const web3 = ethWallet.getWeb3(this.token.network);
-    const gasPrice = await web3.eth.getGasPrice();
+    AddressModal,
+    SendModal,
 
-    // Convert into gwei
-    const gwei = Web3.utils.fromWei(gasPrice, "gwei");
-    this.gasprice = gwei;
-
-    // If we are interacting with a contract (likely ERC20 or BEP20 token), then we need to fetch a higher gas limit
-    if (this.token.contract) {
-      this.gaslimit = 100000;
-    }
-  },
-  methods: {
-    async send() {
-      this.showConfirmTransactionModal = !this.showConfirmTransactionModal;
-
-      // Check balance
-      if (this.amount == "0") {
-        return this.$toast.error("Cannot send empty balance!");
-      }
-
-      this.submitted = true;
-
-      // Need to handle normal send and token transfers differently,
-      // so check if token has a contract associated to it
-      // TODO: FIX GAS LIMIT FOR TOKEN TRANSFER
-      if (this.token.contract) {
-        // Initialise a token transfer
-        try {
-          const hash = await ethWallet.sendTokens(
-            this.recipientAddress,
-            this.amount,
-            this.token.contract,
-            this.gasprice,
-            this.gaslimit,
-            this.token.network
-          );
-
-          this.submitted = false;
-          this.$toast.success(hash);
-        } catch (e) {
-          this.submitted = false;
-          return this.$toast.error(e);
-        }
-
-        // Balance update
-        const contract = ethWallet.getContract(
-          this.token.contract,
-          this.token.network
-        );
-        const weiBalance = await contract.methods
-          .balanceOf(this.address)
-          .call();
-
-        // Convert Wei balance to Ether
-        this.balance = Web3.utils.fromWei(weiBalance, "ether");
-      }
-
-      // Otherwise it's likely a normal transfer
-      if (!this.token.contract) {
-        try {
-          const hash = await ethWallet.sendCoin(
-            this.recipientAddress,
-            this.amount,
-            this.gasprice,
-            this.gaslimit,
-            this.token.network
-          );
-
-          this.submitted = false;
-          this.$toast.success(hash);
-        } catch (e) {
-          this.submitted = false;
-          return this.$toast.error(e);
-        }
-
-        // Balance update
-        const web3 = ethWallet.getWeb3(this.token.network);
-        const weiBalance = await web3.eth.getBalance(this.address);
-
-        // Convert Wei balance to Ether
-        this.balance = Web3.utils.fromWei(weiBalance, "ether");
-      }
-    }
+    QrcodeIcon,
+    ArrowCircleRightIcon,
   },
   setup() {
     const route = useRoute();
-    const ticker = route.params.ticker;
+    const ticker: string = route.params.ticker as string;
 
-    const token = ref({} as Coin);
-    const address = ref();
-    const addressQr = ref();
+    const coin = ref({} as Coin);
+
     const balance = ref();
+    const address = ref();
+
+    const showAddressModal = ref(false);
+    const showSendModal = ref(false);
+
+    const isLoaded = ref(false);
 
     onMounted(async () => {
-      token.value = CoinFactory.getCoin(ticker as string);
+      coin.value = CoinFactory.getCoin(ticker);
 
-      // Fetch encrypted wallet and decrypt it
-      let wallet: EncryptedWallet;
-      try {
-        const res = await walletService.GetWallet();
-        wallet = res.data;
-      } catch (e) {
-        console.log("[Wallet]: " + e.response.data.error);
-      }
+      // Fetch and decrypt wallet
+      const encryptedWallet: EncryptedWallet = await (
+        await walletService.GetWallet()
+      ).data;
 
-      // Decrypt wallet and set mnemonic
       const rootKey = account.getRootKey();
-      const mnemonic = await ethWallet.decryptWallet(rootKey, wallet);
+      const mnemonic = await ethWallet.decryptWallet(rootKey, encryptedWallet);
+
+      // Set the mnemonic for use with ETH/BSC and Bitcoin
       ethWallet.setMnemonic(mnemonic);
+      btcP2wpkhWallet.setMnemonic(mnemonic);
 
-      // Set the address
-      const eth = ethWallet.getWallet();
-      address.value = eth.getAddressString();
-
-      // Generate a QR of receiving address
-      addressQr.value = await qrcode.toDataURL(address.value);
-
-      // Need to fetch token balance. If token has a contract,
-      // get balance from the contract
-      if (token.value.contract) {
-        const contract = ethWallet.getContract(
-          token.value.contract,
-          token.value.network
+      // Derive and set our receiving address depending on the coin/token
+      if (coin.value.network === "bitcoin") {
+        const xpub = btcP2wpkhWallet.getZpub(ticker);
+        const lastIndex = await btcP2wpkhWallet.getLastIndex(
+          ticker,
+          xpub,
+          false
         );
-        const weiBalance = await contract.methods
-          .balanceOf(address.value)
-          .call();
-
-        // Convert Wei balance to Ether
-        balance.value = Web3.utils.fromWei(weiBalance, "ether");
-      } else {
-        // Otherwise fetch balance for address
-        const web3 = ethWallet.getWeb3(token.value.network);
-        const weiBalance = await web3.eth.getBalance(address.value);
-
-        // Convert Wei balance to Ether
-        balance.value = Web3.utils.fromWei(weiBalance, "ether");
+        address.value = btcP2wpkhWallet.getAddress(ticker, 0, lastIndex);
+      } else if (
+        coin.value.network === "ethereum" ||
+        coin.value.network === "binance"
+      ) {
+        address.value = ethWallet.getWallet().getAddressString();
       }
+
+      // Fetch balance data for Bitcoin, Ethereum/Binance tokens
+      if (coin.value.network === "bitcoin") {
+        console.log("[Wallet] Todo: Fetch wallet data for:", coin.value.name);
+        const zpub = btcP2wpkhWallet.getZpub(coin.value.ticker);
+        const data = await btcP2wpkhWallet.getXpubInfo(zpub, coin.value.ticker);
+
+        balance.value = sb.toBitcoin(
+          parseInt(data.balance) + parseInt(data.unconfirmedBalance)
+        );
+      } else if (
+        coin.value.network === "ethereum" ||
+        coin.value.network === "binance"
+      ) {
+        console.log("[Wallet] Todo: Fetch token data for:", coin.value.name);
+        if (coin.value.contract) {
+          const contract = ethWallet.getContract(
+            coin.value.contract,
+            coin.value.network
+          );
+          const contractBalance = await contract.methods
+            .balanceOf(address.value)
+            .call();
+
+          balance.value = Web3.utils.fromWei(contractBalance, "ether");
+        } else {
+          const web3 = ethWallet.getWeb3(coin.value.network);
+          const weiBalance = await web3.eth.getBalance(address.value);
+
+          balance.value = Web3.utils.fromWei(weiBalance, "ether");
+        }
+      }
+
+      isLoaded.value = true;
     });
 
+    // Open receiving address modal
+    const toggleReceivingAddressModal = () => {
+      showAddressModal.value = !showAddressModal.value;
+    };
+
+    // Toggle send modal
+    const toggleSendModal = () => {
+      showSendModal.value = !showSendModal.value;
+    };
+
     return {
-      token,
+      coin,
       ticker,
       address,
-      addressQr,
-      balance
+      balance,
+
+      showAddressModal,
+      showSendModal,
+
+      isLoaded,
+
+      toggleReceivingAddressModal,
+      toggleSendModal,
     };
-  }
+  },
 });
 </script>

@@ -225,7 +225,7 @@ class ETHWallet extends AbstractWallet {
       hex: "0x" + rawTx,
       recipient: recipient,
       amount: amount,
-      fee: gasPrice,
+      fee: Web3.utils.fromWei(signedTx.getBaseFee(), "Gwei"),
     };
 
     return result;
@@ -280,7 +280,7 @@ class ETHWallet extends AbstractWallet {
       hex: "0x" + rawTx,
       recipient: recipient,
       amount: amount,
-      fee: gasPrice,
+      fee: Web3.utils.fromWei(signedTx.getBaseFee(), "Gwei"),
     };
 
     return result;

@@ -66,6 +66,7 @@ class Bitcoin implements Coin {
 }
 
 // Bitcoin Testnet
+/*
 class TBitcoin implements Coin {
   name = "Bitcoin Testnet";
   ticker = "tbtc";
@@ -87,6 +88,7 @@ class TBitcoin implements Coin {
     wif: 239,
   };
 }
+*/
 
 // Litecoin
 class Litecoin implements Coin {
@@ -161,7 +163,7 @@ export class CoinFactory {
     xfe: new Feirm(),
     bat: new BasicAttentionToken(),
     btc: new Bitcoin(),
-    tbtc: new TBitcoin(),
+    //tbtc: new TBitcoin(),
     bnb: new Binance(),
     busd: new BinanceUSD(),
     dai: new DAI(),
@@ -176,7 +178,7 @@ export class CoinFactory {
     CoinFactory.coins.xfe,
     CoinFactory.coins.bat,
     CoinFactory.coins.btc,
-    CoinFactory.coins.tbtc,
+    //CoinFactory.coins.tbtc,
     CoinFactory.coins.bnb,
     CoinFactory.coins.busd,
     CoinFactory.coins.dai,

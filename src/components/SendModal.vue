@@ -263,7 +263,8 @@
                 Amount: {{ tx.amount }} {{ ticker.toUpperCase() }}
               </p>
               <p class="text-sm">
-                Miner Fee: {{ tx.fee }} {{ ticker.toUpperCase() }}
+                TX Fee: {{ tx.fee }}
+                {{ ticker.toUpperCase() }}
               </p>
             </div>
 

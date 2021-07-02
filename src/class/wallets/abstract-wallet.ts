@@ -12,8 +12,8 @@ export interface TransactionResult {
   hash: string;
   hex: string;
   recipient: string;
-  amount: number;
-  fee: number;
+  amount: string | number;
+  fee: string | number;
 }
 
 export abstract class AbstractWallet {

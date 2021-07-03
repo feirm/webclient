@@ -85,6 +85,13 @@
         :codes="recoveryCodes"
         @close="showRecoveryCodes = false"
       />
+
+      <ErrorAlert
+        v-if="error.show"
+        :heading="error.heading"
+        :message="error.message"
+        @close="closeErrorModal"
+      />
     </div>
   </div>
 </template>
@@ -92,6 +99,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 
+import ErrorAlert from "@/components/ErrorAlert.vue";
 import SideNav from "@/components/account/SideNav.vue";
 import TwoFactorRecoveryCodes from "@/components/account/TwoFactorRecoveryCodes.vue";
 
@@ -124,12 +132,34 @@ const twoFactorMethods = [
 
 export default defineComponent({
   components: {
+    ErrorAlert,
     SideNav,
     TwoFactorRecoveryCodes,
 
     ExclamationIcon,
   },
   setup() {
+    // Error handling
+    interface ErrorPrompt {
+      heading: string;
+      message: string;
+      show: boolean;
+    }
+
+    const error = ref({} as ErrorPrompt);
+
+    // Trigger the error modal
+    const triggerError = (heading, message: string, show: boolean) => {
+      error.value.heading = heading;
+      error.value.message = message;
+      error.value.show = show;
+    };
+
+    // Close error modal
+    const closeErrorModal = () => {
+      error.value.show = false;
+    };
+
     const showRecoveryCodes = ref(false);
     const fetchingRecoveryCodes = ref(false);
     const recoveryCodes = ref();
@@ -139,11 +169,18 @@ export default defineComponent({
         fetchingRecoveryCodes.value = true;
 
         const codes = await authService.GetRecoveryCodes();
+
+        // Throw an error if there are no recovery codes
         if (codes.data.codes === null) {
           fetchingRecoveryCodes.value = false;
-          return alert(
-            "No recovery codes, enable two-factor provider other than email."
+
+          triggerError(
+            "No recovery codes found!",
+            "It looks like there are no recovery codes on record for this account. Please enable a two-factor provider other than 'Email' and try again. If you believe this is an error, please contact Feirm support.",
+            true
           );
+
+          return;
         }
 
         recoveryCodes.value = codes.data.codes;
@@ -156,6 +193,10 @@ export default defineComponent({
     };
 
     return {
+      error,
+      triggerError,
+      closeErrorModal,
+
       twoFactorMethods,
 
       showRecoveryCodes,

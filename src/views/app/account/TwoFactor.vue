@@ -79,13 +79,22 @@
           </div>
         </div>
       </div>
+
+      <TwoFactorRecoveryCodes
+        v-if="showRecoveryCodes"
+        :codes="recoveryCodes"
+        @close="showRecoveryCodes = false"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+
 import SideNav from "@/components/account/SideNav.vue";
+import TwoFactorRecoveryCodes from "@/components/account/TwoFactorRecoveryCodes.vue";
+
 import { ExclamationIcon } from "@heroicons/vue/solid";
 import authService from "@/service/api/authService";
 
@@ -116,9 +125,12 @@ const twoFactorMethods = [
 export default defineComponent({
   components: {
     SideNav,
+    TwoFactorRecoveryCodes,
+
     ExclamationIcon,
   },
   setup() {
+    const showRecoveryCodes = ref(false);
     const fetchingRecoveryCodes = ref(false);
     const recoveryCodes = ref();
 
@@ -136,6 +148,7 @@ export default defineComponent({
 
         recoveryCodes.value = codes.data.codes;
         fetchingRecoveryCodes.value = false;
+        showRecoveryCodes.value = true;
       } catch (e) {
         fetchingRecoveryCodes.value = false;
         console.log(e);
@@ -145,6 +158,7 @@ export default defineComponent({
     return {
       twoFactorMethods,
 
+      showRecoveryCodes,
       fetchingRecoveryCodes,
       getRecoveryCodes,
       recoveryCodes,

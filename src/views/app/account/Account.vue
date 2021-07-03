@@ -1,5 +1,5 @@
 <template>
-  <div class="flex p-3 md:p-8 w-full bg-gray-200">
+  <div class="flex p-3 md:p-8 w-full">
     <div class="container md:w-2/5 mx-auto space-y-4">
       <h1 class="text-3xl font-light">My account</h1>
 
@@ -44,34 +44,6 @@
         </button>
       </div>
 
-      <!-- Wallet -->
-      <div class="p-6 shadow bg-white rounded space-y-3">
-        <h2 class="text-xl font-light">Wallet</h2>
-
-        <p>
-          Your wallet is securely linked to your Feirm account using
-          zero-knowledge encryption. This means that Feirm cannot access your
-          private keys, allowing you to remain in complete control of your
-          funds. If you wish, you can delete this wallet and start over.
-        </p>
-
-        <button
-          @click="showDeleteWalletModal = !showDeleteWalletModal"
-          :disabled="!hasWallet"
-          class="block px-5 py-2 rounded text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed text-white bg-red-500 hover:bg-red-400"
-        >
-          Delete wallet
-        </button>
-      </div>
-
-      <confirm-modal
-        v-if="showDeleteWalletModal"
-        heading="Delete your wallet?"
-        message="This is a permanent and irreversible action. Unless you have a backup of your mnemonic, your funds are irrecoverable."
-        @confirmEvent="deleteWallet"
-        @close="showDeleteWalletModal = false"
-      ></confirm-modal>
-
       <!-- Device security -->
       <div class="p-6 shadow bg-white rounded space-y-3">
         <h2 class="text-xl font-light">Device security</h2>
@@ -112,30 +84,6 @@
         @close="showDeviceSecurityModal = false"
       ></confirm-modal>
 
-      <!-- Deletion -->
-      <div class="p-6 shadow bg-white rounded space-y-6">
-        <h2 class="text-xl font-light">Account deletion</h2>
-        <p>
-          Delete your Feirm account and all data associated to it. All of your
-          data will be wiped immediately from our production servers, so there
-          is no going back!
-        </p>
-        <button
-          @click="showDeleteAccountModal = !showDeleteAccountModal"
-          class="inline-flex items-center justify-center px-5 py-2 rounded text-sm font-medium text-white bg-red-500 hover:bg-red-400"
-        >
-          Delete my Feirm account
-        </button>
-      </div>
-
-      <confirm-modal
-        v-if="showDeleteAccountModal"
-        heading="Delete your Feirm account?"
-        message="This is a permanent and irreversible action. Your Feirm account data will be instantly deleted from our servers."
-        @confirmEvent="deleteAccount"
-        @close="showDeleteAccountModal = false"
-      ></confirm-modal>
-
       <!-- Logout -->
       <div class="p-6 shadow bg-white rounded space-y-6">
         <h2 class="text-xl font-light">Logout</h2>
@@ -152,6 +100,9 @@
           Logout
         </button>
       </div>
+
+      <!-- Danger Zone -->
+      <danger-zone />
     </div>
   </div>
 
@@ -328,6 +279,8 @@ import account from "@/class/account";
 import bufferToHex from "@/helpers/bufferToHex";
 
 import ConfirmModal from "@/components/ConfirmModal.vue";
+import DangerZone from "@/components/account/DangerZone.vue";
+
 import walletService from "@/service/api/walletService";
 
 export default defineComponent({
@@ -335,8 +288,6 @@ export default defineComponent({
     return {
       showModal: false,
       showDeviceSecurityModal: false,
-      showDeleteAccountModal: false,
-      showDeleteWalletModal: false,
 
       hasRootKey: false,
       hasWallet: false,
@@ -358,6 +309,7 @@ export default defineComponent({
   },
   components: {
     ConfirmModal,
+    DangerZone,
   },
   computed: {
     ...mapGetters(["getUsername"]),
@@ -483,31 +435,6 @@ export default defineComponent({
       });
 
       this.closeModal();
-    },
-
-    // Delete user account
-    async deleteAccount() {
-      try {
-        await authService.DeleteAccount();
-      } catch (e) {
-        return this.$toast.error(e.response.data.error);
-      }
-
-      // Update Vuex state
-      this.logout();
-
-      // Push to index
-      this.router.push("/");
-    },
-
-    async deleteWallet() {
-      try {
-        await walletService.RemoveWallet();
-        this.showDeleteWalletModal = false;
-        this.hasWallet = false;
-      } catch (e) {
-        return this.$toast.error(e.respose.data.error);
-      }
     },
 
     saveRootKey() {

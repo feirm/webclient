@@ -7,6 +7,13 @@
 
       <div class="flex space-x-3">
         <button
+          @click="logoutUser"
+          class="transition duration-300 ease-in-out block px-3 py-2 text-sm border border-gray-300 shadow-sm font-medium rounded-md text-red-500 bg-white hover:bg-red-500 hover:text-white hover:border-red-500 focus:outline-none"
+        >
+          Logout
+        </button>
+
+        <button
           @click="togglePurgeWallet"
           class="transition duration-300 ease-in-out block px-3 py-2 text-sm border border-gray-300 shadow-sm font-medium rounded-md text-red-500 bg-white hover:bg-red-500 hover:text-white hover:border-red-500 focus:outline-none"
         >
@@ -47,6 +54,7 @@ import ConfirmModal from "@/components/ConfirmModal.vue";
 import { defineComponent, ref } from "vue";
 import authService from "@/service/api/authService";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default defineComponent({
   components: {
@@ -54,6 +62,13 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const store = useStore();
+
+    // Logout the user
+    const logoutUser = () => {
+      store.dispatch("logout");
+      window.location.href = "/";
+    };
 
     // Delete/purge user wallet
     const doPurgeWallet = ref(false);
@@ -89,6 +104,8 @@ export default defineComponent({
     };
 
     return {
+      logoutUser,
+
       doPurgeWallet,
       togglePurgeWallet,
       purgeWallet,

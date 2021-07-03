@@ -84,23 +84,6 @@
         @close="showDeviceSecurityModal = false"
       ></confirm-modal>
 
-      <!-- Logout -->
-      <div class="p-6 shadow bg-white rounded space-y-6">
-        <h2 class="text-xl font-light">Logout</h2>
-
-        <p>
-          When using a shared device, it is recommended for you to log out
-          before leaving. This will remove all traces of your wallet from this
-          device.
-        </p>
-        <button
-          @click="logoutUser"
-          class="inline-flex items-center justify-center px-5 py-2 rounded text-sm font-medium text-white bg-red-500 hover:bg-red-400"
-        >
-          Logout
-        </button>
-      </div>
-
       <!-- Danger Zone -->
       <danger-zone />
     </div>
@@ -273,7 +256,7 @@ import { defineComponent } from "vue";
 import { authenticator } from "otplib";
 import qrcode from "qrcode";
 
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import { useRouter } from "vue-router";
 import account from "@/class/account";
 import bufferToHex from "@/helpers/bufferToHex";
@@ -335,7 +318,6 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions(["logout"]),
     async verifyEmail() {
       // Resend an email confirmation to the user
       try {
@@ -364,12 +346,6 @@ export default defineComponent({
       this.showModal = false;
       this.changeTwoFactor.selected = "";
       this.changeTwoFactor.step = 0;
-    },
-
-    // Logout user
-    logoutUser() {
-      this.logout();
-      this.router.push("/");
     },
 
     // Determine next step based on two-factor method chosen

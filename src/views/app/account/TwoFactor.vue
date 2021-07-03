@@ -36,9 +36,18 @@
         <!-- Warning footer -->
         <div>
           <button
-            class="px-3 py-2 transition duration-300 ease-in-out rounded-md text-sm font-medium bg-gray-50 border hover:bg-gray-200 focus:outline-none"
+            @click="getRecoveryCodes"
+            class="px-3 py-2 w-44 transition duration-300 ease-in-out rounded-md text-sm font-medium bg-gray-50 border hover:bg-gray-200 focus:outline-none"
           >
-            View recovery codes
+            <span v-if="!fetchingRecoveryCodes">
+              View recovery codes
+            </span>
+            <img
+              v-else
+              class="w-5 h-5 mx-auto"
+              src="@/assets/loading_spinner_dark.svg"
+              alt="Loading"
+            />
           </button>
         </div>
       </div>
@@ -75,9 +84,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import SideNav from "@/components/account/SideNav.vue";
 import { ExclamationIcon } from "@heroicons/vue/solid";
+import authService from "@/service/api/authService";
 
 // Supported two-factor authentication methods
 const twoFactorMethods = [
@@ -109,8 +119,35 @@ export default defineComponent({
     ExclamationIcon,
   },
   setup() {
+    const fetchingRecoveryCodes = ref(false);
+    const recoveryCodes = ref();
+
+    const getRecoveryCodes = async () => {
+      try {
+        fetchingRecoveryCodes.value = true;
+
+        const codes = await authService.GetRecoveryCodes();
+        if (codes.data.codes === null) {
+          fetchingRecoveryCodes.value = false;
+          return alert(
+            "No recovery codes, enable two-factor provider other than email."
+          );
+        }
+
+        recoveryCodes.value = codes.data.codes;
+        fetchingRecoveryCodes.value = false;
+      } catch (e) {
+        fetchingRecoveryCodes.value = false;
+        console.log(e);
+      }
+    };
+
     return {
       twoFactorMethods,
+
+      fetchingRecoveryCodes,
+      getRecoveryCodes,
+      recoveryCodes,
     };
   },
 });

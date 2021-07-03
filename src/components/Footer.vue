@@ -100,7 +100,9 @@
         <p class="text-base text-gray-400 xl:text-center">
           &copy; 2021 Feirm. All rights reserved.
         </p>
-        <p class="text-sm xl:text-center text-gray-400">v{{ version }}</p>
+        <p class="text-sm xl:text-center text-gray-400">
+          Version {{ version }}
+        </p>
       </div>
     </div>
   </footer>

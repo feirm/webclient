@@ -51,7 +51,8 @@
             </div>
 
             <!-- Footer (make this dynamic for the different footers) -->
-            <OK @ok="$emit('ok')" @cancel="closeModal" />
+            <OK v-show="okFooter" @ok="$emit('ok')" @cancel="closeModal" />
+            <Dismiss v-show="dismissFooter" @dismiss="closeModal" />
           </div>
         </div>
       </div>
@@ -65,6 +66,7 @@ import { XIcon } from "@heroicons/vue/outline";
 
 // Footer components
 import OK from "@/components/modals/footers/OK.vue";
+import Dismiss from "@/components/modals/footers/Dismiss.vue";
 
 export default defineComponent({
   name: "ModalDialog",
@@ -73,9 +75,20 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    // Footer type props
+    okFooter: {
+      type: Boolean,
+      default: false,
+    },
+    dismissFooter: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     OK,
+    Dismiss,
 
     XIcon,
   },

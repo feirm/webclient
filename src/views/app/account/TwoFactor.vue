@@ -69,7 +69,7 @@
           </div>
           <div>
             <button
-              @click="showManageTotp = true"
+              @click="showManageTotp = !showManageTotp"
               class="border px-2 py-1 transition duration-300 ease-in-out text-sm rounded-md hover:bg-gray-200 focus:outline-none"
             >
               Manage
@@ -138,6 +138,8 @@ export default defineComponent({
       error.value.show = false;
     };
 
+    const showManageTotp = ref(false);
+
     // Recovery codes
     const showRecoveryCodes = ref(false);
     const fetchingRecoveryCodes = ref(false);
@@ -171,9 +173,6 @@ export default defineComponent({
         triggerError("Unexpected error!", e, true);
       }
     };
-
-    // Manage TOTP modal
-    const showManageTotp = ref(false);
 
     return {
       error,

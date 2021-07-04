@@ -14,8 +14,6 @@
         role="dialog"
         aria-modal="true"
         v-show="showModal"
-        @keydown.esc="closeModal"
-        tabindex="0"
       >
         <div
           class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
@@ -63,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { XIcon } from "@heroicons/vue/outline";
 
 // Footer components
@@ -101,6 +99,16 @@ export default defineComponent({
       showModal.value = false;
       emit("close");
     };
+
+    onMounted(() => {
+      const onEscape = (e: any) => {
+        if (e.keyCode === 27) {
+          closeModal();
+        }
+      };
+
+      document.addEventListener("keydown", onEscape);
+    });
 
     watch(
       () => props.show,

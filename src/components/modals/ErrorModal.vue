@@ -1,5 +1,5 @@
 <template>
-  <BaseModal :show="show" dismissFooter @dismiss="$emit('dismiss')">
+  <BaseModal :show="show" dismissFooter @close="$emit('close')">
     <div class="space-y-3">
       <h1 class="text-2xl">Error! 😟</h1>
       <p class="text-sm">

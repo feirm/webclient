@@ -14,6 +14,8 @@
         role="dialog"
         aria-modal="true"
         v-if="showModal"
+        @keydown.esc="closeModal"
+        tabindex="0"
       >
         <div
           class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
@@ -51,7 +53,7 @@
 
             <!-- Footer (make this dynamic for the different footers) -->
             <OK v-if="okFooter" @ok="$emit('ok')" @cancel="closeModal" />
-            <Dismiss v-if="dismissFooter" @dismiss="dismissModal" />
+            <Dismiss v-if="dismissFooter" @close="closeModal" />
           </div>
         </div>
       </div>
@@ -99,11 +101,6 @@ export default defineComponent({
       emit("close");
     };
 
-    const dismissModal = () => {
-      showModal.value = false;
-      emit("dismiss");
-    };
-
     watch(
       () => props.show,
       (show) => {
@@ -113,7 +110,6 @@ export default defineComponent({
 
     return {
       closeModal,
-      dismissModal,
 
       showModal,
     };

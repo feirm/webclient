@@ -101,7 +101,7 @@
   </BaseModal>
 
   <!-- Success modal -->
-  <BaseModal :show="totpSuccess" dismissFooter @dismiss="totpSuccess = false">
+  <BaseModal :show="totpSuccess" dismissFooter @close="totpSuccess = false">
     <div class="space-y-3">
       <h1 class="text-2xl">Congratulations! 🥳</h1>
       <p>
@@ -114,7 +114,7 @@
   <BaseModal
     :show="totpSuccessDisabled"
     dismissFooter
-    @dismiss="totpSuccessDisabled = false"
+    @close="totpSuccessDisabled = false"
   >
     <div class="space-y-3">
       <h1 class="text-2xl">TOTP Disabled!</h1>
@@ -126,19 +126,19 @@
   </BaseModal>
 
   <!-- Error modal -->
-  <BaseModal :show="errorPresent" dismissFooter @dismiss="clearError">
-    <div class="space-y-3">
-      <h1 class="text-2xl">Error! 😟</h1>
-      <p>
-        {{ errorMessage }}
-      </p>
-    </div>
-  </BaseModal>
+  <ErrorModal
+    :show="errorPresent"
+    :error="errorMessage"
+    @close="errorPresent = false"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
+
 import BaseModal from "@/components/modals/BaseModal.vue";
+import ErrorModal from "@/components/modals/ErrorModal.vue";
+
 import { authenticator } from "@otplib/preset-default";
 import qrcode from "qrcode";
 import authService from "@/service/api/authService";
@@ -150,6 +150,7 @@ export default defineComponent({
   },
   components: {
     BaseModal,
+    ErrorModal,
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -218,14 +219,7 @@ export default defineComponent({
       }
     };
 
-    // Clear any error messages
-    const clearError = () => {
-      errorPresent.value = false;
-      errorMessage.value = "";
-    };
-
     return {
-      clearError,
       errorPresent,
       errorMessage,
 

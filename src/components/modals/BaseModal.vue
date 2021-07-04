@@ -51,21 +51,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-              <button
-                type="button"
-                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-white hover:bg-orange-400 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-              >
-                OK
-              </button>
-              <button
-                @click="closeModal"
-                type="button"
-                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
-              >
-                Cancel
-              </button>
-            </div>
+            <OK @close="closeModal" />
           </div>
         </div>
       </div>
@@ -77,6 +63,9 @@
 import { defineComponent, ref, watch } from "vue";
 import { XIcon } from "@heroicons/vue/outline";
 
+// Footer components
+import OK from "@/components/modals/footers/OK.vue";
+
 export default defineComponent({
   name: "ModalDialog",
   props: {
@@ -86,6 +75,8 @@ export default defineComponent({
     },
   },
   components: {
+    OK,
+
     XIcon,
   },
   setup(props, { emit }) {

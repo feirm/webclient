@@ -126,7 +126,7 @@
   </BaseModal>
 
   <!-- Error modal -->
-  <BaseModal v-if="errorPresent" dismissFooter @dismiss="clearError">
+  <BaseModal :show="errorPresent" dismissFooter @dismiss="clearError">
     <div class="space-y-3">
       <h1 class="text-2xl">Error! 😟</h1>
       <p>

@@ -13,7 +13,7 @@
         aria-labelledby="modal-title"
         role="dialog"
         aria-modal="true"
-        v-if="showModal"
+        v-show="showModal"
         @keydown.esc="closeModal"
         tabindex="0"
       >
@@ -21,6 +21,7 @@
           class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
         >
           <div
+            @click="closeModal"
             class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity"
             aria-hidden="true"
           ></div>
@@ -52,8 +53,8 @@
             </div>
 
             <!-- Footer (make this dynamic for the different footers) -->
-            <OK v-if="okFooter" @ok="$emit('ok')" @cancel="closeModal" />
-            <Dismiss v-if="dismissFooter" @close="closeModal" />
+            <OK v-show="okFooter" @ok="$emit('ok')" @cancel="closeModal" />
+            <Dismiss v-show="dismissFooter" @close="closeModal" />
           </div>
         </div>
       </div>

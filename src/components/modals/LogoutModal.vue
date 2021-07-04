@@ -1,5 +1,5 @@
 <template>
-  <BaseModal :show="show" @ok="doLogout">
+  <BaseModal :show="show" @ok="doLogout" okFooter>
     <div class="space-y-2">
       <h1 class="text-xl">Are you sure you want to log out?</h1>
       <p class="text-sm">

@@ -86,11 +86,10 @@
 
       <ManageTOTP :show="showManageTotp" @close="showManageTotp = false" />
 
-      <ErrorAlert
-        v-if="error.show"
-        :heading="error.heading"
-        :message="error.message"
-        @close="closeErrorModal"
+      <ErrorModal
+        :show="error.show"
+        :error="error.message"
+        @close="error.show = false"
       />
     </div>
   </div>
@@ -99,44 +98,31 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 
-import ErrorAlert from "@/components/ErrorAlert.vue";
 import SideNav from "@/components/account/SideNav.vue";
 import TwoFactorRecoveryCodes from "@/components/account/TwoFactorRecoveryCodes.vue";
 import ManageTOTP from "@/components/account/ManageTOTP.vue";
+import ErrorModal from "@/components/modals/ErrorModal.vue";
 
 import { ExclamationIcon } from "@heroicons/vue/solid";
 import authService from "@/service/api/authService";
 
 export default defineComponent({
   components: {
-    ErrorAlert,
     SideNav,
     TwoFactorRecoveryCodes,
     ManageTOTP,
+    ErrorModal,
 
     ExclamationIcon,
   },
   setup() {
     // Error handling
     interface ErrorPrompt {
-      heading: string;
       message: string;
       show: boolean;
     }
 
     const error = ref({} as ErrorPrompt);
-
-    // Trigger the error modal
-    const triggerError = (heading, message: string, show: boolean) => {
-      error.value.heading = heading;
-      error.value.message = message;
-      error.value.show = show;
-    };
-
-    // Close error modal
-    const closeErrorModal = () => {
-      error.value.show = false;
-    };
 
     const showManageTotp = ref(false);
 
@@ -155,13 +141,9 @@ export default defineComponent({
         // Throw an error if there are no recovery codes
         if (codes.data.codes === null) {
           fetchingRecoveryCodes.value = false;
-
-          triggerError(
-            "No recovery codes found!",
-            "It looks like there are no recovery codes on record for this account. This is likely due to your account using Email for two-factor authentication rather than a TOTP authenticator app. If you believe this is an error, please contact Feirm support.",
-            true
-          );
-
+          error.value.show = true;
+          error.value.message =
+            "It looks like there are no recovery codes on record for this account. This is likely due to your account using Email for two-factor authentication rather than a TOTP authenticator app. If you believe this is an error, please contact Feirm support.";
           return;
         }
 
@@ -170,14 +152,13 @@ export default defineComponent({
         showRecoveryCodes.value = true;
       } catch (e) {
         fetchingRecoveryCodes.value = false;
-        triggerError("Unexpected error!", e, true);
+        error.value.show = true;
+        error.value.message = e;
       }
     };
 
     return {
       error,
-      triggerError,
-      closeErrorModal,
 
       showRecoveryCodes,
       fetchingRecoveryCodes,

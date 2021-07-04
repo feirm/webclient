@@ -1,8 +1,8 @@
 <template>
   <BaseModal :show="show" dismissFooter @close="$emit('close')">
     <div class="space-y-3">
-      <h1 class="text-2xl">Error! 😟</h1>
-      <p class="text-sm">
+      <h1 class="text-lg leading-6 font-medium text-gray-900">Error! 😟</h1>
+      <p class="text-sm text-gray-500">
         {{ error }}
       </p>
     </div>

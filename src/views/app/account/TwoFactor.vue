@@ -76,26 +76,6 @@
             </button>
           </div>
         </div>
-
-        <div class="flex items-center w-full border p-4 rounded space-x-4">
-          <div class="flex-shrink-0">
-            <img src="@/assets/img/two-factor/email.png" />
-          </div>
-          <div>
-            <h1 class="font-medium">Email Magic-Link</h1>
-            <p class="text-sm">
-              Approve any new logins to your Feirm account using a magic-link
-              sent to your email address.
-            </p>
-          </div>
-          <div>
-            <button
-              class="border px-2 py-1 transition duration-300 ease-in-out text-sm rounded-md hover:bg-gray-200 focus:outline-none"
-            >
-              Manage
-            </button>
-          </div>
-        </div>
       </div>
 
       <TwoFactorRecoveryCodes
@@ -176,7 +156,7 @@ export default defineComponent({
 
           triggerError(
             "No recovery codes found!",
-            "It looks like there are no recovery codes on record for this account. Please enable a two-factor provider other than 'Email' and try again. If you believe this is an error, please contact Feirm support.",
+            "It looks like there are no recovery codes on record for this account. This is likely due to your account using Email for two-factor authentication rather than a TOTP authenticator app. If you believe this is an error, please contact Feirm support.",
             true
           );
 

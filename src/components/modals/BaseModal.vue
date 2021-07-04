@@ -51,7 +51,7 @@
 
             <!-- Footer (make this dynamic for the different footers) -->
             <OK v-if="okFooter" @ok="$emit('ok')" @cancel="closeModal" />
-            <Dismiss v-if="dismissFooter" @dismiss="closeModal" />
+            <Dismiss v-if="dismissFooter" @dismiss="dismissModal" />
           </div>
         </div>
       </div>
@@ -99,6 +99,11 @@ export default defineComponent({
       emit("close");
     };
 
+    const dismissModal = () => {
+      showModal.value = false;
+      emit("dismiss");
+    };
+
     watch(
       () => props.show,
       (show) => {
@@ -108,6 +113,8 @@ export default defineComponent({
 
     return {
       closeModal,
+      dismissModal,
+
       showModal,
     };
   },

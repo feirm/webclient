@@ -56,18 +56,36 @@
       <div class="pt-4 space-y-3">
         <h2 class="text-xl">Providers</h2>
 
-        <div
-          v-for="twoFactor in twoFactorMethods"
-          :key="twoFactor.type"
-          class="flex items-center w-full border p-4 rounded space-x-4"
-        >
+        <div class="flex items-center w-full border p-4 rounded space-x-4">
           <div class="flex-shrink-0">
-            <img :src="twoFactor.icon" />
+            <img src="@/assets/img/two-factor/authenticator_app.png" />
           </div>
           <div>
-            <h1 class="font-medium">{{ twoFactor.type }}</h1>
+            <h1 class="font-medium">Authenticator App</h1>
             <p class="text-sm">
-              {{ twoFactor.description }}
+              Use an authenticator app (such as Google Authenticator or Authy)
+              to generate time-based verification codes.
+            </p>
+          </div>
+          <div>
+            <button
+              @click="showManageTotp = true"
+              class="border px-2 py-1 transition duration-300 ease-in-out text-sm rounded-md hover:bg-gray-200 focus:outline-none"
+            >
+              Manage
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center w-full border p-4 rounded space-x-4">
+          <div class="flex-shrink-0">
+            <img src="@/assets/img/two-factor/email.png" />
+          </div>
+          <div>
+            <h1 class="font-medium">Email Magic-Link</h1>
+            <p class="text-sm">
+              Approve any new logins to your Feirm account using a magic-link
+              sent to your email address.
             </p>
           </div>
           <div>
@@ -86,6 +104,8 @@
         @close="showRecoveryCodes = false"
       />
 
+      <ManageTOTP :show="showManageTotp" @close="showManageTotp = false" />
+
       <ErrorAlert
         v-if="error.show"
         :heading="error.heading"
@@ -102,39 +122,17 @@ import { defineComponent, ref } from "vue";
 import ErrorAlert from "@/components/ErrorAlert.vue";
 import SideNav from "@/components/account/SideNav.vue";
 import TwoFactorRecoveryCodes from "@/components/account/TwoFactorRecoveryCodes.vue";
+import ManageTOTP from "@/components/account/ManageTOTP.vue";
 
 import { ExclamationIcon } from "@heroicons/vue/solid";
 import authService from "@/service/api/authService";
-
-// Supported two-factor authentication methods
-const twoFactorMethods = [
-  {
-    type: "Authenticator App",
-    description:
-      "Use an authenticator app (such as Google Authenticator or Authy) to generate time-based verification codes.",
-    icon: require("@/assets/img/two-factor/authenticator_app.png"),
-  },
-  {
-    type: "Email Magic-Link",
-    description:
-      "Approve any new logins to your Feirm account using a magic-link sent to your email address. ",
-    icon: require("@/assets/img/two-factor/email.png"),
-  },
-  /*
-  {
-    type: "FIDO2 (WebAuthn)",
-    description:
-      "Use a WebAuthn enabled security key (such as a YubiKey or SoloKey) to access your account.",
-    icon: "https://vault.bitwarden.com/images/two-factor/7.png",
-  },
-  */
-];
 
 export default defineComponent({
   components: {
     ErrorAlert,
     SideNav,
     TwoFactorRecoveryCodes,
+    ManageTOTP,
 
     ExclamationIcon,
   },
@@ -160,9 +158,11 @@ export default defineComponent({
       error.value.show = false;
     };
 
+    // Recovery codes
     const showRecoveryCodes = ref(false);
     const fetchingRecoveryCodes = ref(false);
     const recoveryCodes = ref();
+    const secret = ref();
 
     const getRecoveryCodes = async () => {
       try {
@@ -188,21 +188,25 @@ export default defineComponent({
         showRecoveryCodes.value = true;
       } catch (e) {
         fetchingRecoveryCodes.value = false;
-        console.log(e);
+        triggerError("Unexpected error!", e, true);
       }
     };
+
+    // Manage TOTP modal
+    const showManageTotp = ref(false);
 
     return {
       error,
       triggerError,
       closeErrorModal,
 
-      twoFactorMethods,
-
       showRecoveryCodes,
       fetchingRecoveryCodes,
       getRecoveryCodes,
       recoveryCodes,
+
+      showManageTotp,
+      secret,
     };
   },
 });

@@ -50,8 +50,8 @@
               </div>
             </div>
 
-            <!-- Footer -->
-            <OK @close="closeModal" />
+            <!-- Footer (make this dynamic for the different footers) -->
+            <OK @ok="$emit('ok')" @cancel="closeModal" />
           </div>
         </div>
       </div>

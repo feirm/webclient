@@ -104,8 +104,10 @@
   <BaseModal :show="totpSuccess" dismissFooter @close="totpSuccess = false">
     <div class="space-y-3">
       <h1 class="text-2xl">Congratulations! 🥳</h1>
-      <p>
-        You've set up TOTP two-factor authentication for your Feirm account!
+      <p class="text-sm text-gray-500">
+        You've set up TOTP two-factor authentication for your Feirm account! Be
+        sure to backup your account recovery codes, otherwise you'll lose access
+        to your account if your two-factor device is lost.
       </p>
     </div>
   </BaseModal>
@@ -117,10 +119,11 @@
     @close="totpSuccessDisabled = false"
   >
     <div class="space-y-3">
-      <h1 class="text-2xl">TOTP Disabled!</h1>
-      <p>
-        Your account is back to using Email as the primary two-step login
-        method. You can re-enable TOTP authentication at any time!
+      <h1 class="text-2xl">TOTP Disabled! 😕</h1>
+      <p class="text-sm text-gray-500">
+        You've disabled TOTP two-factor authentication for your Feirm account.
+        We'll revert back to using Email as the primary login method. You can
+        re-enable TOTP authentication at any time!
       </p>
     </div>
   </BaseModal>

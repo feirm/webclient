@@ -19,6 +19,7 @@ import Migrate from "@/views/app/auth/Migrate.vue";
 
 import Account from "@/views/app/account/Account.vue";
 import AccountTwoFactor from "@/views/app/account/TwoFactor.vue";
+import AccountOptions from "@/views/app/account/Options.vue";
 
 // Wallet
 import WalletHome from "@/views/app/wallet/Wallet.vue";
@@ -113,6 +114,14 @@ const routes: Array<RouteRecordRaw> = [
         component: AccountTwoFactor,
         meta: {
           title: "Two-Step Login",
+          authRequired: true,
+        },
+      },
+      {
+        path: "account/options",
+        component: AccountOptions,
+        meta: {
+          title: "Options",
           authRequired: true,
         },
       },

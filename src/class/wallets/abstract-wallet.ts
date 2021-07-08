@@ -1,5 +1,5 @@
 import bufferToHex from "@/helpers/bufferToHex";
-import { EncryptedWallet, EncryptedWalletV2, Coins } from "@/models/wallet";
+import { EncryptedWallet, Coins } from "@/models/wallet";
 import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
 
@@ -128,14 +128,21 @@ export abstract class AbstractWallet {
   // Methods to handle wallet version updates
   public async updateWallet(
     rootKey: Uint8Array,
-    wallet: EncryptedWallet | EncryptedWalletV2
+    wallet: EncryptedWallet,
+    version: number // the version we want to update our wallet to
   ): Promise<any> {
     // Depending on the version, there needs to be an upgrade made
-    switch (wallet.version) {
-      case 1: {
-        // If the wallet is version 1, we need to upgrade it to v2 which contains a token property
-        console.log("[Wallet] Has a V1 wallet, need to upgrade it...");
-        //const mnemonic = await this.decryptWallet(rootKey, wallet);
+    switch (version) {
+      // V1 is the default, so we can skip that...
+
+      case 2: {
+        console.log(
+          `[Wallet] Latest wallet version is V${version}, upgrading from V${wallet.version}...`
+        );
+
+        // Decrypt the mnemonic just in case we need to derive any new coin private keys
+        const mnemonic = await this.decryptWallet(rootKey, wallet);
+        ethWallet.setMnemonic(mnemonic);
 
         // We are only supporting the XFE token in this version
         const address = ethWallet.getWallet().getAddressString();
@@ -146,18 +153,18 @@ export abstract class AbstractWallet {
           ticker: token.ticker,
         };
 
-        const walletV2: EncryptedWalletV2 = {
+        const updatedWallet: EncryptedWallet = {
           id: wallet.id,
           coins: [coin],
           ciphertext: wallet.ciphertext,
           iv: wallet.iv,
           signature: wallet.signature,
-          version: 2,
+          version: version,
         };
 
-        //console.log(walletV2);
-        // TODO: Send V2 wallet to API
+        console.log(updatedWallet);
 
+        // TODO: Send V2 wallet to API
         break;
       }
       default: {

@@ -8,9 +8,18 @@
 
       <!-- Account details -->
       <div class="border p-4 rounded-md space-y-2">
-        <p>Username: {{ profile.username }}</p>
-        <p>Email Address: {{ profile.email }}</p>
-        <p>Member Since: {{ profile.created_at }}</p>
+        <img
+          v-if="isLoading"
+          class="w-5 h-5"
+          src="@/assets/loading_spinner_dark.svg"
+          alt="Loading..."
+        />
+
+        <div v-else>
+          <p>Username: {{ profile.username }}</p>
+          <p>Email Address: {{ profile.email }}</p>
+          <p>Member Since: {{ profile.created_at }}</p>
+        </div>
       </div>
 
       <!-- Danger Zone -->
@@ -73,11 +82,13 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const profile = ref({} as any);
+    const isLoading = ref(true);
 
     onMounted(async () => {
       // Fetch account data
       await authService.GetAccount().then((res) => {
         profile.value = res.data;
+        isLoading.value = false;
       });
 
       // Calculate account creation date
@@ -90,6 +101,7 @@ export default defineComponent({
       router,
 
       profile,
+      isLoading,
     };
   },
 });

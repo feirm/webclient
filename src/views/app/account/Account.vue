@@ -6,6 +6,13 @@
     <div class="container w-full md:w-2/5 border rounded-md p-4 space-y-3">
       <h1 class="text-3xl font-light">My Account</h1>
 
+      <!-- Account details -->
+      <div class="border p-4 rounded-md space-y-2">
+        <p>Username: {{ profile.username }}</p>
+        <p>Email Address: {{ profile.email }}</p>
+        <p>Member Since: {{ profile.created_at }}</p>
+      </div>
+
       <!-- Danger Zone -->
       <danger-zone />
     </div>
@@ -14,39 +21,20 @@
 
 <script lang="ts">
 import authService from "@/service/api/authService";
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 
-import { mapGetters } from "vuex";
 import { useRouter } from "vue-router";
 import account from "@/class/account";
 import bufferToHex from "@/helpers/bufferToHex";
+import { DateTime } from "luxon";
 
 import DangerZone from "@/components/account/DangerZone.vue";
 import SideNav from "@/components/account/SideNav.vue";
 
 export default defineComponent({
-  data() {
-    return {
-      showModal: false,
-      showDeviceSecurityModal: false,
-
-      hasRootKey: false,
-      hasWallet: false,
-      profile: {},
-    };
-  },
   components: {
     DangerZone,
     SideNav,
-  },
-  computed: {
-    ...mapGetters(["getUsername"]),
-  },
-  async mounted() {
-    // Fetch account data
-    await authService.GetAccount().then((res) => {
-      this.profile = res.data;
-    });
   },
   methods: {
     async verifyEmail() {
@@ -84,9 +72,24 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const profile = ref({} as any);
+
+    onMounted(async () => {
+      // Fetch account data
+      await authService.GetAccount().then((res) => {
+        profile.value = res.data;
+      });
+
+      // Calculate account creation date
+      profile.value.created_at = DateTime.fromSeconds(
+        profile.value.created_at
+      ).toHTTP();
+    });
 
     return {
       router,
+
+      profile,
     };
   },
 });

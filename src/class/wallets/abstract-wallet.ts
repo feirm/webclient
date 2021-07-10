@@ -1,5 +1,6 @@
 import bufferToHex from "@/helpers/bufferToHex";
 import { EncryptedWallet, Coins } from "@/models/wallet";
+import walletService from "@/service/api/walletService";
 import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
 
@@ -132,14 +133,16 @@ export abstract class AbstractWallet {
     version: number // the version we want to update our wallet to
   ): Promise<any> {
     // Depending on the version, there needs to be an upgrade made
+    if (wallet.version < version) {
+      console.log(
+        `[Wallet] Latest wallet version is V${version}, upgrading from V${wallet.version}...`
+      );
+    }
+
     switch (version) {
       // V1 is the default, so we can skip that...
 
       case 2: {
-        console.log(
-          `[Wallet] Latest wallet version is V${version}, upgrading from V${wallet.version}...`
-        );
-
         // Decrypt the mnemonic just in case we need to derive any new coin private keys
         const mnemonic = await this.decryptWallet(rootKey, wallet);
         ethWallet.setMnemonic(mnemonic);
@@ -162,9 +165,8 @@ export abstract class AbstractWallet {
           version: version,
         };
 
-        console.log(updatedWallet);
-
-        // TODO: Send V2 wallet to API
+        // Send V2 wallet to API
+        //await walletService.AddWallet(updatedWallet);
         break;
       }
       default: {

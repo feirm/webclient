@@ -118,4 +118,9 @@ export default {
   ChangePasswordToken() {
     return gatewayApi.get("/auth/v1/account/change-password");
   },
+
+  // Change password
+  ChangePassword(payload) {
+    return gatewayApi.post("/auth/v1/account/change-password", payload);
+  },
 };

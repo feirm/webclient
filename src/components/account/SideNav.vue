@@ -21,13 +21,18 @@
 </template>
 
 <script>
-import { UserIcon, LoginIcon, CogIcon } from "@heroicons/vue/outline";
+import { UserIcon, LoginIcon, CogIcon, KeyIcon } from "@heroicons/vue/outline";
 
 const navigation = [
   {
     name: "My Account",
     href: "/app/account",
     icon: UserIcon,
+  },
+  {
+    name: "Password",
+    href: "/app/account/change-password",
+    icon: KeyIcon,
   },
   {
     name: "Options",

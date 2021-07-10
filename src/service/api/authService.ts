@@ -5,21 +5,21 @@ export default {
   // Check username availability
   CheckUsername(username: string) {
     return gatewayApi.post("auth/v1/check-username", {
-      username
+      username,
     });
   },
 
   // Check email availability
   CheckEmail(email: string) {
     return gatewayApi.post("auth/v1/check-email", {
-      email
+      email,
     });
   },
 
   // Create a login request
   CreateLoginRequest(username: string) {
     return gatewayApi.post("auth/v1/login", {
-      username
+      username,
     });
   },
 
@@ -27,21 +27,21 @@ export default {
   CreateLoginRequestTOTP(username: string, token: string) {
     return gatewayApi.post("auth/v1/login-totp", {
       username,
-      token
+      token,
     });
   },
 
   // Get login request status
   LoginRequestStatus(tokenId: string) {
     return gatewayApi.post("auth/v1/login/approve/status", {
-      token_id: tokenId
+      token_id: tokenId,
     });
   },
 
   // Approve a login request
   ApproveLogin(token: string) {
     return gatewayApi.post("auth/v1/login/approve", {
-      token
+      token,
     });
   },
 
@@ -50,7 +50,7 @@ export default {
     return gatewayApi.post("auth/v1/login/create-session", {
       username: username,
       token_id: tokenId,
-      signature: signature
+      signature: signature,
     });
   },
 
@@ -82,7 +82,7 @@ export default {
   // Verify email address
   VerifyEmail(token: string) {
     return gatewayApi.post("auth/v1/account/verify-email", {
-      token
+      token,
     });
   },
 
@@ -95,7 +95,7 @@ export default {
   EnableTOTP(secret: string, token: string) {
     return gatewayApi.post("auth/v1/account/enable-totp", {
       secret,
-      token
+      token,
     });
   },
 
@@ -112,5 +112,10 @@ export default {
   // Delete account
   DeleteAccount() {
     return gatewayApi.post("auth/v1/account/delete");
-  }
+  },
+
+  // Change password request token
+  ChangePasswordToken() {
+    return gatewayApi.get("/auth/v1/account/change-password");
+  },
 };

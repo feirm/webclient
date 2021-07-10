@@ -73,70 +73,150 @@
         <!-- Submit button -->
         <button
           type="submit"
-          class="transition duration-300 ease-in-out px-3 py-2 text-sm border rounded-md focus:outline-none bg-orange-500 text-yellow-900 border-orange-500 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-200"
+          class="transition duration-300 ease-in-out px-3 py-2 w-36 text-sm border rounded-md focus:outline-none bg-orange-500 text-yellow-900 border-orange-500 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-200"
         >
-          Change Password
+          <span v-if="!isLoading">Change Password</span>
+          <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
         </button>
       </form>
     </div>
   </div>
+
+  <!-- Success modal -->
+  <SuccessModal
+    :show="success.show"
+    :message="success.message"
+    @close="success.show = false"
+  />
+
+  <!-- Error modal -->
+  <ErrorModal
+    :show="error.show"
+    :error="error.message"
+    @close="error.show = false"
+  />
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 
 import SideNav from "@/components/account/SideNav.vue";
-import { EncryptedAccount } from "@/models/account";
+import SuccessModal from "@/components/modals/SuccessModal.vue";
+import ErrorModal from "@/components/modals/ErrorModal.vue";
+
 import authService from "@/service/api/authService";
 import account from "@/class/account";
 
 export default defineComponent({
   components: {
     SideNav,
+    SuccessModal,
+    ErrorModal,
   },
   setup() {
-    const encryptedAccount = ref({} as EncryptedAccount);
-
     const currentPassword = ref("");
     const newPassword = ref("");
     const confirmNewPassword = ref("");
 
-    onMounted(async () => {
-      try {
-        const response = await authService.GetAccount();
-        encryptedAccount.value = response.data;
-      } catch (e) {
-        console.log("[Change Password]", e.response.data);
-      }
+    const success = ref({
+      show: false,
+      message: "",
     });
 
-    // Check that the new passwords match
-    const checkPassword = () => {
-      if (newPassword.value !== confirmNewPassword.value) {
-        alert("New passwords do not match!");
-      }
-    };
+    const error = ref({
+      show: false,
+      message: "",
+    });
+
+    const isLoading = ref(false);
 
     // Change password
     const changePassword = async () => {
-      // Decrypt the account fetched on mount
+      // Check that the new passwords match...
+      if (newPassword.value !== confirmNewPassword.value) {
+        error.value.show = true;
+        error.value.message = "New passwords do not match! Please try again.";
+
+        return;
+      }
+
+      isLoading.value = true;
+
+      // Fetch the users latest encrypted account
+      const res = await authService.GetAccount();
+      const encryptedAccount = res.data;
+
+      // Decrypt the account fetched on mount to prove the user owns their password
+      let rootKey;
       try {
-        const rootKey = await account.decryptRootKey(
+        rootKey = await account.decryptRootKey(
           currentPassword.value,
-          encryptedAccount.value
+          encryptedAccount
         );
       } catch (e) {
-        // Handle later
-        // console.log("[Change Password]", e);
+        error.value.show = true;
+        error.value.message = e;
+
+        isLoading.value = false;
+
+        return;
+      }
+
+      // Fetch a password change token
+      const response = await authService.ChangePasswordToken();
+      const token = response.data;
+
+      // Re-encrypt the root key with the new password
+      const newRootKey = await account.generateEncryptedRootKey(
+        rootKey,
+        newPassword.value
+      );
+
+      // Sign the nonce which came with the change password token
+      const identityKeypair = await account.deriveIdentityKeypair(rootKey);
+      const signedNonce = await account.signMessage(
+        identityKeypair,
+        token.nonce
+      );
+
+      // Now that we have a new root key payload, and a signature of the token nonce, we can construct payload to send back to the change password endpoint.
+      const payload = {
+        encrypted_key: newRootKey,
+        token_id: token.id,
+        signature: signedNonce,
+      };
+
+      try {
+        await authService.ChangePassword(payload);
+
+        success.value.show = true;
+        success.value.message =
+          "Your Feirm account password has been changed! The next time you login, please remember to use your new password.";
+
+        isLoading.value = false;
+
+        return;
+      } catch (e) {
+        error.value.show = true;
+        error.value.message = e.response.data;
+
+        isLoading.value = false;
+
+        return;
       }
     };
 
     return {
+      isLoading,
+
       currentPassword,
       newPassword,
       confirmNewPassword,
 
       changePassword,
+
+      success,
+      error,
     };
   },
 });

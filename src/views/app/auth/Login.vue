@@ -90,18 +90,9 @@
               </div>
 
               <div>
-                <button
-                  :disabled="submitted"
-                  type="submit"
-                  class="w-full flex disabled:opacity-50 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-yellow-900 bg-orange-500 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                <b-button type="submit" class="w-full" :loading="submitted"
+                  >Sign in</b-button
                 >
-                  <span v-if="!submitted">Sign in</span>
-                  <img
-                    v-else
-                    class="mx-auto w-5"
-                    src="@/assets/loading_spinner.svg"
-                  />
-                </button>
               </div>
             </form>
           </div>

@@ -71,13 +71,7 @@
         </div>
 
         <!-- Submit button -->
-        <button
-          type="submit"
-          class="transition duration-300 ease-in-out px-3 py-2 w-36 text-sm border rounded-md focus:outline-none bg-orange-500 text-yellow-900 border-orange-500 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-200"
-        >
-          <span v-if="!isLoading">Change Password</span>
-          <img v-else class="mx-auto w-5" src="@/assets/loading_spinner.svg" />
-        </button>
+        <b-button type="submit" :loading="isLoading">Change Password</b-button>
       </form>
     </div>
   </div>

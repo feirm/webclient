@@ -212,13 +212,11 @@ export default defineComponent({
         // Attempt to decrypt the root key
         const rootKey = await account
           .decryptRootKey(this.password, encryptedAccount)
-          .catch(() => {
+          .catch((e) => {
             this.submitted = false;
             this.checkEmail = false;
 
-            return this.$toast.error(
-              "There was an error decrypting your account! Please try again!"
-            );
+            return this.$toast.error(e);
           });
 
         // Derive the identity keypair and sign the token nonce

@@ -15,7 +15,7 @@ const ec = new eddsa("ed25519");
 // Key types
 enum Keys {
   ENCRYPTION = "enc",
-  IDENTITY = "identity"
+  IDENTITY = "identity",
 }
 
 class Account {
@@ -65,7 +65,7 @@ class Account {
       pass: password,
       salt: salt,
       type: ArgonType.Argon2id,
-      hashLen: 32
+      hashLen: 32,
     });
 
     // Derive an encryption key to encrypt the root key with
@@ -94,7 +94,7 @@ class Account {
       key: bufferToHex(ciphertext),
       signature: signature,
       iv: bufferToHex(iv),
-      salt: bufferToHex(salt)
+      salt: bufferToHex(salt),
     } as EncryptedKey;
 
     return key;
@@ -132,7 +132,7 @@ class Account {
       pass: password,
       salt: salt,
       type: ArgonType.Argon2id,
-      hashLen: 32
+      hashLen: 32,
     });
 
     // Derive the key we encrypted the root key with
@@ -145,12 +145,17 @@ class Account {
     );
 
     // Decrypt the ciphertext to get our root key
-    const rootKey = await window.crypto.subtle.decrypt(
-      { name: "AES-CBC", iv: iv },
-      encryptionKey,
-      keyBytes
-    );
-    return new Uint8Array(rootKey);
+    try {
+      const rootKey = await window.crypto.subtle.decrypt(
+        { name: "AES-CBC", iv: iv },
+        encryptionKey,
+        keyBytes
+      );
+
+      return new Uint8Array(rootKey);
+    } catch (e) {
+      return Promise.reject("Password is incorrect, please try again!");
+    }
   }
 
   /*

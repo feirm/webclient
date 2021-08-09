@@ -1,12 +1,9 @@
 import bufferToHex from "@/helpers/bufferToHex";
 import { EncryptedWallet, Coins } from "@/models/wallet";
-import walletService from "@/service/api/walletService";
 import { entropyToMnemonic, validateMnemonic } from "bip39";
 import { v4 as uuidv4 } from "uuid";
 
 import account from "../account";
-import { CoinFactory } from "../coins";
-import ethWallet from "./eth-wallet";
 
 // Standardised interface for a transaction result
 export interface TransactionResult {
@@ -124,55 +121,5 @@ export abstract class AbstractWallet {
     // Convert from buffer to utf-8 readable
     const mnemonic = new TextDecoder().decode(decryptWallet);
     return mnemonic;
-  }
-
-  // Methods to handle wallet version updates
-  public async updateWallet(
-    rootKey: Uint8Array,
-    wallet: EncryptedWallet,
-    version: number // the version we want to update our wallet to
-  ): Promise<any> {
-    // Depending on the version, there needs to be an upgrade made
-    if (wallet.version < version) {
-      console.log(
-        `[Wallet] Latest wallet version is V${version}, upgrading from V${wallet.version}...`
-      );
-    }
-
-    switch (version) {
-      // V1 is the default, so we can skip that...
-
-      case 2: {
-        // Decrypt the mnemonic just in case we need to derive any new coin private keys
-        const mnemonic = await this.decryptWallet(rootKey, wallet);
-        ethWallet.setMnemonic(mnemonic);
-
-        // We are only supporting the XFE token in this version
-        const address = ethWallet.getWallet().getAddressString();
-        const token = CoinFactory.getCoin("xfe");
-
-        const coin: Coins = {
-          address: address,
-          ticker: token.ticker,
-        };
-
-        const updatedWallet: EncryptedWallet = {
-          id: wallet.id,
-          coins: [coin],
-          ciphertext: wallet.ciphertext,
-          iv: wallet.iv,
-          signature: wallet.signature,
-          version: version,
-        };
-
-        // Send V2 wallet to API
-        //await walletService.AddWallet(updatedWallet);
-        break;
-      }
-      default: {
-        console.log("[Wallet] Version not supported in this client...");
-        break;
-      }
-    }
   }
 }

@@ -90,11 +90,6 @@ export default {
       const w = ethWallet.getWallet();
       const address = w.getAddressString();
 
-      // Handle wallet version updates (if any)
-      const walletStatus = await walletService.GetStatus();
-      const latestVersion = walletStatus.data.latest_wallet_version;
-      await ethWallet.updateWallet(rootKey, wallet, latestVersion);
-
       // Iterate over all the tokens, establish Web3 connections and set balances
       for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];

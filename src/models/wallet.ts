@@ -2,17 +2,9 @@
 interface EncryptedWallet {
   id: string;
   uid?: string;
-  ciphertext: string;
-  iv: string;
-  signature: string;
-  version: number;
-}
 
-// V2
-interface EncryptedWalletV2 {
-  id: string;
-  uid?: string;
-  coins: Coins[];
+  coins: Coins[]; // V2 wallet attribute
+
   ciphertext: string;
   iv: string;
   signature: string;
@@ -24,4 +16,4 @@ interface Coins {
   address: string;
 }
 
-export { EncryptedWallet, EncryptedWalletV2, Coins };
+export { EncryptedWallet, Coins };

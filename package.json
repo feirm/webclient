@@ -1,6 +1,6 @@
 {
   "name": "web-client",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -26,6 +26,7 @@
     "elliptic": "^6.5.4",
     "ethereumjs-wallet": "^1.0.1",
     "keccak256": "^1.0.2",
+    "luxon": "^1.27.0",
     "otplib": "^12.0.1",
     "qrcode": "^1.4.4",
     "register-service-worker": "^1.7.1",

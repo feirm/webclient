@@ -12,5 +12,9 @@ export default {
 
   RemoveWallet() {
     return gatewayApi.post("wallet/v1/remove-wallet");
-  }
+  },
+
+  GetStatus() {
+    return gatewayApi.get("wallet/v1/status");
+  },
 };

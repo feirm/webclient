@@ -18,6 +18,9 @@ import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
 import Migrate from "@/views/app/auth/Migrate.vue";
 
 import Account from "@/views/app/account/Account.vue";
+import AccountTwoFactor from "@/views/app/account/TwoFactor.vue";
+import AccountOptions from "@/views/app/account/Options.vue";
+import AccountChangePassword from "@/views/app/account/ChangePassword.vue";
 
 // Wallet
 import WalletHome from "@/views/app/wallet/Wallet.vue";
@@ -26,7 +29,6 @@ import WalletNew from "@/views/app/wallet/New.vue";
 import WalletRecovery from "@/views/app/wallet/Recovery.vue";
 
 import { store } from "@/store";
-import account from "@/class/account";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -104,6 +106,30 @@ const routes: Array<RouteRecordRaw> = [
         component: Account,
         meta: {
           title: "My Account",
+          authRequired: true,
+        },
+      },
+      {
+        path: "account/two-factor",
+        component: AccountTwoFactor,
+        meta: {
+          title: "Two-Step Login",
+          authRequired: true,
+        },
+      },
+      {
+        path: "account/options",
+        component: AccountOptions,
+        meta: {
+          title: "Options",
+          authRequired: true,
+        },
+      },
+      {
+        path: "account/change-password",
+        component: AccountChangePassword,
+        meta: {
+          title: "Change Password",
           authRequired: true,
         },
       },

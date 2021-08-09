@@ -24,27 +24,70 @@
 
         <button
           type="button"
+          @click="toggleRememberModal"
           class="rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-500 text-base font-medium text-yellow-900 hover:bg-orange-400 sm:w-auto sm:text-sm"
         >
-          Remember Key
+          {{ savedAccountKey ? "Remove" : "Remember Key" }}
         </button>
       </div>
 
       <BaseModal />
     </div>
+
+    <confirm-modal
+      v-if="openRememberModal"
+      heading="Remember your account key?"
+      message="This action will save your Feirm account key in your browser so you don't have to login every time your visit."
+      @confirmEvent="saveAccountKey"
+      @close="openRememberModal = false"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 import BaseModal from "@/components/modals/BaseModal.vue";
 import SideNav from "@/components/account/SideNav.vue";
+import ConfirmModal from "@/components/ConfirmModal.vue";
+import account from "@/class/account";
+import bufferToHex from "@/helpers/bufferToHex";
 
 export default defineComponent({
   components: {
     BaseModal,
     SideNav,
+    ConfirmModal,
+  },
+  setup() {
+    const rootKey = localStorage.getItem("rootKey");
+    const savedAccountKey = ref(rootKey ? true : false);
+
+    const openRememberModal = ref(false);
+
+    // Remove key if necessary or show remember me modal
+    const toggleRememberModal = () => {
+      if (savedAccountKey.value) {
+        localStorage.removeItem("rootKey");
+        openRememberModal.value = false;
+        savedAccountKey.value = false;
+      } else {
+        openRememberModal.value = true;
+      }
+    };
+
+    const saveAccountKey = () => {
+      localStorage.setItem("rootKey", bufferToHex(account.getRootKey()));
+      savedAccountKey.value = true;
+      openRememberModal.value = false;
+    };
+
+    return {
+      openRememberModal,
+      toggleRememberModal,
+      savedAccountKey,
+      saveAccountKey,
+    };
   },
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
   <!-- TODO: There is a bug with this component. It doesn't update when mounting again until a forced reload. -->
-  <BaseModal :show="show">
+  <BaseModal :show="show" @close="$emit('close')">
     <div class="space-y-3">
       <h1 class="text-2xl text-center">Authenticator App</h1>
       <p>

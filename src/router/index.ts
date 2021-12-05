@@ -9,6 +9,7 @@ import {
 import Index from "@/views/Index.vue";
 import Token from "@/views/Token.vue";
 import Platform from "@/views/Platform.vue";
+import NotFound from "@/views/NotFound.vue";
 
 // App
 import Signup from "@/views/app/auth/Signup.vue";
@@ -31,6 +32,10 @@ import WalletRecovery from "@/views/app/wallet/Recovery.vue";
 import { store } from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/:pathMatch(.*)*",
+    component: NotFound
+  },
   {
     path: "/",
     name: "Index",

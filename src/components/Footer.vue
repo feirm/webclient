@@ -120,7 +120,7 @@ const navigation = {
   ],
   support: [
     { name: "Documentation", href: "https://docs.feirm.com" },
-    { name: "API Status", href: "#" },
+    { name: "Status", href: "https://status.feirm.com" },
   ],
   company: [
     { name: "About", href: "https://feirm.com/about" },

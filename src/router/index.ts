@@ -16,7 +16,6 @@ import Signup from "@/views/app/auth/Signup.vue";
 import Login from "@/views/app/auth/Login.vue";
 import VerifyEmail from "@/views/app/auth/VerifyEmail.vue";
 import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
-import Migrate from "@/views/app/auth/Migrate.vue";
 
 import Account from "@/views/app/account/Account.vue";
 import AccountTwoFactor from "@/views/app/account/TwoFactor.vue";
@@ -81,14 +80,6 @@ const routes: Array<RouteRecordRaw> = [
         component: Login,
         meta: {
           title: "Login",
-          hideNavigation: true,
-        },
-      },
-      {
-        path: "login/migrate",
-        component: Migrate,
-        meta: {
-          title: "Migrate",
           hideNavigation: true,
         },
       },

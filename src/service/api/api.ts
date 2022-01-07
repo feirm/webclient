@@ -19,7 +19,7 @@ gatewayApi.interceptors.request.use(
     const accessToken = store.getters.getAccessToken;
 
     if (accessToken) {
-      config.headers.Authorization = "Bearer " + accessToken;
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
     return config;

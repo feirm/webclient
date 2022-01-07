@@ -1,5 +1,5 @@
 <template>
-  <Disclosure as="nav" class="bg-grey-500" v-slot="{ open }">
+  <Disclosure as="nav" v-slot="{ open }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
@@ -22,13 +22,13 @@
               <router-link
                 v-if="!isLoggedIn"
                 to="/platform"
-                class="text-gray-300 hover:bg-grey-900 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                class="text-grey-500 hover:text-grey-900 px-3 rounded-md text-sm font-medium"
                 >Platform</router-link
               >
               <router-link
                 v-if="!isLoggedIn"
                 to="/token"
-                class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                class="text-grey-500 hover:text-grey-800 px-3 rounded-md text-sm font-medium"
                 >Token</router-link
               >
 
@@ -36,7 +36,7 @@
               <router-link
                 to="/app/wallet"
                 v-if="isLoggedIn"
-                class="text-gray-300 hover:bg-grey-800 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                class="text-grey-500 hover:text-grey-800 px-3 rounded-md text-sm font-medium"
                 >Wallet</router-link
               >
             </div>
@@ -47,7 +47,7 @@
             <div class="flex-shrink ml-3" v-if="!isLoggedIn">
               <router-link
                 to="/app/login"
-                class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-900 bg-gray-200 hover:bg-gray-100"
+                class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-orange hover:text-yellow-400"
               >
                 <span>Sign in</span>
               </router-link>
@@ -58,7 +58,7 @@
                 to="/app/signup"
                 class="block items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-yellow-900 bg-orange-500 hover:bg-orange-400"
               >
-                <span>Sign up</span>
+                <span>Create an account</span>
               </router-link>
             </div>
 

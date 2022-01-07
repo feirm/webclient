@@ -80,13 +80,5 @@ gatewayApi.interceptors.response.use(
   }
 );
 
-// Tatsuya API for legacy accounts
-const tatsuyaApi = axios.create({
-  baseURL: "https://tatsuya.feirm.com/api",
-  headers: {
-    "Content-Type": "application/json"
-  }
-});
-
 // Export all instances of the APIs
-export { gatewayApi, tatsuyaApi };
+export { gatewayApi };

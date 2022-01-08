@@ -1,6 +1,5 @@
 <template>
   <button
-    @click="onClick"
     :disabled="loading"
     class="transition duration-300 ease-in-out px-3 py-2 w-36 text-sm border rounded-md focus:outline-none disabled:opacity-50"
     :class="
@@ -20,10 +19,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Button",
   props: {
-    onClick: {
-      type: Function,
-      required: false,
-    },
     loading: {
       type: Boolean,
       default: false,

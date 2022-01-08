@@ -89,6 +89,11 @@ export default defineComponent({
       this.refreshing = true;
       window.location.reload();
     });
+
+    // Event listener for window to show warning
+    window.addEventListener('load', () => {
+      console.log("%cWarning: If you've been asked to execute commands here, you are likely the victim of a phishing attack!", 'color: red; background: yellow; font-size: 30px; font-weight: bold;');
+    });
   },
 });
 </script>

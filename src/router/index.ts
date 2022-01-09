@@ -78,8 +78,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "login",
         component: Login,
         meta: {
-          title: "Login",
-          hideNavigation: true,
+          title: "Login"
         },
       },
       {

@@ -1,7 +1,7 @@
 <template>
-  <navigation v-if="!$route.meta.hideNavigation" />
+  <Navigation />
   <router-view />
-  <Footer v-if="!$route.meta.hideNavigation" />
+  <Footer />
 
   <!-- Updater prompt -->
   <div

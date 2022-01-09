@@ -1,18 +1,15 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Landing hero -->
-    <div class="flex-grow p-10 sm:p-40 bg-grey-500">
+    <div class="flex-grow p-10 sm:p-40 bg-white">
       <div class="space-y-3">
-        <img class="w-24 mx-auto" src="@/assets/img/logo.webp" alt="Logo" />
         <h1
-          class="md:w-2/4 mx-auto text-4xl text-center font-semibold md:text-6xl mb-10 text-orange"
+          class="md:w-2/4 mx-auto text-4xl text-center font-semibold md:text-6xl mb-10 text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-orange-600"
         >
-          An ecosystem where privacy is for everyone.
+          an ecosystem where privacy is for everyone.
         </h1>
-        <p class="md:w-1/3 mx-auto text-2xl text-center text-gray-100">
-          A blockchain project and platform built for your privacy. Take a deep
-          dive into the Feirm Ecosystem and experience the ultimate privacy and
-          security provided by design.
+        <p class="md:w-1/3 mx-auto text-xl text-center text-grey-500">
+          experience the ultimate security and privacy provided by design.
         </p>
       </div>
     </div>

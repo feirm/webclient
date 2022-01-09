@@ -1,7 +1,4 @@
-const { GitRevisionPlugin } = require("git-revision-webpack-plugin");
 const webpack = require("webpack");
-
-const gitRevisionPlugin = new GitRevisionPlugin();
 
 module.exports = {
   pwa: {
@@ -19,13 +16,6 @@ module.exports = {
           type: "javascript/auto",
         },
       ],
-    },
-    plugins: [
-      new webpack.DefinePlugin({
-        "process.env": {
-          COMMIT_HASH: JSON.stringify(gitRevisionPlugin.commithash()),
-        },
-      }),
-    ],
+    }
   },
 };

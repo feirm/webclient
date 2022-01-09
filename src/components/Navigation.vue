@@ -45,21 +45,21 @@
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex items-center">
             <div class="flex-shrink ml-3" v-if="!isLoggedIn">
-              <router-link
-                to="/app/login"
-                class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-orange hover:text-yellow-400"
-              >
-                <span>Sign in</span>
-              </router-link>
+              <b-button :light="true" @click="router.push('/app/login')">
+                <span class="inline-flex items-center">
+                  Log in
+                  <LockClosedIcon class="w-4 h-4 ml-1 inline-block" />
+                </span>
+              </b-button>
             </div>
 
             <div class="flex-shrink-0 ml-3" v-if="!isLoggedIn">
-              <router-link
-                to="/app/signup"
-                class="block items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-yellow-900 bg-orange-500 hover:bg-orange-400"
-              >
-                <span>Create an account</span>
-              </router-link>
+              <b-button @click="router.push('/app/signup')">
+                <span class="inline-flex items-center">
+                  Sign up
+                  <UserAddIcon class="w-4 h-4 ml-1 inline-block" />
+                </span>
+              </b-button>
             </div>
 
             <!-- Profile dropdown -->
@@ -179,8 +179,8 @@
   </Disclosure>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup lang="ts">
+import { computed, ref } from "vue";
 import {
   Disclosure,
   DisclosureButton,
@@ -191,32 +191,14 @@ import {
   MenuItems,
 } from "@headlessui/vue";
 import { MenuIcon, XIcon } from "@heroicons/vue/outline";
-import { UserCircleIcon } from "@heroicons/vue/solid";
-import { mapGetters } from "vuex";
+import { UserCircleIcon, LockClosedIcon, UserAddIcon } from "@heroicons/vue/solid";
+import { mapGetters, useStore } from "vuex";
+import { useRouter } from 'vue-router';
 
-export default {
-  components: {
-    Disclosure,
-    DisclosureButton,
-    DisclosurePanel,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
+const open = ref(false);
+const router = useRouter();
 
-    MenuIcon,
-    XIcon,
-    UserCircleIcon,
-  },
-  computed: {
-    ...mapGetters(["isLoggedIn"]),
-  },
-  setup() {
-    const open = ref(false);
+const store = useStore();
 
-    return {
-      open,
-    };
-  },
-};
+const isLoggedIn = computed(() => store.getters.isLoggedIn);
 </script>

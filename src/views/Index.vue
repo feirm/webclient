@@ -101,26 +101,25 @@
     </div>
 
     <!-- Are you interested section -->
-    <div class="bg-grey-500">
+    <div class="bg-gray-100">
       <div
-        class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 lg:flex lg:justify-between"
+        class="max-w-7xl mx-auto py-12 px-4 sm:py-24 sm:px-6 lg:px-8 lg:flex lg:justify-between"
       >
-        <div class="mx-auto space-y-6 text-center">
+        <div class="mx-auto space-y-3 text-center">
           <img class="mx-auto w-16" src="@/assets/img/logo.webp" alt="Feirm" />
           <h2
-            class="text-4xl font-semibold text-gray-100 sm:text-5xl sm:tracking-tight lg:text-5xl"
+            class="text-4xl font-semibold text-grey-500 sm:text-5xl sm:tracking-tight lg:text-5xl"
           >
             Are you still interested?
           </h2>
-          <p class="mt-5 text-xl text-gray-100">
+          <p class="mt-5 text-xl text-grey-400">
             Creating a <span class="text-orange">Feirm</span> account is quick,
-            free and easy.
+            secure and easy.
           </p>
-          <router-link
-            to="/app/signup"
-            class="block mx-auto text-yellow-900 p-3 bg-orange-500 w-48 rounded-md"
-            >Get started</router-link
-          >
+
+          <b-button @click="router.push('/app/signup')">
+            Get Started
+          </b-button>
         </div>
       </div>
     </div>
@@ -193,6 +192,7 @@ import {
   KeyIcon
 } from "@heroicons/vue/outline";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 const features = [
   {
@@ -270,9 +270,12 @@ export default defineComponent({
     this.articles = articles.data.items.splice(0, 3);
   },
   setup() {
+    const router = useRouter();
+
     return {
       features,
-      ecosystem
+      ecosystem,
+      router
     };
   }
 });

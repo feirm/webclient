@@ -39,7 +39,7 @@
             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <ClockIcon class="w-5 h-5 text-gray-600" />
             </div>
-            <input type="number" id="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Six-digit OTP">
+            <input type="number" v-model="otp" id="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Six-digit OTP" required>
           </div>
         </div>
       
@@ -87,6 +87,7 @@ const submitAccount = async () => {
       const res = await authService.CreateLoginRequest(username.value);
       if (res.data.totp) {
         otpEnabled.value = true;
+        return;
       }
 
       // Set the login request ID if available
@@ -97,7 +98,9 @@ const submitAccount = async () => {
     } catch (e) {
       error.value.message = e.response.data.error;
       error.value.show = true;
-
+      return;
+    }
+    finally {
       loading.value = false;
     }
 

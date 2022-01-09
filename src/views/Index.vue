@@ -14,25 +14,17 @@
       </div>
     </div>
 
-    <!-- What do we offer? -->
-    <div class="py-12 bg-white">
+    <!-- Features -->
+    <div class="py-12 bg-gray-100">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="lg:text-center">
-          <p
-            class="mt-2 text-3xl leading-8 font-bold tracking-tight text-gray-900 sm:text-4xl"
-          >
-            What do we have to offer?
-          </p>
-        </div>
-
-        <div class="mt-10">
+        <div>
           <dl
-            class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10"
+            class="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10"
           >
             <div
               v-for="feature in features"
               :key="feature.name"
-              class="relative"
+              class="relative align-middle"
             >
               <dt>
                 <div
@@ -197,33 +189,28 @@ import {
   UsersIcon,
   ShoppingBagIcon,
   DatabaseIcon,
-  ChatAlt2Icon
+  ChatAlt2Icon,
+  KeyIcon
 } from "@heroicons/vue/outline";
 import axios from "axios";
 
 const features = [
   {
-    name: "Ultimate security",
+    name: "Non-custodial wallet",
     description:
-      "Feirm accounts are protected with mandatory two-factor authentication and heavy zero-knowledge encryption. Your data is safe with us.",
-    icon: FingerPrintIcon
-  },
-  {
-    name: "Web wallet",
-    description:
-      "Feirm provides a non-custodial wallet featuring support for many cryptocurrencies and tokens. The private keys remain in your browser whilst we link an encrypted version of your wallet to your Feirm account.",
-    icon: CurrencyPoundIcon
+      "Not your keys, not your coins. The Feirm Platform is built using cryptography which allows you to always in control of your coins. We don't hold any funds!",
+    icon: KeyIcon
   },
   {
     name: "Open source",
     description:
-      "Trust is important when it comes to dealing with cryptography, but it isn't enough. The Feirm web-client is open source for everyone to see.",
+      "Trust is important when it comes to dealing with cryptography and sensitive operations, but it isn't enough. The Feirm Platform web client is open source and fully auditable.",
     icon: HeartIcon
   },
   {
     name: "Available for everyone",
     description:
-      "Privacy should be accessible for everyone. Your Feirm account can be accessed on any device with a web browser - no need for more smartphone apps!",
+      "Privacy should be available for everyone. All you need to get started is a web browser - no need for smartphone apps!",
     icon: GlobeIcon
   }
 ];

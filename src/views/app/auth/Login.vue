@@ -55,9 +55,11 @@ import { EncryptedAccount } from "@/models/account";
 import authService from "@/service/api/authService";
 import { UserIcon, LockClosedIcon, ClockIcon } from "@heroicons/vue/solid";
 import { ref } from "@vue/reactivity";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 const store = useStore();
+const router = useRouter();
 
 // Form fields
 const username = ref();
@@ -95,6 +97,8 @@ const submitAccount = async () => {
         setTimeout(() => {
           otpField.value.focus();
         }, 50)
+
+        loading.value = false;
 
         return;
       }
@@ -172,7 +176,58 @@ const submitAccount = async () => {
 
   // Handle TOTP if it's enabled
   if (otpEnabled.value) {
-    console.log("User has TOTP on their account...");
+    try {
+      const res = await authService.CreateLoginRequestTOTP(username.value, otp.value);
+      const encryptedAccount = res.data as EncryptedAccount;
+
+      // Attempt to decrypt root key
+      const rootKey = await account.decryptRootKey(password.value, encryptedAccount).catch((e) => {
+        loading.value = false;
+
+        error.value.message = e;
+        error.value.show = true;
+
+        return;
+      });
+
+      // Using the root key we can sign the login token to get our JWT
+      const keypair = await account.deriveIdentityKeypair(rootKey as Uint8Array);
+      const tokenNonce = encryptedAccount.token.nonce;
+
+      if (!tokenNonce) {
+        error.value.show = true;
+        error.value.message = "An unexpected error has occurred!";
+        return;
+      }
+
+      const signature = await account.signMessage(keypair, tokenNonce);
+      
+      // Send the token ID and signature back to the API so we can receive a longer lived access token
+      await authService.CreateLoginSession(username.value, encryptedAccount.token.id, signature)
+        .then(res => {
+          const accessToken = res.data.access_token;
+          if (accessToken) {
+            loading.value = false;
+
+            // Set token and username in Vuex
+            store.dispatch("login", accessToken);
+            store.dispatch("setUsername", username.value);
+          }
+        })
+    } catch (e) {
+      loading.value = false;
+
+      error.value.show = true;
+      if (e.response && e.response.data) {
+        error.value.message = e.response.data.error;
+      } else {
+        error.value.message = e;
+      }
+
+      return;
+    }
   }
+
+  router.push("/app/wallet")
 }
 </script>

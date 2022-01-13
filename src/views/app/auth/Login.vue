@@ -12,7 +12,7 @@
           <p class="text-red-400 text-center">{{ error.message }}</p>
         </div>
 
-        <div v-if="!otpEnabled && loading" class="bg-green-100 p-3 rounded-lg">
+        <div v-if="!otpEnabled && loading && checkEmail" class="bg-green-100 p-3 rounded-lg">
           <p class="text-green-600 text-center">Check your email and approve the login.</p>
         </div>
 
@@ -33,13 +33,13 @@
         </div>
 
         <!-- OTP -->
-        <div v-if="otpEnabled">
+        <div v-show="otpEnabled">
           <label for="otp" class="block text-sm font-medium text-gray-900">OTP</label>
           <div class="relative mt-1">
             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <ClockIcon class="w-5 h-5 text-gray-600" />
             </div>
-            <input type="number" v-model="otp" id="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Six-digit OTP" required>
+            <input type="number" ref="otpField" v-model="otp" id="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Six-digit OTP">
           </div>
         </div>
       
@@ -63,10 +63,12 @@ const store = useStore();
 const username = ref();
 const password = ref();
 const otp = ref();
+const otpField = ref(null as HTMLInputElement);
 
 // Authentication
 const loginReqId = ref();
 const otpEnabled = ref(false) // always assume to start with that otp is not enabled
+const checkEmail = ref(false);
 
 const loading = ref(false);
 const error = ref({
@@ -80,6 +82,7 @@ const submitAccount = async () => {
   error.value.message = "";
 
   loading.value = true
+  checkEmail.value = false;
 
   // Send off for a generic login request first. If we get back a TOTP response then we handle that accordingly
   if (!otpEnabled.value) {
@@ -87,12 +90,19 @@ const submitAccount = async () => {
       const res = await authService.CreateLoginRequest(username.value);
       if (res.data.totp) {
         otpEnabled.value = true;
+
+        // Toggle focus to OTP field (after a 50ms delay)
+        setTimeout(() => {
+          otpField.value.focus();
+        }, 50)
+
         return;
       }
 
       // Set the login request ID if available
       if (res.data.id) {
         loginReqId.value = res.data.id;
+        checkEmail.value = true;
       }
 
     } catch (e) {
@@ -165,7 +175,5 @@ const submitAccount = async () => {
   if (otpEnabled.value) {
     console.log("User has TOTP on their account...");
   }
-
-  
 }
 </script>

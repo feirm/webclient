@@ -157,6 +157,8 @@ const submitAccount = async () => {
                 // Set token and username in Vuex
                 store.dispatch("login", accessToken);
                 store.dispatch("setUsername", username.value);
+
+                router.push("/app")
               }
             })
             .catch(e => {
@@ -212,6 +214,8 @@ const submitAccount = async () => {
             // Set token and username in Vuex
             store.dispatch("login", accessToken);
             store.dispatch("setUsername", username.value);
+
+            router.push("/app")
           }
         })
     } catch (e) {
@@ -227,7 +231,5 @@ const submitAccount = async () => {
       return;
     }
   }
-
-  router.push("/app/wallet")
 }
 </script>

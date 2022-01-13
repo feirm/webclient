@@ -12,7 +12,7 @@
           <p class="text-red-400 text-center">{{ error.message }}</p>
         </div>
 
-        <div v-if="!otpEnabled && loading && checkEmail" class="bg-green-100 p-3 rounded-lg">
+        <div v-if="!otpEnabled && checkEmail && !error.show" class="bg-green-100 p-3 rounded-lg">
           <p class="text-green-600 text-center">Check your email and approve the login.</p>
         </div>
 
@@ -106,12 +106,10 @@ const submitAccount = async () => {
       }
 
     } catch (e) {
+      loading.value = false;
       error.value.message = e.response.data.error;
       error.value.show = true;
       return;
-    }
-    finally {
-      loading.value = false;
     }
 
     // Create an interval to monitor the login request token
@@ -150,6 +148,7 @@ const submitAccount = async () => {
               const accessToken = res.data.access_token;
               if (accessToken) {
                 loading.value = false;
+                checkEmail.value = false;
 
                 // Set token and username in Vuex
                 store.dispatch("login", accessToken);

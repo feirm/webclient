@@ -45,6 +45,12 @@
       
         <b-button type="submit" class="w-full" :loading="loading">Log in</b-button>
       </form>
+
+      <div class="flex items-center">
+        <router-link to="/app/signup" class="text-sm text-orange mx-auto">
+          Don't have an account? Create one here!
+        </router-link>
+      </div>
     </div>
   </div>
 </template>

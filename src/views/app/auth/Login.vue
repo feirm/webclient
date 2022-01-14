@@ -39,7 +39,7 @@
             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <ClockIcon class="w-5 h-5 text-gray-600" />
             </div>
-            <input type="number" ref="otpField" v-model="otp" id="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Six-digit OTP">
+            <input type="number" ref="otpField" v-model="otp" @keydown="preventChars" id="otp" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Six-digit OTP">
           </div>
         </div>
       
@@ -230,6 +230,15 @@ const submitAccount = async () => {
 
       return;
     }
+  }
+}
+
+// Function to prevent certain characters being typed in the number field
+const preventChars = (e: KeyboardEvent) => {
+  const invalidCharacters = ["-", "+", "e"]
+
+  if (invalidCharacters.includes(e.key)) {
+    e.preventDefault();
   }
 }
 </script>

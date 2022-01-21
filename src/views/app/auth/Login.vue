@@ -140,6 +140,8 @@ const submitAccount = async () => {
             error.value.show = true;
           });
 
+          account.setRootKey(rootKey as Uint8Array);
+
           // Using the root key we can sign the login token to get our JWT
           const keypair = await account.deriveIdentityKeypair(rootKey as Uint8Array);
           const tokenNonce = encryptedAccount.token.nonce;
@@ -197,6 +199,8 @@ const submitAccount = async () => {
 
         return;
       });
+
+      account.setRootKey(rootKey as Uint8Array);
 
       // Using the root key we can sign the login token to get our JWT
       const keypair = await account.deriveIdentityKeypair(rootKey as Uint8Array);

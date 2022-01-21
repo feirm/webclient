@@ -69,7 +69,7 @@ export default defineComponent({
       }
     },
   },
-  created() {
+  mounted() {
     // Check if there is a root key already saved to this device
     const rootKey = localStorage.getItem("rootKey");
     if (rootKey) {

@@ -76,6 +76,25 @@
             </button>
           </div>
         </div>
+
+        <div class="flex items-center w-full border p-4 rounded space-x-4">
+          <div class="flex-shrink-0">
+            <img src="@/assets/img/two-factor/webauthn.png" />
+          </div>
+          <div>
+            <h1 class="font-medium">WebAuthn</h1>
+            <p class="text-sm">
+              Use a FIDO2 WebAuthn Certified Authenticator to physically secure your account from unauthorised access (YubiKey, Windows Hello and Touch ID).
+            </p>
+          </div>
+          <div>
+            <button
+              class="border px-2 py-1 transition duration-300 ease-in-out text-sm rounded-md hover:bg-gray-200 focus:outline-none"
+            >
+              Manage
+            </button>
+          </div>
+        </div>
       </div>
 
       <TwoFactorRecoveryCodes

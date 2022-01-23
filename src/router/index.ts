@@ -19,6 +19,7 @@ import ApproveLogin from "@/views/app/auth/ApproveLogin.vue";
 
 import Account from "@/views/app/account/Account.vue";
 import AccountTwoFactor from "@/views/app/account/TwoFactor.vue";
+import AccountTwoFactorWebAuthn from "@/views/app/account/two-factor/WebAuthn.vue";
 import AccountOptions from "@/views/app/account/Options.vue";
 import AccountChangePassword from "@/views/app/account/ChangePassword.vue";
 
@@ -110,6 +111,14 @@ const routes: Array<RouteRecordRaw> = [
           title: "Two-Step Login",
           authRequired: true,
         },
+      },
+      {
+        path: "account/two-factor/webauthn",
+        component: AccountTwoFactorWebAuthn,
+        meta: {
+          title: "WebAuthn",
+          authRequired: true,
+        }
       },
       {
         path: "account/options",

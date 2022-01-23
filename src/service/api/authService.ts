@@ -123,4 +123,10 @@ export default {
   ChangePassword(payload) {
     return gatewayApi.post("/v1/auth/account/change-password", payload);
   },
+
+  /* WebAuthn requests */
+  // Request for a challenge
+  GetWebAuthnChallenge() {
+    return gatewayApi.post("v1/auth/account/webauthn/challenge")
+  }
 };

@@ -18,9 +18,12 @@ const response = ref();
 const registerWebAuthn = async () => {
     // Fetch a generated challenge to be signed
     let credentialCreationOptions: PublicKeyCredentialCreationOptions;
+    let token: string;
+
     try {
       await authService.GetWebAuthnChallenge().then(res => {
         credentialCreationOptions = res.data.register;
+        token = res.data.token;
 
         // Challenge and User ID needs to be converted from Base64 to an ArrayBuffer
         const textEncode = new TextEncoder();
@@ -48,6 +51,7 @@ const registerWebAuthn = async () => {
 
       const payload = {
         name: deviceName.value,
+        token: token,
         deviceResponse: deviceResponse
       }
 

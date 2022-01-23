@@ -10,7 +10,7 @@
       </p>
 
       <div
-        class="relative px-4 py-3 leading-normal bg-gray-100 rounded-sm border-l-4 border-yellow-400 space-y-3"
+        class="relative px-4 py-3 leading-normal bg-gray-50 rounded-sm border-l-4 border-yellow-400 space-y-3"
       >
         <!-- Warning heading -->
         <div class="flex items-center text-yellow-400">

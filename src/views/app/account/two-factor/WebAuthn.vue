@@ -14,46 +14,47 @@ import { ref } from 'vue';
 const deviceName = ref();
 const response = ref();
 
-function arrayBufferToBase64(buffer) {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-}
-
 // Function to register a WebAuthn device
 const registerWebAuthn = async () => {
-    // Fetch challenge to sign
-    let credentialCreationOptions;
-    await authService.GetWebAuthnChallenge().then(async res => {
-      credentialCreationOptions = res.data.register;
+    // Fetch a generated challenge to be signed
+    let credentialCreationOptions: PublicKeyCredentialCreationOptions;
+    try {
+      await authService.GetWebAuthnChallenge().then(res => {
+        credentialCreationOptions = res.data.register;
 
-      // Need to convert some properties from base64 to ArrayBuffer
-      credentialCreationOptions.publicKey.challenge = Buffer.from(credentialCreationOptions.publicKey.challenge, 'base64');
-      credentialCreationOptions.publicKey.user.id = Buffer.from(credentialCreationOptions.publicKey.user.id, 'base64');
-    });
+        // Challenge and User ID needs to be converted from Base64 to an ArrayBuffer
+        const textEncode = new TextEncoder();
+        credentialCreationOptions.challenge = textEncode.encode(res.data.register.challenge);
+        credentialCreationOptions.user.id = textEncode.encode(res.data.register.user.id);
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
-    await navigator.credentials.create(credentialCreationOptions).then(c => {
-        const credential = c as any;
+    // Sign the credential and construct a payload to be sent back to server
+    try {
+      const credential = await navigator.credentials.create({ publicKey: credentialCreationOptions }) as PublicKeyCredential;
+      const attestationResponse = credential.response as AuthenticatorAttestationResponse;
 
-        const attestationObject = credential.response.attestationObject;
-        const clientDataJSON = credential.response.clientDataJSON;
-        const rawId = credential.rawId;
+      const deviceResponse = {
+        id: credential.id,
+        rawId: Buffer.from(credential.rawId).toString('base64') ,
+        type: credential.type,
+        response: {
+          attestationObject: Buffer.from(attestationResponse.attestationObject).toString('base64'),
+          clientDataJSON: Buffer.from(attestationResponse.clientDataJSON).toString('base64')
+        }
+      }
 
-        const cr = JSON.stringify({
-          id: credential.id,
-          rawId: arrayBufferToBase64(rawId),
-          type: credential.type,
-          response: {
-            attestationObject: arrayBufferToBase64(attestationObject),
-            clientDataJSON: arrayBufferToBase64(clientDataJSON)
-          }
-        });
+      const payload = {
+        name: deviceName.value,
+        deviceResponse: deviceResponse
+      }
 
-        response.value = cr;
-    })
+      console.log(payload)
+
+    } catch (e) {
+      console.log(e);
+    }
 }
 </script>

@@ -128,5 +128,9 @@ export default {
   // Request for a challenge
   GetWebAuthnChallenge() {
     return gatewayApi.post("v1/auth/account/webauthn/challenge")
+  },
+
+  RegisterWebAuthn(payload: any) {
+    return gatewayApi.post("v1/auth/account/webauthn/register", payload)
   }
 };

@@ -55,7 +55,7 @@ const registerWebAuthn = async () => {
         deviceResponse: deviceResponse
       }
 
-      console.log(payload)
+      await authService.RegisterWebAuthn(payload);
 
     } catch (e) {
       console.log(e);

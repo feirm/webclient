@@ -8,8 +8,8 @@
 
       <form @submit.prevent="register" class="mt-6 mb-6 w-3/5 mx-auto space-y-3">
         <!-- Error alert -->
-        <div class="bg-red-100 p-3 rounded-lg">
-          <p class="text-red-400 text-center">ERROR</p>
+        <div v-if="error.show" class="bg-red-100 p-3 rounded-lg">
+          <p class="text-red-400 text-center">{{ error.message }}</p>
         </div>
 
         <!-- Username -->
@@ -61,10 +61,26 @@ const email = ref();
 const password = ref();
 const passwordConfirmation = ref();
 
+const error = ref({
+  show: false,
+  message: ""
+});
+
 const loading = ref(false);
 
 // Function to generate encrypted account
 const register = async() => {
+  error.value.show = false;
+  error.value.message = "";
+
+  // Check that passwords match
+  if (password.value !== passwordConfirmation.value) {
+    error.value.show = true;
+    error.value.message = "Passwords do not match!"
+    
+    return;
+  }
+
   const account = new Account();
 
   // Request ephemeral token to sign

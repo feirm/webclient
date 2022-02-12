@@ -35,6 +35,14 @@
           </div>
           <input type="password" v-model="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="●●●●●●●●" required>
         </div>
+
+        <!-- Confirm Password -->
+        <div class="relative mt-1">
+          <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+           <ShieldCheckIcon class="w-5 h-5 text-gray-600" />
+          </div>
+          <input type="password" v-model="passwordConfirmation" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5" placeholder="Confirm your password" required>
+        </div>
       
         <b-button type="submit" class="w-full" :loading="loading">Sign up</b-button>
       </form>
@@ -50,7 +58,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { UserIcon, LockClosedIcon, AtSymbolIcon } from "@heroicons/vue/solid";
+import { UserIcon, LockClosedIcon, AtSymbolIcon, ShieldCheckIcon } from "@heroicons/vue/solid";
 import { Account } from "feirmjs";
 import authService from '@/service/api/authService';
 import { EphemeralToken } from 'feirmjs/src/account/interfaces';

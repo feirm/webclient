@@ -6,7 +6,7 @@
       </h1>
       <p class="text-gray-900 text-lg text-center">Your private and secure non-custodial wallet.</p>
 
-      <form @submit.prevent class="mt-6 mb-6 w-3/5 mx-auto space-y-3">
+      <form @submit.prevent="register" class="mt-6 mb-6 w-3/5 mx-auto space-y-3">
         <!-- Error alert -->
         <div class="bg-red-100 p-3 rounded-lg">
           <p class="text-red-400 text-center">ERROR</p>
@@ -51,6 +51,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { UserIcon, LockClosedIcon, AtSymbolIcon } from "@heroicons/vue/solid";
+import { Account } from "feirmjs";
+import authService from '@/service/api/authService';
+import { EphemeralToken } from 'feirmjs/src/account/interfaces';
 
 // Fields
 const username = ref();
@@ -59,4 +62,20 @@ const password = ref();
 const passwordConfirmation = ref();
 
 const loading = ref(false);
+
+// Function to generate encrypted account
+const register = async() => {
+  const account = new Account();
+
+  // Request ephemeral token to sign
+  const res = await authService.GetRegisterToken();
+  const token = res.data as EphemeralToken;
+
+  // Generate root key and encrypt it
+  account.generateRootKey();
+  const encryptedKey = await account.encryptRootKey(password.value);
+  const encryptedAccount = await account.createEncryptedAccount(username.value, email.value, encryptedKey, token);
+  
+  await authService.CreateAccount(encryptedAccount);
+}
 </script>

@@ -65,7 +65,7 @@
           <input
             type="password"
             v-model="passwordConfirmation"
-            id="password"
+            id="confirmPassword"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5"
             placeholder="Confirm your password"
             required
@@ -91,6 +91,12 @@ import { UserIcon, LockClosedIcon, AtSymbolIcon, ShieldCheckIcon } from "@heroic
 import { Account } from "feirmjs";
 import authService from '@/service/api/authService';
 import { EphemeralToken } from 'feirmjs/src/account/interfaces';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import account from '@/class/account';
+
+const store = useStore();
+const router = useRouter();
 
 // Fields
 const username = ref();
@@ -118,19 +124,29 @@ const register = async () => {
     return;
   }
 
-  const account = new Account();
+  const newAccount = new Account();
 
   // Request ephemeral token to sign
   try {
-    const res = await authService.GetRegisterToken();
+    let res = await authService.GetRegisterToken();
     const token = res.data as EphemeralToken;
 
     // Generate root key and encrypt it
-    account.generateRootKey();
-    const encryptedKey = await account.encryptRootKey(password.value);
-    const encryptedAccount = await account.createEncryptedAccount(username.value, email.value, encryptedKey, token);
+    newAccount.generateRootKey();
+    const encryptedKey = await newAccount.encryptRootKey(password.value);
+    const encryptedAccount = await newAccount.createEncryptedAccount(username.value, email.value, encryptedKey, token);
 
-    await authService.CreateAccount(encryptedAccount);
+    const rk = newAccount.getRootKey();
+    account.setRootKey(rk);
+
+    // Submit account payment and set access token
+    res = await authService.CreateAccount(encryptedAccount);
+    const accessToken = res.data.access_token;
+
+    store.dispatch("login", accessToken);
+    store.dispatch("setUsername", username.value);
+
+    router.push("/app")
   } catch (e) {
     error.value.show = true;
 

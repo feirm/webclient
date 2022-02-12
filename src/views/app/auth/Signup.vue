@@ -72,6 +72,10 @@
           />
         </div>
 
+        <div class="bg-gray-200 p-2 rounded-lg">
+          <p class="text-gray-500 text-sm text-center">Remember, there is no way for Feirm to recover your account due to client-side encryption.</p>
+        </div>
+
         <b-button type="submit" class="w-full" :loading="loading">Sign up</b-button>
       </form>
 

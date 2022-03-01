@@ -98,7 +98,7 @@
       </div>
       <div class="mt-12 border-t border-gray-200 pt-8 space-y-2">
         <p class="text-base text-gray-400 xl:text-center">
-          &copy; 2022 Feirm. All rights reserved.
+          &copy; 2022 Dagur Labs. All rights reserved.
         </p>
         <p class="text-sm xl:text-center text-gray-400">
           Version {{ version }}

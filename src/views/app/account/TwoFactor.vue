@@ -90,6 +90,7 @@
           <div>
             <button
               class="border px-2 py-1 transition duration-300 ease-in-out text-sm rounded-md hover:bg-gray-200 focus:outline-none"
+              @click="router.push('/app/account/two-factor/webauthn')"
             >
               Manage
             </button>
@@ -124,6 +125,7 @@ import ErrorModal from "@/components/modals/ErrorModal.vue";
 
 import { ExclamationIcon } from "@heroicons/vue/solid";
 import authService from "@/service/api/authService";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -141,6 +143,7 @@ export default defineComponent({
       show: boolean;
     }
 
+    const router = useRouter();
     const error = ref({} as ErrorPrompt);
 
     const showManageTotp = ref(false);
@@ -178,6 +181,7 @@ export default defineComponent({
 
     return {
       error,
+      router,
 
       showRecoveryCodes,
       fetchingRecoveryCodes,

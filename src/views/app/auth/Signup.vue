@@ -6,7 +6,7 @@
       >Welcome to Feirm</h1>
       <p class="text-gray-900 text-lg text-center">Your private and secure non-custodial wallet.</p>
 
-      <form @submit.prevent="register" class="mt-6 mb-6 w-3/5 mx-auto space-y-3">
+      <form @submit.prevent="register" class="mt-6 mb-6 w-2/3 mx-auto space-y-3">
         <!-- Error alert -->
         <div v-if="error.show" class="bg-red-100 p-3 rounded-lg">
           <p class="text-red-400 text-center">{{ error.message }}</p>
@@ -74,6 +74,10 @@
 
         <div class="bg-gray-200 p-2 rounded-lg">
           <p class="text-gray-500 text-sm text-center">Remember, there is no way for Feirm to recover your account due to client-side encryption.</p>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <h-captcha sitekey="c7d7c843-7309-4979-b0c1-4ee8c9f59737" />
         </div>
 
         <b-button type="submit" class="w-full" :loading="loading">Sign up</b-button>

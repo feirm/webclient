@@ -13,6 +13,7 @@ import Toaster from "@meforma/vue-toaster";
 import "@/css/index.css";
 
 // Custom components
+import VueHcaptcha from "@hcaptcha/vue3-hcaptcha";
 import Button from "@/components/Button.vue";
 
 const app = createApp(App);
@@ -20,6 +21,7 @@ app.use(store);
 app.use(router);
 app.use(Toaster, { position: "bottom" });
 
+app.component("h-captcha", VueHcaptcha);
 app.component("b-button", Button);
 
 app.mount("#app");

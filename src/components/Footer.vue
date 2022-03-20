@@ -6,9 +6,27 @@
         <div class="space-y-8 xl:col-span-1">
           <img class="h-10" src="@/assets/img/logo.webp" alt="Feirm" />
           <p class="text-gray-500 text-base">
-            An all in one cryptocurrency platform that provides privacy for
-            everyone.
+            Developed and hosted in the United Kingdom 🇬🇧
           </p>
+
+          <div class="space-y-1">
+            <p class="text-gray-500 text-sm">
+            Dagur Labs Ltd
+          </p>
+
+          <p class="text-gray-500 text-sm">
+            71-75 Shelton Street
+          </p>
+
+          <p class="text-gray-500 text-sm">
+            London
+          </p>
+
+          <p class="text-gray-500 text-sm">
+            WC2H 9JQ
+          </p>
+          </div>
+
           <div class="flex space-x-6">
             <a
               v-for="item in navigation.social"

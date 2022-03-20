@@ -77,7 +77,7 @@
         </div>
 
         <div class="flex flex-col items-center">
-          <h-captcha sitekey="c7d7c843-7309-4979-b0c1-4ee8c9f59737" />
+          <h-captcha sitekey="c7d7c843-7309-4979-b0c1-4ee8c9f59737" @verify="setChallengeResponse" />
         </div>
 
         <b-button type="submit" class="w-full" :loading="loading">Sign up</b-button>
@@ -111,6 +111,7 @@ const username = ref();
 const email = ref();
 const password = ref();
 const passwordConfirmation = ref();
+const hCaptchaChallenge = ref("");
 
 const error = ref({
   show: false,
@@ -123,6 +124,14 @@ const loading = ref(false);
 const register = async () => {
   error.value.show = false;
   error.value.message = "";
+
+  // Check that hCaptcha has a response
+  if (hCaptchaChallenge.value.length == 0) {
+    error.value.show = true;
+    error.value.message = "Please complete the Captcha!"
+
+    return;
+  }
 
   // Check that passwords match
   if (password.value !== passwordConfirmation.value) {
@@ -147,7 +156,7 @@ const register = async () => {
     const rk = newAccount.getRootKey();
     account.setRootKey(rk);
 
-    // Submit account payment and set access token
+    // Submit account payload and set access token
     res = await authService.CreateAccount(encryptedAccount);
     const accessToken = res.data.access_token;
 
@@ -164,5 +173,10 @@ const register = async () => {
       error.value.message = "An unknown error has occurred!"
     }
   }
+}
+
+// Set challenge response returned from hCaptcha
+const setChallengeResponse = (response: string) => {
+  hCaptchaChallenge.value = response;
 }
 </script>

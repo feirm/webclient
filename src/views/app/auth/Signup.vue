@@ -151,7 +151,7 @@ const register = async () => {
     // Generate root key and encrypt it
     newAccount.generateRootKey();
     const encryptedKey = await newAccount.encryptRootKey(password.value);
-    const encryptedAccount = await newAccount.createEncryptedAccount(username.value, email.value, encryptedKey, token);
+    const encryptedAccount = await newAccount.createEncryptedAccount(username.value, email.value, encryptedKey, token, hCaptchaChallenge.value);
 
     const rk = newAccount.getRootKey();
     account.setRootKey(rk);

@@ -71,7 +71,7 @@
                   <span class="sr-only">Open user menu</span>
                   <span class="inline-block overflow-hidden">
                     <!-- <UserCircleIcon class="w-6 h-6 text-white" /> -->
-                    <img class="inline-block w-10 h-10 rounded-full" :src="avatar" alt="Avatar" >
+                    <img class="inline-block w-12 h-12 rounded-full" :src="avatar" alt="Avatar" >
                   </span>
                 </MenuButton>
               </div>
@@ -217,3 +217,13 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+img {
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: -o-crisp-edges; /* Opera */
+  image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+}
+</style>

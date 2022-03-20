@@ -70,7 +70,8 @@
                 >
                   <span class="sr-only">Open user menu</span>
                   <span class="inline-block overflow-hidden">
-                    <UserCircleIcon class="w-6 h-6 text-white" />
+                    <!-- <UserCircleIcon class="w-6 h-6 text-white" /> -->
+                    <img class="inline-block w-10 h-10 rounded-full" :src="avatar" alt="Avatar" >
                   </span>
                 </MenuButton>
               </div>
@@ -180,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import {
   Disclosure,
   DisclosureButton,
@@ -194,11 +195,25 @@ import { MenuIcon, XIcon } from "@heroicons/vue/outline";
 import { UserCircleIcon, LockClosedIcon, UserAddIcon } from "@heroicons/vue/solid";
 import { mapGetters, useStore } from "vuex";
 import { useRouter } from 'vue-router';
+import userService from "@/service/api/userService";
 
 const open = ref(false);
+const avatar = ref("");
+
 const router = useRouter();
 
 const store = useStore();
 
 const isLoggedIn = computed(() => store.getters.isLoggedIn);
+
+onMounted(async () => {
+  // Fetch profile avatar
+  try {
+    await userService.GetAvatar().then(img => {
+      avatar.value = img
+    })
+  } catch (e) {
+    console.log(e);
+  }
+})
 </script>

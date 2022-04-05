@@ -1,8 +1,8 @@
 <template>
-<nav class="fixed bottom-0 p-2 pt-3 w-full border bg-gray-100 flex flex-row overflow-x-auto">
+<nav class="fixed bottom-0 p-1 pt-2 w-full border bg-gray-100 flex flex-row overflow-x-auto">
     <div v-for="button in buttons" :key="button.label" class="flex flex-col flex-grow items-center text-center">
         <router-link :to="button.route">
-            <font-awesome-icon class="fa-xl text-gray-700" :icon="button.icon" />
+            <font-awesome-icon class="fa-lg text-gray-700" :icon="button.icon" />
             <br>
             <span class="text-sm align-middle">{{ button.label }}</span>
         </router-link>

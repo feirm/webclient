@@ -1,11 +1,10 @@
 <template>
-<nav class="fixed bottom-0 p-2 w-full border bg-white flex overflow-x-auto">
-    <div v-for="button in buttons" :key="button.label">
-        <router-link :to="button.route" class="flex flex-col flex-grow items-center justify-center
-		overflow-hidden whitespace-no-wrap text-sm transition-colors duration-100
-		ease-in-out hover:bg-gray-200 focus:text-orange-500">
-            <font-awesome-icon class="fa-2xl" :icon="button.icon" />
-            <span class="text-sm">{{ button.label }}</span>
+<nav class="fixed bottom-0 p-2 w-full border bg-white flex flex-row overflow-x-auto">
+    <div v-for="button in buttons" :key="button.label" class="flex flex-col flex-grow items-center text-center">
+        <router-link :to="button.route">
+            <font-awesome-icon class="fa-xl" :icon="button.icon" />
+            <br>
+            <span class="text-sm align-middle">{{ button.label }}</span>
         </router-link>
     </div>
 </nav>
@@ -19,6 +18,21 @@ const buttons = ref([
         label: "Home",
         route: "/app",
         icon: "house"
+    },
+    {
+        label: "Wallet",
+        route: "/app/wallet",
+        icon: "wallet"
+    },
+    {
+        label: "Profile",
+        route: "/app/profile",
+        icon: "user"
+    },
+    {
+        label: "Settings",
+        route: "/app/settings",
+        icon: "gear"
     }
 ])
 </script>

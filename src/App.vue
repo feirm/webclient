@@ -1,6 +1,10 @@
 <template>
   <Navigation />
   <router-view />
+
+  <!-- Mobile tabs -->
+  <MobileTabs />
+
   <Footer />
 
   <!-- Updater prompt -->
@@ -43,12 +47,14 @@ import Navigation from "@/components/Navigation.vue";
 import Footer from "@/components/Footer.vue";
 import account from "./class/account";
 import hexToBytes from "./helpers/hexToBytes";
+import MobileTabs from "./components/MobileTabs.vue";
 
 export default defineComponent({
   components: {
     Navigation,
     Footer,
-  },
+    MobileTabs
+},
   data() {
     return {
       registration: null,

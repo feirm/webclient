@@ -12,6 +12,15 @@ import Toaster from "@meforma/vue-toaster";
 // CSS Styles (Tailwind)
 import "@/css/index.css";
 
+// FontAwesome icons
+import { library } from "@fortawesome/fontawesome-svg-core";
+import * as SolidIcons from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+// Import all the icons
+const iconList = Object.keys(SolidIcons).filter(key => key !== "fas" && key !== "prefix").map(icon => SolidIcons[icon]);
+library.add(...iconList);
+
 // Custom components
 import VueHcaptcha from "@hcaptcha/vue3-hcaptcha";
 import Button from "@/components/Button.vue";
@@ -21,6 +30,7 @@ app.use(store);
 app.use(router);
 app.use(Toaster, { position: "bottom" });
 
+app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("h-captcha", VueHcaptcha);
 app.component("b-button", Button);
 

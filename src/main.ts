@@ -14,12 +14,10 @@ import "@/css/index.css";
 
 // FontAwesome icons
 import { library } from "@fortawesome/fontawesome-svg-core";
-import * as SolidIcons from "@fortawesome/free-solid-svg-icons";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-// Import all the icons
-const iconList = Object.keys(SolidIcons).filter(key => key !== "fas" && key !== "prefix").map(icon => SolidIcons[icon]);
-library.add(...iconList);
+library.add(fas);
 
 // Custom components
 import VueHcaptcha from "@hcaptcha/vue3-hcaptcha";

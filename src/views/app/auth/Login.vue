@@ -1,12 +1,12 @@
 <template>
   <div class="flex justify-center items-center m-6 md:m-24">
-    <div class="container w-4/5 md:w-2/5 rounded-lg p-12 shadow-sm bg-gray-100 mb-3">
+    <div class="container md:w-2/5 rounded-lg p-12 shadow-sm md:bg-gray-100 mb-3">
       <h1 class="text-2xl text-center font-semibold md:text-3xl text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-orange-600">
         Feirm
       </h1>
       <p class="text-gray-900 text-lg text-center">Your private and secure non-custodial wallet.</p>
 
-      <form @submit.prevent="submitAccount" class="mt-6 mb-6 w-3/5 mx-auto space-y-3">
+      <form @submit.prevent="submitAccount" class="mt-6 mb-6 md:w-3/5 mx-auto space-y-3">
         <!-- Error alert -->
         <div v-if="error.show" class="bg-red-100 p-3 rounded-lg">
           <p class="text-red-400 text-center">{{ error.message }}</p>

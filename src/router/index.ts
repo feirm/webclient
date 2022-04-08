@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: "login/approve",
+        path: "login/approve/:token",
         component: ApproveLogin,
         meta: {
           title: "Approve Login Request",

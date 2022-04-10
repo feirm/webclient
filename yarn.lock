@@ -5089,8 +5089,10 @@ faye-websocket@^0.11.3:
   dependencies:
     websocket-driver ">=0.5.1"
 
-feirmjs@../feirm.js/:
+feirmjs@^0.0.1:
   version "0.0.1"
+  resolved "https://registry.yarnpkg.com/feirmjs/-/feirmjs-0.0.1.tgz#266eec3a8c38512e176cb2699cab0f79ade2ceba"
+  integrity sha512-xGlxp1iPAak6QffwXWnd6gj/6nB6rsJKFkowWoWQzRYNlBzk0oYY0HG+lIGyrn+zDLAjS+P9GMoUsz1ZW8ACxg==
   dependencies:
     argon2-browser "^1.18.0"
     bip39 "^3.0.4"

@@ -29,7 +29,7 @@
     "core-js": "^3.6.5",
     "elliptic": "^6.5.4",
     "ethereumjs-wallet": "^1.0.1",
-    "feirmjs": "../feirm.js/",
+    "feirmjs": "^0.0.1",
     "keccak256": "^1.0.2",
     "luxon": "^1.27.0",
     "otplib": "^12.0.1",
